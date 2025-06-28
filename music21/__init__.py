@@ -92,7 +92,6 @@ __all__ = [
     'alpha',
     'analysis',
     'audioSearch',
-    'braille',
     'capella',
     'chord',
     'common',
@@ -199,7 +198,6 @@ from music21.test.testRunner import mainTest  # noqa: E402
 from music21 import alpha  # noqa: E402
 from music21 import analysis  # noqa: E402
 from music21 import audioSearch  # noqa: E402
-from music21 import braille  # noqa: E402
 from music21 import capella  # noqa: E402
 from music21 import chord  # noqa: E402
 from music21 import common  # noqa: E402

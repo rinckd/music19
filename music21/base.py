@@ -2956,7 +2956,6 @@ class Music21Object(prebase.ProtoM21Object):
             lily.png
             lily.pdf
             lily.svg
-            braille
             vexflow
             musicxml.png
 

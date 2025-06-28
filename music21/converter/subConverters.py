@@ -401,41 +401,6 @@ class ConverterIPython(SubConverter):
 
 
 
-class ConverterBraille(SubConverter):
-    registerFormats = ('braille',)
-    registerOutputExtensions = ('txt',)
-    codecWrite = True
-
-    def show(
-        self,
-        obj,
-        fmt,
-        app=None,
-        subformats=(),
-        **keywords
-    ):  # pragma: no cover
-        if not common.runningInNotebook():
-            super().show(obj, fmt, app=None, subformats=subformats, **keywords)
-        else:
-            from music21 import braille
-            dataStr = braille.translate.objectToBraille(obj)
-            print(dataStr)
-
-    def write(
-        self,
-        obj,
-        fmt,
-        fp=None,
-        subformats=(),
-        **keywords
-    ):  # pragma: no cover
-        from music21 import braille
-        dataStr = braille.translate.objectToBraille(obj, **keywords)
-        if 'ascii' in subformats:
-            dataStr = braille.basic.brailleUnicodeToBrailleAscii(dataStr)
-        fp = self.writeDataStream(fp, dataStr)
-        return fp
-
 
 class ConverterVexflow(SubConverter):
     registerFormats = ('vexflow',)
@@ -1433,11 +1398,7 @@ class Test(unittest.TestCase):
     def testBrailleKeywords(self):
         from music21 import converter
 
-        p = converter.parse('tinyNotation: c1 d1 e1 f1')
-        out = p.write('braille', debug=True)
-        with open(out, 'r', encoding='utf-8') as f:
-            self.assertIn('<music21.braille.segment BrailleSegment>', f.read())
-        os.remove(out)
+        # Braille functionality has been removed
 
     def testWriteRomanText(self):
         import textwrap

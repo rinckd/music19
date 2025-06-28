@@ -162,7 +162,6 @@ class _EnvironmentCore:
         # store names of all values that are keys; check for validity
         self._keysToPaths = []
         for pathKey in [
-            'braillePath',
             'graphicsPath',
             'localCorpusPath',
             'manualCoreCorpusPath',
@@ -359,8 +358,6 @@ class _EnvironmentCore:
         # path to a pdf viewer
         self._ref['pdfPath'] = None
 
-        # path to a braille viewer
-        self._ref['braillePath'] = None
 
         # path to MuseScore (if not the musicxmlPath)
         # for direct creation of PNG from MusicXML
@@ -561,7 +558,6 @@ class _EnvironmentCore:
         ...     #_DOCS_SHOW print(i)
         ...     pass #_DOCS_HIDE
 
-        braillePath
         graphicsPath
         lilypondPath
         ...
@@ -690,8 +686,6 @@ class _EnvironmentCore:
         'musicxmlPath'
         >>> e.formatToKey('midi')
         'midiPath'
-        >>> e.formatToKey('braille')
-        'braillePath'
 
         returns None if there is no key for this format (whether the format exists or not)
 
@@ -711,8 +705,6 @@ class _EnvironmentCore:
             environmentKey = 'musicxmlPath'
         elif m21Format == 'midi':
             environmentKey = 'midiPath'
-        elif m21Format == 'braille':
-            environmentKey = 'braillePath'
         return environmentKey
 
     def formatToApp(self, m21Format):
@@ -922,7 +914,6 @@ class Environment:
         >>> for x in sorted(a.getKeysToPaths()):
         ...     x
         ...
-        'braillePath'
         'graphicsPath'
         'lilypondPath'
         'localCorpusPath'
@@ -948,7 +939,6 @@ class Environment:
         ...     x
         ...
         'autoDownload'
-        'braillePath'
         'debug'
         'directoryScratch'
         'graphicsPath'
@@ -1015,7 +1005,6 @@ class Environment:
         ...     x
         ...
         'autoDownload'
-        'braillePath'
         'debug'
         'directoryScratch'
         'graphicsPath'
@@ -1180,7 +1169,6 @@ class UserSettings:
     >>> for key in sorted(us.keys()):
     ...     key
     'autoDownload'
-    'braillePath'
     'debug'
     'directoryScratch'
     'graphicsPath'
@@ -1426,7 +1414,6 @@ class Test(unittest.TestCase):
         canonic = '''<?xml version='1.0' ''' + enc + '''?>
 <settings encoding="utf-8">
   <preference name="autoDownload" value="ask" />
-  <preference name="braillePath" />
   <preference name="debug" value="0" />
   <preference name="directoryScratch" />
   <preference name="graphicsPath" value="/System/Applications/Preview.app" />
@@ -1470,7 +1457,6 @@ class Test(unittest.TestCase):
         canonic = '''<?xml version='1.0' ''' + enc + '''?>
 <settings encoding="utf-8">
   <preference name="autoDownload" value="ask" />
-  <preference name="braillePath" />
   <preference name="debug" value="0" />
   <preference name="directoryScratch" />
   <preference name="graphicsPath" value="/System/Applications/Preview.app" />
@@ -1533,7 +1519,6 @@ class Test(unittest.TestCase):
         canonic = '''<?xml version='1.0' ''' + enc + '''?>
 <settings encoding="utf-8">
   <preference name="autoDownload" value="ask" />
-  <preference name="braillePath" />
   <preference name="debug" value="0" />
   <preference name="directoryScratch" />
   <preference name="graphicsPath" value="/System/Applications/Preview.app" />

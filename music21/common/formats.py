@@ -40,12 +40,12 @@ if t.TYPE_CHECKING:
 # used for checking preferences, and for setting environment variables
 # TODO: only check top-level.  Let subConverters check sub formats.
 VALID_SHOW_FORMATS = ['musicxml', 'text', 'textline', 'midi',
-                      'png', 'pdf', 'svg', 'braille',
+                      'png', 'pdf', 'svg',
                       'vexflow', 'vexflow.html', 'vexflow.js',
                       'ipython', 'ipython.png', 'ipython.midi',
                       'musicxml.png', 'musicxml.pdf']
 VALID_WRITE_FORMATS = ['musicxml', 'text', 'textline', 'midi',
-                       'png', 'pdf', 'svg', 'braille',
+                       'png', 'pdf', 'svg',
                        'vexflow', 'vexflow.html', 'vexflow.js',
                        'ipython', 'ipython.png', 'ipython.midi',
                        'musicxml.png', 'musicxml.pdf',
@@ -113,8 +113,6 @@ def findFormat(fmt):
     ('midi', '.mid')
     >>> common.findFormat('scl')
     ('scala', '.scl')
-    >>> common.findFormat('braille')
-    ('braille', '.txt')
     >>> common.findFormat('vexflow')
     ('vexflow', '.html')
     >>> common.findFormat('capx')

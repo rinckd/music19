@@ -270,7 +270,6 @@ class ModuleGather:
                             'features/jSymbolic',
                             'features/native',
                             'figuredBass/examples',
-                            'braille/test',
                             'stream/tests',
                             'analysis/windowed',
                             'converter/__init__',

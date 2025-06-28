@@ -855,7 +855,7 @@ class Converter:
 
         >>> sclOutput = converter.Converter.subConvertersList('output')
         >>> sclOutput
-        [<class 'music21.converter.subConverters.ConverterBraille'>,
+        [
          <class 'music21.converter.subConverters.ConverterLilypond'>,
          <class 'music21.converter.subConverters.ConverterMidi'>,
          <class 'music21.converter.subConverters.ConverterMusicXML'>,
@@ -960,7 +960,6 @@ class Converter:
         >>> for sc in c.defaultSubConverters():
         ...     print(sc)
         <class 'music21.converter.subConverters.ConverterABC'>
-        <class 'music21.converter.subConverters.ConverterBraille'>
         <class 'music21.converter.subConverters.ConverterCapella'>
         <class 'music21.converter.subConverters.ConverterClercqTemperley'>
         <class 'music21.converter.subConverters.ConverterHumdrum'>
@@ -1011,7 +1010,6 @@ class Converter:
         >>> for x in sorted(scf):
         ...     x, scf[x]
         ('abc', <class 'music21.converter.subConverters.ConverterABC'>)
-        ('braille', <class 'music21.converter.subConverters.ConverterBraille'>)
         ('capella', <class 'music21.converter.subConverters.ConverterCapella'>)
         ('clercqtemperley', <class 'music21.converter.subConverters.ConverterClercqTemperley'>)
         ('cttxt', <class 'music21.converter.subConverters.ConverterClercqTemperley'>)
@@ -1432,12 +1430,9 @@ def toData(obj: base.Music21Object, fmt: str, **keywords) -> str|bytes:
     calls `write()` on the object and reads back the value of the file.
 
     >>> tiny = converter.parse('tinyNotation: 4/4 C4 D E F G1')
-    >>> data = converter.toData(tiny, 'braille.ascii')
+    >>> data = converter.toData(tiny, 'text')
     >>> type(data)
     <class 'str'>
-    >>> print(data)
-        #D4
-    #A _?:$] (<K
     '''
     if fmt.startswith('.'):
         fmt = fmt[1:]

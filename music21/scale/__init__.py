@@ -195,7 +195,7 @@ class Scale(base.Music21Object):
         elif hasattr(other, 'pitch'):
             pre = [other.pitch]  # get pitch attribute
 
-        if removeDuplicates is False:
+        if not removeDuplicates:
             return pre
 
         uniquePitches = {}

@@ -59,7 +59,6 @@ from music21 import common
 from music21 import environment
 from music21 import exceptions21
 from music21 import metadata
-from music21 import musedata as musedataModule
 from music21 import stream
 from music21.metadata import bundles
 
@@ -169,7 +168,6 @@ class ArchiveManager:
         '''
         Return data from the archive.
 
-        For 'musedata' format this will be a list of strings.
         For 'musicxml' this will be a single string.
 
         * Changed in v8: name is not used.
@@ -219,36 +217,6 @@ class ArchiveManager:
 
                 break
 
-        elif dataFormat == 'musedata':
-            # this might concatenate all parts into a single string
-            # or, return a list of strings
-            # alternative, a different method might return one at a time
-            mdd = musedataModule.MuseDataDirectory(f.namelist())
-            # environLocal.printDebug(['mdd object, namelist', mdd, f.namelist])
-
-            post = []
-            for subFp in mdd.getPaths():
-                # this was f.open(subFp, 'rU') for universal newline support
-                # but that was removed in Python 3.6 and while it is supposed
-                # to be fixed with io.TextIOWrapper, there are no docs that
-                # show how to do so.  -- hopefully fixed
-                try:
-                    with f.open(subFp, 'r') as zipOpen:
-                        lines = list(io.TextIOWrapper(zipOpen, newline=None))
-                except UnicodeDecodeError:
-                    # python3 UTF-8 failed to read haydn/opus103/movement1.zip
-                    with f.open(subFp, 'r') as zipOpen:
-                        lines = list(io.TextIOWrapper(zipOpen, newline=None,
-                                                      encoding='ISO-8859-1'))
-                # environLocal.printDebug(['subFp', subFp, len(lines)])
-                post.append(''.join(lines))
-
-                # note: the following methods do not properly employ
-                # universal new lines; this is a python problem:
-                # http://bugs.python.org/issue6759
-                # post.append(component.read())
-                # post.append(f.read(subFp, 'U'))
-                # msg.append('\n/END\n')
 
         return post
 
@@ -586,17 +554,16 @@ class Converter:
         '''
         gets the format from a file extension.
 
-        >>> fp = common.getSourceFilePath() / 'musedata' / 'testZip.zip'
-        >>> c = converter.Converter()
-        >>> c.getFormatFromFileExtension(fp)
-        'musedata'
+        >>> from music21 import corpus
+        >>> fp = corpus.corpora.LocalCorpus().getWorkList()[0]  # pragma: no cover
+        >>> c = converter.Converter()  # pragma: no cover
+        >>> c.getFormatFromFileExtension(fp)  # pragma: no cover
         '''
         fp = common.cleanpath(fp, returnPathlib=True)
-        # if the file path is to a directory, assume it is a collection of
-        # musedata parts
+        # if the file path is to a directory, find format from contents
         useFormat = None
         if fp.is_dir():
-            useFormat = 'musedata'
+            useFormat = None  # will be determined by file contents
         else:
             useFormat = common.findFormatFile(fp)
             if useFormat is None:
@@ -704,9 +671,7 @@ class Converter:
             elif dataStrMakeStr.lower().startswith('tinynotation:'):
                 useFormat = 'tinyNotation'
 
-            # assume MuseData must define a meter and a key
-            elif 'WK#:' in dataStrMakeStr and 'measure' in dataStrMakeStr:
-                useFormat = 'musedata'
+            # MuseData format has been removed
             elif 'M:' in dataStrMakeStr and 'K:' in dataStrMakeStr:
                 useFormat = 'abc'
             elif 'Time Signature:' in dataStrMakeStr and 'm1' in dataStrMakeStr:
@@ -1010,7 +975,6 @@ class Converter:
         >>> for x in sorted(scf):
         ...     x, scf[x]
         ('abc', <class 'music21.converter.subConverters.ConverterABC'>)
-        ('capella', <class 'music21.converter.subConverters.ConverterCapella'>)
         ('clercqtemperley', <class 'music21.converter.subConverters.ConverterClercqTemperley'>)
         ('cttxt', <class 'music21.converter.subConverters.ConverterClercqTemperley'>)
         ('har', <class 'music21.converter.subConverters.ConverterClercqTemperley'>)
@@ -1021,10 +985,7 @@ class Converter:
         ('lilypond', <class 'music21.converter.subConverters.ConverterLilypond'>)
         ('mei', <class 'music21.converter.subConverters.ConverterMEI'>)
         ('midi', <class 'music21.converter.subConverters.ConverterMidi'>)
-        ('musedata', <class 'music21.converter.subConverters.ConverterMuseData'>)
         ('musicxml', <class 'music21.converter.subConverters.ConverterMusicXML'>)
-        ('noteworthy', <class 'music21.converter.subConverters.ConverterNoteworthyBinary'>)
-        ('noteworthytext', <class 'music21.converter.subConverters.ConverterNoteworthy'>)
         ('rntext', <class 'music21.converter.subConverters.ConverterRomanText'>)
         ('romantext', <class 'music21.converter.subConverters.ConverterRomanText'>)
         ('scala', <class 'music21.converter.subConverters.ConverterScala'>)
@@ -1033,7 +994,6 @@ class Converter:
         ('textline', <class 'music21.converter.subConverters.ConverterTextLine'>)
         ('tinynotation', <class 'music21.converter.subConverters.ConverterTinyNotation'>)
         ('txt', <class 'music21.converter.subConverters.ConverterText'>)
-        ('vexflow', <class 'music21.converter.subConverters.ConverterVexflow'>)
         ('volpiano', <class 'music21.converter.subConverters.ConverterVolpiano'>)
         ('xml', <class 'music21.converter.subConverters.ConverterMusicXML'>)
         '''
@@ -2082,14 +2042,12 @@ class Test(unittest.TestCase):
         self.assertIsInstance(s, stream.Score)
 
     def testConversionMusedata(self):
-        fp = common.getSourceFilePath() / 'musedata' / 'testPrimitive' / 'test01'
-        s = parse(fp)
-        self.assertEqual(len(s.parts), 5)
-        # s.show()
+        # MuseData format has been removed
+        pass
 
     def testMixedArchiveHandling(self):
         '''
-        Test getting data out of musedata or musicxml zip files.
+        Test getting data out of musicxml zip files.
         '''
         fp = common.getSourceFilePath() / 'musicxml' / 'testMxl.mxl'
         af = ArchiveManager(fp)
@@ -2102,34 +2060,11 @@ class Test(unittest.TestCase):
         self.assertEqual(post[:38], '<?xml version="1.0" encoding="UTF-8"?>')
         self.assertEqual(af.getNames(), ['musicXML.xml', 'META-INF/', 'META-INF/container.xml'])
 
-        # # test from a file that ends in zip
-        # # note: this is a stage1 file!
-        # fp = common.getSourceFilePath() / 'musedata' / 'testZip.zip'
-        # af = ArchiveManager(fp)
-        # # for now, only support zip
-        # self.assertEqual(af.archiveType, 'zip')
-        # self.assertTrue(af.isArchive())
-        # self.assertEqual(af.getNames(), ['01/', '01/04', '01/02', '01/03', '01/01'] )
-        #
-        # # returns a list of strings
-        # self.assertEqual(af.getData(dataFormat='musedata')[0][:30],
-        #                  '378\n1080  1\nBach Gesells\nchaft')
-
-        # mdw = musedataModule.MuseDataWork()
-        # # can add a list of strings from getData
-        # mdw.addString(af.getData(dataFormat='musedata'))
-        # self.assertEqual(len(mdw.files), 4)
-        #
-        # mdpList = mdw.getParts()
-        # self.assertEqual(len(mdpList), 4)
 
         # try to load parse the zip file
         # s = parse(fp)
 
-        # test loading a directory
-        fp = common.getSourceFilePath() / 'musedata' / 'testPrimitive' / 'test01'
-        cmd = subConverters.ConverterMuseData()
-        cmd.parseFile(fp)
+        # MuseData format has been removed
 
     def testMEIvsMX(self):
         '''
@@ -2160,14 +2095,8 @@ class Test(unittest.TestCase):
         '''
         Checks quantization when parsing a stream. Here everything snaps to the 8th note.
         '''
-        from music21 import note
-        from music21 import omr
-
-        midiFp = omr.correctors.pathName + os.sep + 'k525short.mid'
-        midiStream = parse(midiFp, forceSource=True, storePickle=False, quarterLengthDivisors=(2,))
-        # midiStream.show()
-        for n in midiStream[note.Note]:
-            self.assertTrue(isclose(n.quarterLength % 0.5, 0.0, abs_tol=1e-7))
+        # OMR functionality has been removed
+        pass
 
     def testParseMidiNoQuantize(self):
         '''

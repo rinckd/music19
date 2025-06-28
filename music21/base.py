@@ -2956,7 +2956,6 @@ class Music21Object(prebase.ProtoM21Object):
             lily.png
             lily.pdf
             lily.svg
-            vexflow
             musicxml.png
 
         N.B. score.write('lily') returns a bare lilypond file,

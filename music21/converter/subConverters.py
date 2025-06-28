@@ -402,23 +402,6 @@ class ConverterIPython(SubConverter):
 
 
 
-class ConverterVexflow(SubConverter):
-    registerFormats = ('vexflow',)
-    registerOutputExtensions = ('html',)
-
-    def write(self,
-              obj,
-              fmt,
-              fp=None,
-              subformats=(),
-              *,
-              local: bool = False,
-              **keywords):  # pragma: no cover
-        # from music21 import vexflow
-        from music21.vexflow import toMusic21j as vexflow
-        dataStr = vexflow.fromObject(obj, mode='html', local=local)
-        fp = self.writeDataStream(fp, dataStr)
-        return fp
 
 
 class ConverterText(SubConverter):
@@ -644,92 +627,6 @@ class ConverterTinyNotation(SubConverter):
         self.stream = tinyNotation.Converter(tnStr, **self.keywords).parse().stream
 
 
-class ConverterNoteworthy(SubConverter):
-    # noinspection SpellCheckingInspection
-    '''
-    Simple class wrapper for parsing NoteworthyComposer data provided in a
-    file or in a string.
-
-    Gets data with the file format .nwctxt
-
-    Users should not need this routine.  The basic format is converter.parse('file.nwctxt')
-
-
-    >>> nwcTranslatePath = common.getSourceFilePath() / 'noteworthy' #_DOCS_HIDE
-    >>> paertPath = nwcTranslatePath / 'Part_OWeisheit.nwctxt' #_DOCS_HIDE
-    >>> #_DOCS_SHOW paertPath = converter.parse(r'd:/desktop/arvo_part_o_weisheit.nwctxt')
-    >>> paertStream = converter.parse(paertPath)
-    >>> len(paertStream.parts)
-    4
-
-    For developers: see the documentation for :meth:`parseData` and :meth:`parseFile`
-    to see the low-level usage.
-    '''
-    registerFormats = ('noteworthytext',)
-    registerInputExtensions = ('nwctxt',)
-
-    # --------------------------------------------------------------------------
-    def parseData(self, nwcData):
-        # noinspection PyShadowingNames
-        r'''
-        Open Noteworthy data from a string or list
-
-        >>> nwcData = ('!NoteWorthyComposer(2.0)\n|AddStaff\n|Clef|' +
-        ...     'Type:Treble\n|Note|Dur:Whole|Pos:1^')
-        >>> c = converter.subConverters.ConverterNoteworthy()
-        >>> c.parseData(nwcData)
-        >>> c.stream.show('text')
-        {0.0} <music21.stream.Part ...>
-            {0.0} <music21.stream.Measure 0 offset=0.0>
-                {0.0} <music21.clef.TrebleClef>
-                {0.0} <music21.note.Note C>
-        '''
-        from music21.noteworthy import translate as noteworthyTranslate
-        self.stream = noteworthyTranslate.NoteworthyTranslator().parseString(nwcData)
-
-    def parseFile(self,
-                  filePath: pathlib.Path|str,
-                  number: int|None = None,
-                  **keywords):
-        # noinspection SpellCheckingInspection,PyShadowingNames
-        '''
-        Open Noteworthy data (as nwctxt) from a file path.
-
-        >>> nwcTranslatePath = common.getSourceFilePath() / 'noteworthy' #_DOCS_HIDE
-        >>> filePath = nwcTranslatePath / 'Part_OWeisheit.nwctxt' #_DOCS_HIDE
-        >>> #_DOCS_SHOW paertPath = converter.parse('d:/desktop/arvo_part_o_weisheit.nwctxt')
-        >>> c = converter.subConverters.ConverterNoteworthy()
-        >>> c.parseFile(filePath)
-        >>> #_DOCS_SHOW c.stream.show()
-        '''
-        from music21.noteworthy import translate as noteworthyTranslate
-        self.stream = noteworthyTranslate.NoteworthyTranslator().parseFile(filePath)
-
-
-class ConverterNoteworthyBinary(SubConverter):
-    '''
-    Simple class wrapper for parsing NoteworthyComposer binary data
-    provided in a file or in a string.
-
-    Gets data with the file format .nwc
-
-    Users should not need this routine.  Call converter.parse directly
-    '''
-    readBinary = True
-    registerFormats = ('noteworthy',)
-    registerInputExtensions = ('nwc', )
-
-    # --------------------------------------------------------------------------
-    def parseData(self, nwcData):  # pragma: no cover
-        from music21.noteworthy import binaryTranslate as noteworthyBinary
-        self.stream = noteworthyBinary.NWCConverter().parseString(nwcData)
-
-    def parseFile(self,
-                  filePath: pathlib.Path|str,
-                  number: int|None = None,
-                  **keywords):
-        from music21.noteworthy import binaryTranslate as noteworthyBinary
-        self.stream = noteworthyBinary.NWCConverter().parseFile(filePath)
 
 
 # ------------------------------------------------------------------------------
@@ -1090,109 +987,9 @@ class ConverterClercqTemperley(SubConverter):
         self.parseData(filePath)
 
 
-class ConverterCapella(SubConverter):
-    '''
-    Simple class wrapper for parsing Capella .capx XML files.  See capella/fromCapellaXML.
-    '''
-    registerFormats = ('capella',)
-    registerInputExtensions = ('capx',)
-
-    def parseData(self, strData, number=None):
-        '''
-        parse a data stream of uncompressed capella xml
-
-        N.B. for web parsing, it gets more complex.
-        '''
-        from music21.capella import fromCapellaXML
-        ci = fromCapellaXML.CapellaImporter()
-        ci.parseXMLText(strData)
-        scoreObj = ci.systemScoreFromScore(ci.mainDom.documentElement)
-        partScore = ci.partScoreFromSystemScore(scoreObj)
-        self.stream = partScore
-
-    def parseFile(self,
-                  filePath: str|pathlib.Path,
-                  number: int|None = None,
-                  **keywords):
-        '''
-        Parse a Capella file
-        '''
-        from music21.capella import fromCapellaXML
-        ci = fromCapellaXML.CapellaImporter()
-        self.stream = ci.scoreFromFile(filePath)
 
 
 # ------------------------------------------------------------------------------
-class ConverterMuseData(SubConverter):
-    '''
-    Simple class wrapper for parsing MuseData.
-    '''
-    registerFormats = ('musedata',)
-    registerInputExtensions = ('md', 'musedata', 'zip')
-
-    def parseData(self, strData, number=None):  # pragma: no cover
-        '''
-        Get musedata from a string representation.
-        '''
-        from music21 import musedata as musedataModule
-        from music21.musedata import translate as musedataTranslate
-
-        if isinstance(strData, str):
-            strDataList = [strData]
-        else:
-            strDataList = strData
-
-        mdw = musedataModule.MuseDataWork()
-
-        for strDataInner in strDataList:
-            mdw.addString(strDataInner)
-
-        musedataTranslate.museDataWorkToStreamScore(mdw, self.stream)
-
-    def parseFile(self,
-                  filePath: str|pathlib.Path,
-                  number: int|None = None,
-                  **keywords):
-        '''
-        parse fp (a pathlib.Path()) and number
-        '''
-        fp: pathlib.Path
-        if not isinstance(filePath, pathlib.Path):
-            fp = pathlib.Path(filePath)
-        else:
-            fp = filePath
-
-        from music21 import converter
-        from music21 import musedata as musedataModule
-        from music21.musedata import translate as musedataTranslate
-
-        mdw = musedataModule.MuseDataWork()
-
-        af = converter.ArchiveManager(fp)
-
-        # environLocal.printDebug(['ConverterMuseData: parseFile', fp, af.isArchive()])
-        # for dealing with one or more files
-        if fp.suffix == '.zip' or af.isArchive():
-            # environLocal.printDebug(['ConverterMuseData: found archive', fp])
-            # get data will return all data from the zip as a single string
-            for partStr in af.getData(dataFormat='musedata'):
-                # environLocal.printDebug(['partStr', len(partStr)])
-                mdw.addString(partStr)
-        else:
-            if fp.is_dir():
-                mdd = musedataModule.MuseDataDirectory(fp)
-                fpList = mdd.getPaths()
-            elif not common.isListLike(fp):
-                fpList = [fp]
-            else:
-                fpList = fp
-
-            for fpInner in fpList:
-                mdw.addFile(fpInner)
-
-        # environLocal.printDebug(['ConverterMuseData: mdw file count', len(mdw.files)])
-
-        musedataTranslate.museDataWorkToStreamScore(mdw, self.stream)
 
 
 class ConverterMEI(SubConverter):
@@ -1438,13 +1235,7 @@ class TestExternal(unittest.TestCase):
         '''
         tests whether show() works for music that is 10-99 pages long
         '''
-        from music21 import omr
-        from music21 import converter
-        K525 = omr.correctors.K525groundTruthFilePath
-        K525 = converter.parse(K525)
-        if self.show:
-            K525.show('musicxml.png')
-            print(K525.write('musicxml.png'))
+        # OMR functionality has been removed
 
     # def testMultiPageXMlShow2(self):
     #     '''

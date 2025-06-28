@@ -41,12 +41,10 @@ if t.TYPE_CHECKING:
 # TODO: only check top-level.  Let subConverters check sub formats.
 VALID_SHOW_FORMATS = ['musicxml', 'text', 'textline', 'midi',
                       'png', 'pdf', 'svg',
-                      'vexflow', 'vexflow.html', 'vexflow.js',
                       'ipython', 'ipython.png', 'ipython.midi',
                       'musicxml.png', 'musicxml.pdf']
 VALID_WRITE_FORMATS = ['musicxml', 'text', 'textline', 'midi',
                        'png', 'pdf', 'svg',
-                       'vexflow', 'vexflow.html', 'vexflow.js',
                        'ipython', 'ipython.png', 'ipython.midi',
                        'musicxml.png', 'musicxml.pdf',
                        'rntxt']

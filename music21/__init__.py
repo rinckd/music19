@@ -92,7 +92,6 @@ __all__ = [
     'alpha',
     'analysis',
     'audioSearch',
-    'capella',
     'chord',
     'common',
     'converter',
@@ -107,17 +106,13 @@ __all__ = [
     'metadata',
     'meter',
     'midi',
-    'musedata',
     'musicxml',
-    'noteworthy',
-    'omr',
     'romanText',
     'scale',
     'search',
     'stream',
     'test',
     'tree',
-    'vexflow',
 
     # individual modules
     # KEEP ALPHABETICAL unless necessary for load reasons, if so
@@ -198,7 +193,6 @@ from music21.test.testRunner import mainTest  # noqa: E402
 from music21 import alpha  # noqa: E402
 from music21 import analysis  # noqa: E402
 from music21 import audioSearch  # noqa: E402
-from music21 import capella  # noqa: E402
 from music21 import chord  # noqa: E402
 from music21 import common  # noqa: E402
 from music21 import converter  # noqa: E402
@@ -213,17 +207,13 @@ from music21 import mei  # noqa: E402
 from music21 import metadata  # noqa: E402
 from music21 import meter  # noqa: E402
 from music21 import midi  # noqa: E402
-from music21 import musedata  # noqa: E402
 from music21 import musicxml  # noqa: E402
-from music21 import noteworthy  # noqa: E402
-from music21 import omr  # noqa: E402
 from music21 import romanText  # noqa: E402
 from music21 import scale  # noqa: E402
 from music21 import search  # noqa: E402
 from music21 import stream  # noqa: E402
 from music21 import test  # noqa: E402
 from music21 import tree  # noqa: E402
-from music21 import vexflow  # noqa: E402
 
 # individual modules
 from music21 import articulations  # noqa: E402

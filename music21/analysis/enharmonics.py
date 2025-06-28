@@ -17,7 +17,6 @@ import unittest
 
 from music21 import environment
 from music21 import pitch
-from music21 import musedata
 
 environLocal = environment.Environment('analysis.enharmonics')
 
@@ -132,14 +131,15 @@ class EnharmonicSimplifier:
         if self.ruleObject.augDimPenalty is False:
             return 1
 
-        intervalStr = ''
+        from music21 import interval
+        dimCount = 0
+        augCount = 0
         for i in range(len(possibility) - 1):
-            p0 = musedata.base40.base40Representation[possibility[i].name]
-            p1 = musedata.base40.base40Representation[possibility[i + 1].name]
-            base40diff = (p1 - p0) % 40
-            intervalStr += musedata.base40.base40IntervalTable.get(base40diff, 'ddd')
-        dimCount = intervalStr.count('A')
-        augCount = intervalStr.count('d')
+            iv = interval.Interval(possibility[i], possibility[i + 1])
+            if iv.isDiminished:
+                dimCount += 1
+            elif iv.isAugmented:
+                augCount += 1
         score = (dimCount + augCount + 1) * self.ruleObject.augDimPenalty
         return score
 

@@ -2030,8 +2030,9 @@ class Test(unittest.TestCase):
 
         # s.show()
 
-    def testConversionABCOpus(self):
-        from music21.abcFormat import testFiles
+    # def testConversionABCOpus(self):
+        # ABC test removed - ABC support removed
+        # from music21.abcFormat import testFiles
         from music21 import corpus
 
         s = parse(testFiles.theAleWifesDaughter)

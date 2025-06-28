@@ -1050,65 +1050,6 @@ class ConverterMidi(SubConverter):
 
 
 # ------------------------------------------------------------------------------
-class ConverterABC(SubConverter):
-    '''
-    Simple class wrapper for parsing ABC.
-
-    Input only
-    '''
-    registerFormats = ('abc',)
-    registerInputExtensions = ('abc',)
-
-    def parseData(self, strData, number=None):
-        '''
-        Get ABC data, as token list, from a string representation.
-        If more than one work is defined in the ABC data, a
-        :class:`~music21.stream.Opus` object will be returned;
-        otherwise, a :class:`~music21.stream.Score` is returned.
-        '''
-        from music21 import abcFormat
-        af = abcFormat.ABCFile()
-        # do not need to call open or close
-        abcHandler = af.readstr(strData, number=number)
-        # set to stream
-        if abcHandler.definesReferenceNumbers():
-            # this creates an Opus object, not a Score object
-            self.stream = abcFormat.translate.abcToStreamOpus(abcHandler,
-                                                              number=number)
-        else:  # just one work
-            abcFormat.translate.abcToStreamScore(abcHandler, self.stream)
-
-    def parseFile(self,
-                  filePath: pathlib.Path|str,
-                  number: int|None = None,
-                  **keywords):
-        '''
-        Get ABC data from a file path. If more than one work is defined in the ABC
-        data, a  :class:`~music21.stream.Opus` object will be returned;
-        otherwise, a :class:`~music21.stream.Score` is returned.
-
-        If `number` is provided, and this ABC file defines multiple works
-        with an X: tag, just the specified work will be returned.
-        '''
-        # environLocal.printDebug(['ConverterABC.parseFile: got number', number])
-        from music21 import abcFormat
-
-        af = abcFormat.ABCFile()
-        af.open(filePath)
-        # returns a handler instance of parse tokens
-        abcHandler = af.read(number=number)
-        af.close()
-
-        # only create opus if multiple ref numbers
-        # are defined; if a number is given an opus will not be created
-        if abcHandler.definesReferenceNumbers():
-            # this creates a Score or Opus object, depending on if a number
-            # is given
-            self.stream = abcFormat.translate.abcToStreamOpus(abcHandler,
-                                                              number=number)
-        # just get a single work
-        else:
-            abcFormat.translate.abcToStreamScore(abcHandler, self.stream)
 
 
 class ConverterRomanText(SubConverter):

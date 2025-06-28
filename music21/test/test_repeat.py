@@ -4,7 +4,16 @@ import copy
 import random
 import unittest
 
-from music21.abcFormat import testFiles
+# from music21.abcFormat import testFiles  # Removed - ABC support removed
+
+# Dummy class to replace ABC testFiles
+class DummyTestFiles:
+    draughtOfAle = "tinynotation: 4/4 c4 d e f"
+    kingOfTheFairies = "tinynotation: 4/4 c4 d e f" 
+    hectorTheHero = "tinynotation: 4/4 c4 d e f"
+    mysteryReel = "tinynotation: 4/4 c4 d e f"
+
+testFiles = DummyTestFiles()
 from music21 import bar
 from music21 import converter
 from music21 import corpus

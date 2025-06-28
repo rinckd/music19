@@ -89,7 +89,6 @@ __all__ = [
     'sites',  # important
 
     # sub folders
-    'abcFormat',
     'alpha',
     'analysis',
     'audioSearch',
@@ -197,7 +196,6 @@ from music21.test.testRunner import mainTest  # noqa: E402
 
 # -----------------------------------------------------------------------------
 # now import all modules to make them accessible from "import music21"
-from music21 import abcFormat  # noqa: E402
 from music21 import alpha  # noqa: E402
 from music21 import analysis  # noqa: E402
 from music21 import audioSearch  # noqa: E402

@@ -111,8 +111,6 @@ def findFormat(fmt):
     ('textline', '.txt')
     >>> common.findFormat('midi')
     ('midi', '.mid')
-    >>> common.findFormat('abc')
-    ('abc', '.abc')
     >>> common.findFormat('scl')
     ('scala', '.scl')
     >>> common.findFormat('braille')

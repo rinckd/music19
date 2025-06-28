@@ -101,11 +101,12 @@ def testImports():
     except ImportError as e:
         raise ImportError('pip install python-Levenshtein : needed for running test suites') from e
 
-    from music21.lily.translate import LilypondConverter, LilyTranslateException
-    try:
-        LilypondConverter()
-    except LilyTranslateException as e:
-        raise ImportError('lilypond must be installed to run test suites') from e
+    # Lilypond support removed - no longer required for test suites
+    # from music21.lily.translate import LilypondConverter, LilyTranslateException
+    # try:
+    #     LilypondConverter()
+    # except LilyTranslateException as e:
+    #     raise ImportError('lilypond must be installed to run test suites') from e
 
 def defaultDoctestSuite(name=None):
     globs = __import__('music21').__dict__.copy()

@@ -105,7 +105,6 @@ __all__ = [
     'humdrum',
     'ipython21',
     'languageExcerpts',
-    'lily',
     'mei',
     'metadata',
     'meter',
@@ -214,7 +213,6 @@ from music21 import graph  # noqa: E402
 from music21 import humdrum  # noqa: E402
 from music21 import ipython21  # noqa: E402
 from music21 import languageExcerpts  # noqa: E402
-from music21 import lily  # noqa: E402
 from music21 import mei  # noqa: E402
 from music21 import metadata  # noqa: E402
 from music21 import meter  # noqa: E402

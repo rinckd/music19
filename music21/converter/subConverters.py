@@ -254,8 +254,8 @@ class SubConverter:
         Return a temporary file with an extension appropriate for the format.
 
         >>> c = corpus.parse('bwv66.6')
-        >>> lpConverter = converter.subConverters.ConverterLilypond()
-        >>> tf = str(lpConverter.getTemporaryFile(subformats=['png']))
+        >>> mxConverter = converter.subConverters.ConverterMusicXML()
+        >>> tf = str(mxConverter.getTemporaryFile(subformats=['png']))
         >>> tf.endswith('.png')
         True
         >>> import os  #_DOCS_HIDE
@@ -348,12 +348,12 @@ class SubConverter:
 class ConverterIPython(SubConverter):
     '''
     Meta-subConverter for displaying image data in a Notebook
-    using either png (via MuseScore or LilyPond) or directly via
+    using either png (via MuseScore) or directly via
     Vexflow/music21j, or MIDI using music21j.
     '''
     registerFormats = ('ipython', 'jupyter')
     registerOutputExtensions = ()
-    registerOutputSubformatExtensions = {'lilypond': 'ly'}
+    registerOutputSubformatExtensions = {}
 
     def show(self, obj, fmt, app=None, subformats=(),
              **keywords):  # pragma: no cover
@@ -380,7 +380,7 @@ class ConverterIPython(SubConverter):
 
         helperSubConverter = Converter.getSubConverterFromFormat(helperFormat)
 
-        if helperFormat in ('musicxml', 'xml', 'lilypond', 'lily'):
+        if helperFormat in ('musicxml', 'xml'):
             ip21_converters.showImageThroughMuseScore(
                 obj,
                 subConverter=helperSubConverter,
@@ -399,61 +399,6 @@ class ConverterIPython(SubConverter):
                 **keywords,
             )
 
-
-class ConverterLilypond(SubConverter):
-    '''
-    Convert to Lilypond and from there usually to png, pdf, or svg.
-
-    Note: that the proper format for displaying Lilypond in Jupyter
-    notebook in v9 is ipython.lily.png and not lily.ipython.png
-    '''
-    registerFormats = ('lilypond', 'lily')
-    registerOutputExtensions = ('ly', 'png', 'pdf', 'svg')
-    registerOutputSubformatExtensions = {'png': 'png',
-                                         'pdf': 'pdf',
-                                         'svg': ''}  # sic! (Why?)
-    codecWrite = True
-
-    def write(self,
-              obj,
-              fmt,
-              fp=None,
-              subformats=(),
-              *,
-              coloredVariants: bool = False,
-              **keywords):  # pragma: no cover
-        from music21 import lily
-        conv = lily.translate.LilypondConverter()
-        conv.coloredVariants = coloredVariants
-        conv.loadFromMusic21Object(obj)
-
-        if 'pdf' in subformats:
-            convertedFilePath = conv.createPDF(fp)
-        elif 'png' in subformats:
-            convertedFilePath = conv.createPNG(fp)
-        elif 'svg' in subformats:
-            convertedFilePath = conv.createSVG(fp)
-        else:
-            convertedFilePath = conv.writeLyFile(ext='.ly', fp=fp)
-        return convertedFilePath
-
-    def show(self, obj, fmt, app=None, subformats=(), **keywords):  # pragma: no cover
-        '''
-        Call .write (write out the lilypond (.ly) file; convert to .png/.pdf, etc.)
-        then launch the appropriate viewer for .png/.pdf (graphicsPath) or .svg
-        (vectorPath)
-        '''
-        if not subformats:
-            subformats = ['png']
-        returnedFilePath = self.write(obj, fmt, subformats=subformats, **keywords)
-        if subformats is not None and subformats:
-            outFormat = subformats[0]
-        else:
-            outFormat = 'png'
-
-        # TODO: replace with run_subprocess_capturing_stderr.
-        launchKey = environLocal.formatToKey(outFormat)
-        self.launch(returnedFilePath, fmt=outFormat, app=app, launchKey=launchKey)
 
 
 class ConverterBraille(SubConverter):
@@ -1576,15 +1521,16 @@ class TestExternal(unittest.TestCase):
         if self.show:
             c.show()  # musicxml
 
-    def testWriteLilypond(self):
-        from music21 import note
-        n = note.Note()
-        n.duration.type = 'whole'
-        s = stream.Stream()
-        s.append(n)
-        if self.show:
-            s.show('lily.png')
-            print(s.write('lily.png'))
+    # def testWriteLilypond(self):
+    #     # Removed - Lilypond support removed
+    #     from music21 import note
+    #     n = note.Note()
+    #     n.duration.type = 'whole'
+    #     s = stream.Stream()
+    #     s.append(n)
+    #     if self.show:
+    #         s.show('lily.png')
+    #         print(s.write('lily.png'))
 
     def testMultiPageXMlShow1(self):
         '''

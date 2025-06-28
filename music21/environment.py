@@ -164,7 +164,6 @@ class _EnvironmentCore:
         for pathKey in [
             'braillePath',
             'graphicsPath',
-            'lilypondPath',
             'localCorpusPath',
             'manualCoreCorpusPath',
             'midiPath',
@@ -344,13 +343,6 @@ class _EnvironmentCore:
         # path to a directory for temporary files
         self._ref['directoryScratch'] = None
 
-        # path to lilypond
-        self._ref['lilypondPath'] = None
-
-        # version of lilypond
-        self._ref['lilypondVersion'] = None
-        self._ref['lilypondFormat'] = 'pdf'
-        self._ref['lilypondBackend'] = 'ps'
 
         # path to a MusicXML reader: default, will find 'MuseScore'
         self._ref['musicxmlPath'] = None
@@ -397,7 +389,6 @@ class _EnvironmentCore:
 
         if platform == 'win':
             for name, value in [
-                ('lilypondPath', 'lilypond'),
                 ('musicxmlPath',
                  common.cleanpath(r'%PROGRAMFILES%\MuseScore 3\bin\MuseScore3.exe')
                  ),
@@ -408,7 +399,6 @@ class _EnvironmentCore:
                 self[name] = value  # use for key checking
         elif platform == 'nix':
             for name, value in [
-                ('lilypondPath', '/usr/bin/lilypond'),
                 ('musicxmlPath', '/usr/bin/mscore3'),
                 ('musescoreDirectPNGPath', '/usr/bin/mscore3'),
                 ('graphicsPath', '/usr/bin/xdg-open'),
@@ -423,8 +413,6 @@ class _EnvironmentCore:
                 previewLocation = '/Applications/Preview.app'
 
             for name, value in [
-                ('lilypondPath',
-                 '/Applications/Lilypond.app/Contents/Resources/bin/lilypond'),
                 ('musicxmlPath',
                  '/Applications/MuseScore 3.app/Contents/MacOS/mscore'),
                 ('graphicsPath', previewLocation),
@@ -690,8 +678,6 @@ class _EnvironmentCore:
         Finds the appropriate key to the file/app that can launch the given format:
 
         >>> e = environment.Environment()
-        >>> e.formatToKey('lilypond')
-        'lilypondPath'
         >>> e.formatToKey('png')
         'graphicsPath'
         >>> e.formatToKey('jpeg')
@@ -715,9 +701,7 @@ class _EnvironmentCore:
         True
         '''
         environmentKey = None
-        if m21Format == 'lilypond':
-            environmentKey = 'lilypondPath'
-        elif m21Format in ('png', 'jpeg'):
+        if m21Format in ('png', 'jpeg'):
             environmentKey = 'graphicsPath'
         elif m21Format == 'svg':
             environmentKey = 'vectorPath'

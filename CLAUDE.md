@@ -15,14 +15,37 @@ music19 is a slim-downed version of music21: A Toolkit for Computer-Aided Musica
 python -m music21.test.testSingleCoreAll
 
 # Run tests for a specific module
-python -c "import music21; music21.mainTest(music21.note.Test)"
+python -c "import music21; music21.mainTest(music21.scale)"
 
 # Run a single test method
-python -m unittest music21.note.Test.testSpecificMethod
+python -m unittest music21.scale.test_scale_main.Test.testBasicLegacy
 
 # Run tests with options (noDocTest, verbose, onlyDocTest)
 python -c "import music21; music21.mainTest('noDocTest', 'verbose')"
 ```
+
+### Running Tests in PyCharm
+
+1. **Setup PyCharm for pytest**:
+   - File → Settings → Tools → Python Integrated Tools
+   - Set Default test runner to "pytest"
+
+2. **Run tests using pytest**:
+   - Right-click on `music21/scale/test_scale_main.py`
+   - Select "Run pytest in test_scale_main.py"
+   - Or click green arrows next to individual test methods
+
+3. **Run tests using music21's test runner**:
+   - Run `test_scale_in_pycharm.py` script
+   - Or create custom run configuration with script content:
+     ```python
+     import music21; music21.mainTest(music21.scale)
+     ```
+
+4. **Debug tests**:
+   - Set breakpoints in test methods or source code
+   - Right-click → "Debug" instead of "Run"
+   - Step through both test code and music21 implementation
 
 ### Linting and Code Quality
 

@@ -63,6 +63,12 @@ def __getattr__(name):
     elif name == 'pitch':
         from tests.unit import test_pitch as pitch
         return pitch
+    elif name == 'testSingleCoreAll':
+        from tests.framework import testSingleCoreAll
+        return testSingleCoreAll
+    elif name == 'coverageM21':
+        from tests.framework import coverageM21
+        return coverageM21
     else:
         raise AttributeError(f"module '{__name__}' has no attribute '{name}'")
 

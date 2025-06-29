@@ -11,7 +11,7 @@
 # -----------------------------------------------------------------------------
 '''
 The music21 corpus includes a collection of freely distributable
-music in MusicXML, Humdrum, and other representations. The corpus
+music in MusicXML and other representations. The corpus
 package is an interface for easily working with this data.
 
 To see a complete listing of the works in the music21 corpus,

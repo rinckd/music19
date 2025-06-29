@@ -99,15 +99,12 @@ __all__ = [
     'features',
     'figuredBass',
     'graph',
-    'humdrum',
     'ipython21',
     'languageExcerpts',
-    'mei',
     'metadata',
     'meter',
     'midi',
     'musicxml',
-    'romanText',
     'scale',
     'search',
     'stream',
@@ -200,15 +197,12 @@ from music21 import corpus  # noqa: E402
 from music21 import features  # noqa: E402
 from music21 import figuredBass  # noqa: E402
 from music21 import graph  # noqa: E402
-from music21 import humdrum  # noqa: E402
 from music21 import ipython21  # noqa: E402
 from music21 import languageExcerpts  # noqa: E402
-from music21 import mei  # noqa: E402
 from music21 import metadata  # noqa: E402
 from music21 import meter  # noqa: E402
 from music21 import midi  # noqa: E402
 from music21 import musicxml  # noqa: E402
-from music21 import romanText  # noqa: E402
 from music21 import scale  # noqa: E402
 from music21 import search  # noqa: E402
 from music21 import stream  # noqa: E402

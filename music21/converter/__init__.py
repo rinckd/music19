@@ -653,29 +653,17 @@ class Converter:
             if useFormat is not None:
                 pass
             elif dataStrMakeStr.startswith('<?xml'):
-                # is it MEI or MusicXML?
-                if '<mei' in dataStrMakeStr:
-                    useFormat = 'mei'
-                else:
-                    useFormat = 'musicxml'
-            elif dataStrMakeStr.startswith('mei:') or dataStrMakeStr.lower().startswith('mei:'):
-                useFormat = 'mei'
+                useFormat = 'musicxml'
             elif dataStrMakeStr.lower().startswith('musicxml:'):
                 useFormat = 'musicxml'
             elif dataStrMakeStr.startswith('MThd') or dataStrMakeStr.lower().startswith('midi:'):
                 useFormat = 'midi'
-            elif (dataStrMakeStr.startswith('!!!')
-                    or dataStrMakeStr.startswith('**')
-                    or dataStrMakeStr.lower().startswith('humdrum:')):
-                useFormat = 'humdrum'
             elif dataStrMakeStr.lower().startswith('tinynotation:'):
                 useFormat = 'tinyNotation'
 
             # MuseData format has been removed
             elif 'M:' in dataStrMakeStr and 'K:' in dataStrMakeStr:
                 useFormat = 'abc'
-            elif 'Time Signature:' in dataStrMakeStr and 'm1' in dataStrMakeStr:
-                useFormat = 'romanText'
             else:
                 raise ConverterException('File not found or no such format found for: %s' %
                                          dataStrMakeStr)
@@ -1989,30 +1977,6 @@ class Test(unittest.TestCase):
 
         # MuseData format has been removed
 
-    def testMEIvsMX(self):
-        '''
-        Ensure Converter.parseData() distinguishes between a string with MEI data and a string with
-        MusicXML data. The "subConverter" module is mocked out because we don't actually need to
-        test the conversion process in this unit test.
-        '''
-        # These strings aren't valid documents, but they are enough to pass the detection we're
-        # testing in parseData(). But it does mean we'll be testing in a strange way.
-        meiString = '<?xml version="1.0" encoding="UTF-8"?><mei><note/></mei>'
-        # mxlString = ('<?xml version="1.0" encoding="UTF-8"?>' +
-        #                '<score-partwise><note/></score-partwise>')
-
-        # The "mei" module raises an MeiElementError with "meiString," so as long as that's raised,
-        # we know that parseData() chose correctly.
-        from music21.mei.base import MeiElementError
-        testConv = Converter()
-        self.assertRaises(MeiElementError, testConv.parseData, meiString)
-
-        # TODO: another test -- score-partwise is good enough for new converter.
-        # The ConverterMusicXML raises a SubConverterException with "mxlString," so as long as
-        # that's raised, we know that parseData()... well at least that it didn't choose MEI.
-        # from music21.converter.subConverters import SubConverterException
-        # testConv = Converter()
-        # self.assertRaises(SubConverterException, testConv.parseData, mxlString)
 
     def testParseMidiQuantize(self):
         '''
@@ -2086,38 +2050,6 @@ class Test(unittest.TestCase):
         with self.assertRaises(FileNotFoundError):
             parse('nonexistent_path_ending_in_correct_extension.musicxml')
 
-    def testParseURL(self):
-        '''
-        This should be the only test that requires an internet connection.
-        '''
-        from music21.humdrum.spineParser import HumdrumException
-
-        urlBase = 'https://raw.githubusercontent.com/craigsapp/chopin-preludes/'
-        url = urlBase + 'f8fb01f09d717e84929fb8b2950f96dd6bc05686/kern/prelude28-20.krn'
-
-        e = environment.Environment()
-        e['autoDownload'] = 'allow'
-        s = parseURL(url)
-        self.assertEqual(len(s.parts), 2)
-
-        # This file should have been written, above
-        destFp = Converter()._getDownloadFp(e.getRootTempDir(), '.krn', url)
-        # Hack garbage into it so that we can test whether forceSource works
-        with open(destFp, 'a', encoding='utf-8') as fp:
-            fp.write('all sorts of garbage that Humdrum cannot parse')
-
-        with self.assertRaises(HumdrumException):
-            s = parseURL(url, forceSource=False)
-
-        # make sure that forceSource still overrides the system.
-        s = parseURL(url, forceSource=True)
-        self.assertEqual(len(s.parts), 2)
-
-        # make sure that the normal parse system can handle URLs, not just parseURL.
-        s = parse(url)
-        self.assertEqual(len(s.parts), 2)
-
-        os.remove(destFp)
 
 
 # ------------------------------------------------------------------------------

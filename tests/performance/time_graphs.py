@@ -416,14 +416,6 @@ class TestImportPiano(Test):
         music21.corpus.parse('cpebach', forceSource=True)
 
 
-class TestRomantextParse(Test):
-    def __init__(self):
-        from music21.romanText import testFiles as tf
-        self.converter = music21.converter
-        self.tf = tf
-
-    def testFocus(self):
-        self.converter.parse(self.tf.monteverdi_3_13)
 
 
 class TestDeepcopyNote(Test):

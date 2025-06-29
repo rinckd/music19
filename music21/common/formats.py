@@ -46,8 +46,7 @@ VALID_SHOW_FORMATS = ['musicxml', 'text', 'textline', 'midi',
 VALID_WRITE_FORMATS = ['musicxml', 'text', 'textline', 'midi',
                        'png', 'pdf', 'svg',
                        'ipython', 'ipython.png', 'ipython.midi',
-                       'musicxml.png', 'musicxml.pdf',
-                       'rntxt']
+                       'musicxml.png', 'musicxml.pdf']
 VALID_AUTO_DOWNLOAD = ['ask', 'deny', 'allow']
 
 # ------------------------------------------------------------------------------
@@ -65,8 +64,6 @@ def findSubConverterForFormat(fmt: str) -> type[SubConverter]|None:
     >>> common.findSubConverterForFormat('text')
     <class 'music21.converter.subConverters.ConverterText'>
 
-    >>> common.findSubConverterForFormat('romantext')
-    <class 'music21.converter.subConverters.ConverterRomanText'>
 
     Some subConverters have format aliases
 
@@ -101,8 +98,6 @@ def findFormat(fmt):
     ('musicxml', '.musicxml')
     >>> common.findFormat('musicxml')
     ('musicxml', '.musicxml')
-    >>> common.findFormat('humdrum')
-    ('humdrum', '.krn')
     >>> common.findFormat('txt')
     ('text', '.txt')
     >>> common.findFormat('textline')
@@ -175,9 +170,6 @@ def findInputExtension(fmt: str) -> tuple[str, ...]:
     >>> a = common.findInputExtension('musicxml')
     >>> a
     ('.xml', '.mxl', '.musicxml')
-    >>> a = common.findInputExtension('humdrum')
-    >>> a
-    ('.krn',)
     >>> common.findInputExtension('musedata')
     ('.md', '.musedata', '.zip')
 
@@ -237,8 +229,6 @@ def findFormatFile(fp):
     'musicxml'
 
     On a windows networked filesystem
-    >>> common.findFormatFile(r'\\long\file\path\test.krn')
-    'humdrum'
     '''
     if not isinstance(fp, pathlib.Path):
         fp = pathlib.Path(fp)
@@ -270,8 +260,6 @@ def findFormatExtFile(fp):
     ('musicxml', '.xml')
 
     On a windows networked filesystem
-    >>> common.findFormatExtFile(r'\\long\file\path\test.krn')
-    ('humdrum', '.krn')
     '''
     if not isinstance(fp, pathlib.Path):
         fp = pathlib.Path(fp)
@@ -293,18 +281,9 @@ def findFormatExtURL(url):
     DEPRECATED May 2014 -- moving to converter
 
 
-    >>> urlA = 'http://somesite.com/?l=cc/schubert/piano/d0576&file=d0576-06.krn&f=xml'
-    >>> urlB = 'http://somesite.com/cgi-bin/ksdata?l=cc/schubert/d0576&file=d0576-06.krn&f=kern'
-    >>> urlC = 'http://somesite.com/cgi-bin/ksdata?l=cc/bach/cello&file=bwv1007-01.krn&f=xml'
     >>> urlF = 'https://junk'
     >>> urlM = 'http://somesite.com/files/mid001.mid'
 
-    >>> common.findFormatExtURL(urlA)
-    ('musicxml', '.xml')
-    >>> common.findFormatExtURL(urlB)
-    ('humdrum', '.krn')
-    >>> common.findFormatExtURL(urlC)
-    ('musicxml', '.xml')
     >>> common.findFormatExtURL(urlF)
     (None, None)
     >>> common.findFormatExtURL(urlM)

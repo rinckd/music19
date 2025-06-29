@@ -42,7 +42,7 @@ class Corpus(prebase.ProtoM21Object):
     # TODO: this is volatile -- should be elsewhere
     _acceptableExtensions: list[str] = [
         'abc', 'capella', 'midi', 'musicxml', 'musedata',
-        'humdrum', 'romantext', 'noteworthytext', 'noteworthy'
+        'noteworthytext', 'noteworthy'
     ]
 
     # TODO: this should be wiped if a SubConverter is registered or deregistered.

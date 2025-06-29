@@ -507,76 +507,6 @@ class ConverterScala(SubConverter):
 
 
 # ------------------------------------------------------------------------------
-class ConverterHumdrum(SubConverter):
-    '''
-    Simple class wrapper for parsing Humdrum data provided in a file or in a string.
-    '''
-    registerFormats = ('humdrum',)
-    registerInputExtensions = ('krn',)
-
-    def __init__(self, **keywords):
-        super().__init__(**keywords)
-        self.data = None
-
-    # --------------------------------------------------------------------------
-
-    def parseData(self, humdrumString, number=None):
-        '''
-        Open Humdrum data from a string -- calls
-        :meth:`~music21.humdrum.spineParser.HumdrumDataCollection.parse()`.
-
-        >>> humData = ('**kern\\n*M2/4\\n=1\\n24r\\n24g#\\n24f#\\n24e\\n24c#\\n' +
-        ...     '24f\\n24r\\n24dn\\n24e-\\n24gn\\n24e-\\n24dn\\n*-')
-        >>> c = converter.subConverters.ConverterHumdrum()
-        >>> s = c.parseData(humData)
-        >>> c.stream.show('text')
-        {0.0} <music21.metadata.Metadata object at 0x7f33545027b8>
-        {0.0} <music21.stream.Part spine_0>
-            {0.0} <music21.humdrum.spineParser.MiscTandem **kern>
-            {0.0} <music21.stream.Measure 1 offset=0.0>
-                {0.0} <music21.meter.TimeSignature 2/4>
-                {0.0} <music21.note.Rest 1/6ql>
-                {0.1667} <music21.note.Note G#>
-                {0.3333} <music21.note.Note F#>
-                {0.5} <music21.note.Note E>
-                {0.6667} <music21.note.Note C#>
-                {0.8333} <music21.note.Note F>
-                {1.0} <music21.note.Rest 1/6ql>
-                {1.1667} <music21.note.Note D>
-                {1.3333} <music21.note.Note E->
-                {1.5} <music21.note.Note G>
-                {1.6667} <music21.note.Note E->
-                {1.8333} <music21.note.Note D>
-        '''
-        from music21.humdrum.spineParser import HumdrumDataCollection
-
-        hdf = HumdrumDataCollection(humdrumString)
-        hdf.parse()
-        self.data = hdf
-        self.stream = self.data.stream
-        return self.data
-
-    def parseFile(self,
-                  filePath: pathlib.Path|str,
-                  number: int|None = None,
-                  **keywords):
-        '''
-        Open Humdrum data from a file path.
-
-        Calls humdrum.parseFile on filepath.
-
-        Number is ignored here.
-        '''
-        from music21.humdrum.spineParser import HumdrumFile
-        hf = HumdrumFile(filePath)
-        hf.parseFilename()
-        self.data = hf
-        # self.data.stream.makeNotation()
-
-        self.stream = self.data.stream
-        return self.data
-
-# ------------------------------------------------------------------------------
 
 
 class ConverterTinyNotation(SubConverter):
@@ -914,77 +844,8 @@ class ConverterMidi(SubConverter):
 # ------------------------------------------------------------------------------
 
 
-class ConverterRomanText(SubConverter):
-    '''
-    Simple class wrapper for parsing roman text harmonic definitions.
-    '''
-    registerFormats = ('romantext', 'rntext')
-    registerInputExtensions = ('rntxt', 'rntext', 'romantext', 'rtxt')
-    registerOutputExtensions = ('rntxt',)
-
-    def parseData(self, strData, number=None):
-        from music21.romanText import rtObjects
-        from music21.romanText import translate as romanTextTranslate
-        rtf = rtObjects.RTFile()
-        rtHandler = rtf.readstr(strData)
-        if rtHandler.definesMovements():
-            # this re-defines Score as an Opus
-            self.stream = romanTextTranslate.romanTextToStreamOpus(rtHandler)
-        else:
-            romanTextTranslate.romanTextToStreamScore(rtHandler, self.stream)
-
-    def parseFile(self,
-                  filePath: pathlib.Path|str,
-                  number: int|None = None,
-                  **keywords):
-        from music21.romanText import rtObjects
-        from music21.romanText import translate as romanTextTranslate
-        rtf = rtObjects.RTFile()
-        rtf.open(filePath)
-        # returns a handler instance of parse tokens
-        rtHandler = rtf.read()
-        rtf.close()
-        romanTextTranslate.romanTextToStreamScore(rtHandler, self.stream)
-
-    def write(self, obj, fmt, fp=None, subformats=(), **keywords):  # pragma: no cover
-        '''
-        Writes 'RomanText' files (using the extension .rntxt) from a music21.stream.
-        '''
-
-        from music21.romanText import writeRoman
-        if fp is None:
-            fp = self.getTemporaryFile()
-
-        if not hasattr(fp, 'write'):
-            with open(fp, 'w', encoding='utf-8') as text_file:
-                for entry in writeRoman.RnWriter(obj).combinedList:
-                    text_file.write(entry + '\n')
-        else:
-            # file-like object
-            for entry in writeRoman.RnWriter(obj).combinedList:
-                fp.write(entry + '\n')
-
-        return fp
 
 
-class ConverterClercqTemperley(SubConverter):
-    '''
-    Wrapper for parsing harmonic definitions in Trevor de Clercq and
-    David Temperley's format.
-    '''
-    registerFormats = ('cttxt', 'har', 'clercqTemperley')
-    registerInputExtensions = ('cttxt', 'har', 'clercqTemperley')
-
-    def parseData(self, strData: str|pathlib.Path, number=None):
-        from music21.romanText import clercqTemperley
-        ctSong = clercqTemperley.CTSong(strData)
-        self.stream = ctSong.toPart()
-
-    def parseFile(self,
-                  filePath: pathlib.Path|str,
-                  number=None,
-                  **keywords):
-        self.parseData(filePath)
 
 
 
@@ -992,83 +853,6 @@ class ConverterClercqTemperley(SubConverter):
 # ------------------------------------------------------------------------------
 
 
-class ConverterMEI(SubConverter):
-    '''
-    Converter for MEI. You must use an ".mei" file extension for MEI files because music21 will
-    parse ".xml" files as MusicXML.
-    '''
-    registerFormats = ('mei',)
-    registerInputExtensions = ('mei',)
-    # NOTE: we're only working on import for now
-    # registerShowFormats = ('mei',)
-    # registerOutputExtensions = ('mei',)
-
-    def parseData(self, dataString: str, number=None) -> stream.Stream:
-        '''
-        Convert a string with an MEI document into its corresponding music21 elements.
-
-        * dataString: The string with XML to convert.
-
-        * number: Unused in this class. Default is ``None``.
-
-        Returns the music21 objects corresponding to the MEI file.
-        '''
-        from music21 import mei
-        if dataString.startswith('mei:'):
-            dataString = dataString[4:]
-
-        self.stream = mei.MeiToM21Converter(dataString).run()
-
-        return self.stream
-
-    def parseFile(
-        self,
-        filePath: str|pathlib.Path,
-        number: int|None = None,
-        **keywords,
-    ) -> stream.Stream:
-        '''
-        Convert a file with an MEI document into its corresponding music21 elements.
-
-        * filePath: Full pathname to the file containing MEI data as a string or Path.
-
-        * number: Unused in this class. Default is ``None``.
-
-        Returns the music21 objects corresponding to the MEI file.
-        '''
-        # In Python 3 we try the two most likely encodings to work. (UTF-16 is outputted from
-        # "sibmei", the Sibelius-to-MEI exporter).
-        try:
-            with open(filePath, 'rt', encoding='utf-8') as f:
-                dataStream = f.read()
-        except UnicodeDecodeError:
-            with open(filePath, 'rt', encoding='utf-16') as f:
-                dataStream = f.read()
-
-        self.parseData(dataStream, number)
-
-        return self.stream
-
-    def checkShowAbility(self, **keywords):
-        '''
-        MEI export is not yet implemented.
-        '''
-        return False
-
-    # def launch(self, filePath, fmt=None, options='', app=None, key=None):
-    #     raise NotImplementedError('MEI export is not yet implemented.')
-
-    def show(self, obj, fmt, app=None, subformats=(), **keywords):  # pragma: no cover
-        raise NotImplementedError('MEI export is not yet implemented.')
-
-    # def getTemporaryFile(self, subformats=()):
-    #     raise NotImplementedError('MEI export is not yet implemented.')
-
-    def write(self, obj, fmt, fp=None, subformats=(), **keywords):  # pragma: no cover
-        raise NotImplementedError('MEI export is not yet implemented.')
-
-    # def writeDataStream(self, fp, dataStr):
-    #     raise NotImplementedError('MEI export is not yet implemented.')
 
 
 class Test(unittest.TestCase):
@@ -1080,49 +864,6 @@ class Test(unittest.TestCase):
         s.append(n)
         unused_x = s.show('textLine')
 
-    def testImportMei1(self):
-        '''
-        When the string starts with "mei:"
-        '''
-        from unittest import mock
-        with mock.patch('music21.mei.MeiToM21Converter') as mockConv:
-            testConverter = ConverterMEI()
-            testConverter.parseData('mei: <?xml><mei><note/></mei>')
-            mockConv.assert_called_once_with(' <?xml><mei><note/></mei>')
-
-    def testImportMei2(self):
-        '''
-        When the string doesn't start with "mei:"
-        '''
-        from unittest import mock
-        with mock.patch('music21.mei.MeiToM21Converter') as mockConv:
-            testConverter = ConverterMEI()
-            testConverter.parseData('<?xml><mei><note/></mei>')
-            mockConv.assert_called_once_with('<?xml><mei><note/></mei>')
-
-    def testImportMei3(self):
-        '''
-        When the file uses UTF-16 encoding rather than UTF-8 (which happens if
-        it was exported from
-        the "sibmei" plug-in for Sibelius).
-        '''
-        from unittest import mock
-        with mock.patch('music21.mei.MeiToM21Converter') as mockConv:
-            testPath = common.getSourceFilePath() / 'mei' / 'test' / 'notes_in_utf16.mei'
-            testConverter = ConverterMEI()
-            testConverter.parseFile(testPath)
-            self.assertEqual(1, mockConv.call_count)
-
-    def testImportMei4(self):
-        '''
-        For the sake of completeness, this is the same as testImportMei3() but with a UTF-8 file.
-        '''
-        from unittest import mock
-        with mock.patch('music21.mei.MeiToM21Converter') as mockConv:
-            testPath = common.getSourceFilePath() / 'mei' / 'test' / 'notes_in_utf8.mei'
-            testConverter = ConverterMEI()
-            testConverter.parseFile(testPath)
-            self.assertEqual(1, mockConv.call_count)
 
     def testWriteMXL(self):
         from music21 import converter
@@ -1197,19 +938,6 @@ class Test(unittest.TestCase):
 
         # Braille functionality has been removed
 
-    def testWriteRomanText(self):
-        import textwrap
-        from io import StringIO
-        from music21 import converter
-
-        rntxt = textwrap.dedent('''
-            Time Signature: 3/4
-            m1 C: I
-        ''')
-        s = converter.parse(rntxt, format='romanText')
-        text_stream = StringIO()
-        s.write('romanText', text_stream)
-        self.assertTrue(text_stream.getvalue().endswith(rntxt))
 
 class TestExternal(unittest.TestCase):
     show = True

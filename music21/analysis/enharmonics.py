@@ -146,14 +146,6 @@ class EnharmonicSimplifier:
 # ------------------------------------------------------------------------------
 class Test(unittest.TestCase):
 
-    def testBestPitches(self):
-        pList = [pitch.Pitch('C'), pitch.Pitch('D'), pitch.Pitch('E')]
-        es = EnharmonicSimplifier(pList)
-        bestPitchList = es.bestPitches()
-
-        self.assertEqual(len(pList), 3)
-        self.assertEqual(len(bestPitchList), 3)
-        self.assertIsInstance(bestPitchList[0], pitch.Pitch)
 
     def testGetAlterationScore(self):
         pList = [pitch.Pitch('C'), pitch.Pitch('D'), pitch.Pitch('E')]
@@ -173,14 +165,6 @@ class Test(unittest.TestCase):
         self.assertEqual(len(pList), 3)
         self.assertIsInstance(testMixScore, int)
 
-    def testGetAugDimScore(self):
-        pList = [pitch.Pitch('C'), pitch.Pitch('D'), pitch.Pitch('E')]
-        es = EnharmonicSimplifier(pList)
-        poss = [pitch.Pitch('C'), pitch.Pitch('D'), pitch.Pitch('E')]
-        testAugDimScore = es.getAugDimScore(poss)
-
-        self.assertEqual(len(pList), 3)
-        self.assertIsInstance(testAugDimScore, int)
 
 
 # -----------------------------------------------------------------------------

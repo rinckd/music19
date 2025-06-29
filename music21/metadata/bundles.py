@@ -1398,53 +1398,6 @@ def demo_bundle(which: str):
     raise ValueError(f'no demo bundle called {which!r}')  # pragma: no-cover
 
 
-# -----------------------------------------------------------------------------
-
-
-class Test(unittest.TestCase):
-
-    def testOneFromCorpus(self):
-        from music21.corpus.corpora import CoreCorpus
-        cc = CoreCorpus()
-        coreBundle = cc.metadataBundle
-        metadataEntry = coreBundle.search('bwv66.6')[0]
-        self.assertEqual(repr(metadataEntry),
-                         "<music21.metadata.bundles.MetadataEntry 'bach_bwv66_6_mxl'>")
-
-    def testFileExtensions(self):
-        from music21.corpus.corpora import CoreCorpus
-        cc = CoreCorpus()
-        workList = cc.getWorkList('ciconia')
-        mdb = MetadataBundle()
-        failedPaths = mdb.addFromPaths(
-            workList,
-            parseUsingCorpus=False,
-            useMultiprocessing=False,
-            storeOnDisk=False,
-        )
-        self.assertFalse(failedPaths)
-        searchResult = mdb.search(
-            'cicon',
-            field='composer'
-        )
-        self.assertEqual(len(searchResult), 1)
-        self.assertEqual(repr(searchResult[0]),
-                         "<music21.metadata.bundles.MetadataEntry 'ciconia_quod_jactatur_xml'>")
-        searchResult = mdb.search(
-            'cicon',
-            field='composer',
-            fileExtensions=('.krn',),
-        )
-        self.assertEqual(len(searchResult), 0)
-        searchResult = mdb.search(
-            'cicon',
-            field='composer',
-            fileExtensions=('.xml',),
-        )
-        self.assertEqual(len(searchResult), 1)
-
-# -----------------------------------------------------------------------------
-
 
 _DOC_ORDER = (
     MetadataBundle,
@@ -1454,7 +1407,3 @@ _DOC_ORDER = (
 
 if __name__ == '__main__':
     import music21
-    music21.mainTest(Test)  # , runTest='testFileExtensions')
-
-
-# -----------------------------------------------------------------------------

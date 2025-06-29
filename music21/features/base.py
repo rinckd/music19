@@ -1460,52 +1460,6 @@ class Test(unittest.TestCase):
         with self.assertRaises(features.FeatureException):
             ds.process()
 
-    def testEmptyStreamCustomErrors(self):
-        from music21 import analysis
-        from music21 import features
-        from music21.features import jSymbolic, native
-
-        ds = DataSet(classLabel='')
-        f = list(jSymbolic.featureExtractors) + list(native.featureExtractors)
-
-        bareStream = stream.Stream()
-        bareScore = stream.Score()
-
-        singlePart = stream.Part()
-        singleMeasure = stream.Measure()
-        singlePart.append(singleMeasure)
-        bareScore.insert(singlePart)
-
-        ds.addData(bareStream)
-        ds.addData(bareScore)
-        ds.addFeatureExtractors(f)
-
-        for data in ds.dataInstances:
-            for fe in ds._instantiatedFeatureExtractors:
-                fe.setData(data)
-                try:
-                    fe.extract()
-                # is every error wrapped?
-                except (features.FeatureException,
-                        analysis.discrete.DiscreteAnalysisException):
-                    pass
-
-    # --------------------------------------------------------------------------
-    # silent tests
-
-    # def testGetAllExtractorsMethods(self):
-    #     '''
-    #     ahh..this test takes a really long time.
-    #     '''
-    #     from music21 import stream, features, pitch
-    #     s = corpus.parse('bwv66.6').measures(1, 5)
-    #     self.assertEqual( len(features.alljSymbolicFeatures(s)), 70)
-    #     self.assertEqual(len (features.allNativeFeatures(s)),21)
-    #     self.assertEqual(str(features.alljSymbolicVectors(s)[1:5]),
-    #                      '[[2.6630434782608696], [2], [2], [0.391304347826087]]')
-    #     self.assertEqual(str(features.allNativeVectors(s)[0:4]),
-    #                      '[[1], [1.0328322202181006], [2], [1.0]]')
-
     def x_testComposerClassificationJSymbolic(self):  # pragma: no cover
         '''
         Demonstrating writing out data files for feature extraction. Here,

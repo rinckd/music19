@@ -1,3 +1,19 @@
+# -*- coding: utf-8 -*-
+# -----------------------------------------------------------------------------
+# Name:         tests/unit/test_note.py
+# Purpose:      Unit tests for music21.note
+#
+# Authors:      Michael Scott Asato Cuthbert
+#               Christopher Ariza
+#
+# Copyright:    Copyright © 2009-2024 Michael Scott Asato Cuthbert
+# License:      BSD, see license.txt
+# -----------------------------------------------------------------------------
+"""
+Unit tests for music21.note module.
+
+These tests are extracted from embedded Test classes and existing test files.
+"""
 from __future__ import annotations
 
 import copy
@@ -7,15 +23,25 @@ from music21 import articulations
 from music21 import corpus
 from music21.duration import DurationTuple
 from music21 import expressions
-# from music21.lily.translate import LilypondConverter  # Removed - Lilypond support removed
 from music21 import meter
 from music21 import note
 from music21 import stream
 from music21 import tie
 from music21 import volume
 
-class Test(unittest.TestCase):
+
+class TestNote(unittest.TestCase):
+    """Test class for music21.note module."""
+
+    def testCopyAndDeepcopy(self):
+        """Test from embedded Test class in note.py"""
+        from tests.framework.commonTest import testCopyAll
+        import music21.note as note_module
+        # Get the module's globals for testing
+        testCopyAll(self, note_module.__dict__)
+
     def testLyricRepr(self):
+        """Test from existing test_note.py"""
         ly = note.Lyric()
         self.assertEqual(repr(ly), '<music21.note.Lyric number=1>')
         ly.text = 'hi'
@@ -26,6 +52,7 @@ class Test(unittest.TestCase):
         self.assertEqual(repr(ly), "<music21.note.Lyric number=1 identifier='verse'>")
 
     def testComplex(self):
+        """Test from existing test_note.py"""
         note1 = note.Note()
         note1.duration.clear()
         d1 = DurationTuple('whole', 0, 4.0)
@@ -38,29 +65,12 @@ class Test(unittest.TestCase):
         self.assertEqual(note1.duration.componentIndexAtQtrPosition(4.5), 1)
         note1.duration.sliceComponentAtPosition(1.0)
 
-        # Lilypond tests removed - Lilypond support removed
-        # matchStr = "c'4~\nc'2.~\nc'4"
-        # conv = LilypondConverter()
-        # conv.appendM21ObjectToContext(note1)
-        # outStr = str(conv.context).replace(' ', '').strip()
-        # # print(outStr)
-        # self.assertEqual(matchStr, outStr)
-        # i = 0
-        # for thisNote in note1.splitAtDurations():
-        #     matchSub = matchStr.split('\n')[i]
-        #     conv = LilypondConverter()
-        #     conv.appendM21ObjectToContext(thisNote)
-        #     outStr = str(conv.context).replace(' ', '').strip()
-        #     self.assertEqual(matchSub, outStr)
-        #     i += 1
-
     def testNote(self):
+        """Test from existing test_note.py"""
         note2 = note.Rest()
         self.assertTrue(note2.isRest)
         note3 = note.Note()
         note3.pitch.name = 'B-'
-        # not sure how to test not None
-        # self.assertFalse (note3.pitch.accidental, None)
         self.assertEqual(note3.pitch.accidental.name, 'flat')
         self.assertEqual(note3.pitch.pitchClass, 10)
 
@@ -71,6 +81,7 @@ class Test(unittest.TestCase):
         self.assertEqual(a5.pitch.pitchClass, 9)
 
     def testCopyNote(self):
+        """Test from existing test_note.py"""
         a = note.Note()
         a.quarterLength = 3.5
         a.name = 'D'
@@ -78,6 +89,7 @@ class Test(unittest.TestCase):
         self.assertEqual(b.name, a.name)
 
     def testMusicXMLFermata(self):
+        """Test from existing test_note.py"""
         a = corpus.parse('bach/bwv5.7')
         found = []
         for n in a.flatten().notesAndRests:
@@ -87,6 +99,7 @@ class Test(unittest.TestCase):
         self.assertEqual(len(found), 24)
 
     def testNoteBeatProperty(self):
+        """Test from existing test_note.py"""
         data = [
             ['3/4', 0.5, 6, [1.0, 1.5, 2.0, 2.5, 3.0, 3.5],
              [1.0] * 6, ],
@@ -163,6 +176,7 @@ class Test(unittest.TestCase):
                 self.assertAlmostEqual(post[i], matchBeatDur[i], 4)
 
     def testNoteBeatPropertyCorpus(self):
+        """Test from existing test_note.py"""
         data = [['bach/bwv255', [4.0, 1.0, 2.5, 3.0, 4.0, 4.5, 1.0, 1.5]],
                 ['bach/bwv153.9', [1.0, 2.0, 3.0, 1.0, 2.0, 3.0, 1.0, 3.0, 1.0]]
                 ]
@@ -178,9 +192,8 @@ class Test(unittest.TestCase):
             for i in range(len(match)):
                 self.assertEqual(match[i], found[i])
 
-            # s.show()
-
     def testNoteEquality(self):
+        """Test from existing test_note.py"""
         n1 = note.Note('A#')
         n2 = note.Note('G')
         n3 = note.Note('A-')
@@ -258,6 +271,7 @@ class Test(unittest.TestCase):
             self.assertEqual(a == b, match)  # sub6
 
     def testMetricalAccent(self):
+        """Test from existing test_note.py"""
         data = [
             ('4/4', 8, 0.5, [1.0, 0.125, 0.25, 0.125, 0.5, 0.125, 0.25, 0.125]),
             ('3/4', 6, 0.5, [1.0, 0.25, 0.5, 0.25, 0.5, 0.25]),
@@ -287,6 +301,7 @@ class Test(unittest.TestCase):
             self.assertEqual([n.beatStrength for n in m.notesAndRests], match)
 
     def testTieContinue(self):
+        """Test from existing test_note.py"""
         n1 = note.Note()
         n1.tie = tie.Tie()
         n1.tie.type = 'start'
@@ -302,11 +317,8 @@ class Test(unittest.TestCase):
         s = stream.Stream()
         s.append([n1, n2, n3])
 
-        # need to test that this gets us a "continue" tie, but hard to test
-        # post musicxml processing
-        # s.show()
-
     def testVolumeA(self):
+        """Test from existing test_note.py"""
         v1 = volume.Volume()
 
         n1 = note.Note()
@@ -321,6 +333,7 @@ class Test(unittest.TestCase):
         self.assertIsNotNone(n2.volume)
 
     def testVolumeB(self):
+        """Test from existing test_note.py"""
         # manage deepcopying properly
         n1 = note.Note()
 
@@ -335,4 +348,4 @@ class Test(unittest.TestCase):
 
 if __name__ == '__main__':
     import music21
-    music21.mainTest(Test)
+    music21.mainTest(TestNote)

@@ -1961,85 +1961,8 @@ class Test(unittest.TestCase):
         self.assertEqual(found[1].sharps, 3)
         self.assertEqual(found[2].sharps, -1)
 
-    def testConversionMXRepeats(self):
-        from music21 import bar
-        from music21.musicxml import testPrimitive
 
-        mxString = testPrimitive.simpleRepeat45a
-        s = parse(mxString)
 
-        part = s.parts[0]
-        measures = part.getElementsByClass(stream.Measure)
-        self.assertEqual(measures[0].leftBarline, None)
-        self.assertEqual(measures[0].rightBarline.type, 'final')
-
-        self.assertEqual(measures[1].leftBarline, None)
-        self.assertEqual(measures[1].rightBarline.type, 'final')
-
-        mxString = testPrimitive.repeatMultipleTimes45c
-        s = parse(mxString)
-
-        self.assertEqual(len(s[bar.Barline]), 4)
-        part = s.parts[0]
-        measures = part.getElementsByClass(stream.Measure)
-
-        # s.show()
-
-    # def testConversionABCOpus(self):
-        # ABC test removed - ABC support removed
-        # from music21.abcFormat import testFiles
-        from music21 import corpus
-
-        s = parse(testFiles.theAleWifesDaughter)
-        # get a Stream object, not an opus
-        self.assertIsInstance(s, stream.Score)
-        self.assertNotIsInstance(s, stream.Opus)
-        self.assertEqual(len(s.recurse().notesAndRests), 66)
-
-        # a small essen collection
-        op = corpus.parse('essenFolksong/teste')
-        # get a Stream object, not an opus
-        # self.assertIsInstance(op, stream.Score)
-        self.assertIsInstance(op, stream.Opus)
-        self.assertEqual([len(s.recurse().notesAndRests) for s in op.scores],
-                         [33, 51, 59, 33, 29, 174, 67, 88])
-        # op.show()
-
-        # get one work from the opus
-        s = corpus.parse('essenFolksong/teste', number=6)
-        self.assertIsInstance(s, stream.Score)
-        self.assertNotIsInstance(s, stream.Opus)
-        self.assertEqual(s.metadata.title, 'Moli hua')
-
-        # s.show()
-
-    def testConversionABCWorkFromOpus(self):
-        # test giving a work number at loading
-        from music21 import corpus
-        s = corpus.parse('essenFolksong/han1', number=6)
-        self.assertIsInstance(s, stream.Score)
-        # noinspection SpellCheckingInspection
-        self.assertEqual(s.metadata.title, 'Yi gan hongqi kongzhong piao')
-        # make sure that beams are being made
-        self.assertEqual(
-            str(s.parts[0].recurse().notesAndRests[4].beams),
-            '<music21.beam.Beams <music21.beam.Beam 1/start>/<music21.beam.Beam 2/start>>')
-        # s.show()
-
-    def testConversionABCWorkFromOpusWithoutKeyword(self):
-        fp = common.getSourceFilePath() / 'corpus' / 'essenFolksong' / 'testd.abc'
-
-        s = parse((str(fp), None))
-        self.assertIsInstance(s, stream.Opus)
-
-        with self.assertRaises(ConverterException):
-            parse((fp, 8))
-
-        with self.assertRaises(ConverterException):
-            parse((str(fp), (8,)))
-
-        s = parse((str(fp), 8))
-        self.assertIsInstance(s, stream.Score)
 
     def testConversionMusedata(self):
         # MuseData format has been removed

@@ -631,6 +631,12 @@ class Test(unittest.TestCase):
             str(pList)
         )
 
+    def testCopyAndDeepcopy(self):
+        """Test from embedded Test class in pitch.py"""
+        from tests.framework.commonTest import testCopyAll
+        import music21.pitch as pitch_module
+        testCopyAll(self, pitch_module.__dict__)
+
 
 if __name__ == '__main__':
     import music21

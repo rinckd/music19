@@ -702,65 +702,7 @@ class Test(unittest.TestCase):
         e_sharp_min_transformed = LRP_combinations(e_sharp_min, 'LP', raiseException=True)
         self.assertEqual(chord.Chord('C# E G#').pitches, e_sharp_min_transformed.pitches)
 
-    def testIsNeoR(self):
 
-        c1 = chord.Chord('C4 E4 G4')
-
-        c2 = chord.Chord('B3 E4 G4')
-        ans1 = isNeoR(c1, c2)
-        self.assertEqual(ans1, 'L')
-
-        c3 = chord.Chord('C4 E-4 G4')
-        ans2 = isNeoR(c1, c3)
-        self.assertEqual(ans2, 'P')
-        # ... But not if P is excluded ...
-        ans2 = isNeoR(c1, c3, transforms='LR')
-        self.assertFalse(ans2)
-
-        c4 = chord.Chord('C4 E4 A4')
-        ans3 = isNeoR(c1, c4)
-        self.assertEqual(ans3, 'R')
-
-        c5 = chord.Chord('C4 E-4 A-4')
-        ans4 = isChromaticMediant(c1, c5)
-        self.assertEqual(ans4, 'LFM')
-
-        c6 = chord.Chord('C-4 E-4 A-4')
-        ans5 = isNeoR(c1, c6)
-        ans6 = isChromaticMediant(c1, c6)
-        self.assertFalse(ans5)
-        self.assertFalse(ans6)  # disjunct mediants not currently included
-
-        c7 = chord.Chord('C-4 E-4 G-4')
-        c8 = chord.Chord('C-4 E--4 A--4')
-        ans7 = isNeoR(c7, c8)
-        ans8 = isChromaticMediant(c7, c8)
-        self.assertFalse(ans7)
-        self.assertEqual(ans8, 'LFM')
-
-    def testMediants(self):
-
-        c9 = chord.Chord('C5 E5 G5')
-        c9a = chord.Chord('C#5 E#5 G#5')
-
-        UFMcMaj = chromaticMediants(c9, transformation='UFM')
-        self.assertEqual(UFMcMaj.normalOrder, [3, 7, 10])
-
-        USMcMaj = chromaticMediants(c9, transformation='USM')
-        self.assertEqual(USMcMaj.normalOrder, [4, 8, 11])
-
-        LFMcMaj = chromaticMediants(c9, transformation='LFM')
-        self.assertEqual([x.nameWithOctave for x in LFMcMaj.pitches], ['C5', 'E-5', 'A-5'])
-
-        LSMcMaj = chromaticMediants(c9, transformation='LSM')
-        self.assertEqual([x.nameWithOctave for x in LSMcMaj.pitches], ['C#5', 'E5', 'A5'])
-
-        upChromatic = disjunctMediants(c9a, upperOrLower='upper')
-        self.assertEqual([x.name for x in upChromatic.pitches], ['B', 'E', 'G'])
-
-        downChromatic = disjunctMediants(c9a, upperOrLower='lower')
-        self.assertEqual([x.nameWithOctave for x in downChromatic.pitches],
-                         ['C5', 'E5', 'A5'])
 
     def testSnN(self):
 

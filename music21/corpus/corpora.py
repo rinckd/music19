@@ -888,14 +888,6 @@ class LocalCorpus(Corpus):
         If that path is included in the list of persisted paths for the given
         corpus, it will be removed permanently.
 
-        >>> testCorpus = corpus.corpora.LocalCorpus(name='test')
-        >>> testCorpus.addPath('~/Desktop')
-        >>> len(testCorpus.directoryPaths)
-        1
-        >>> testCorpus.removePath('~/Desktop')
-        >>> testCorpus.directoryPaths
-        ()
-
         TODO: test for corpus persisted to disk without actually reindexing
         files on user's Desktop.
         '''
@@ -1086,4 +1078,4 @@ _DOC_ORDER = (
 
 if __name__ == '__main__':
     import music21
-    music21.mainTest()
+

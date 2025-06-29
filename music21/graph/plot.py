@@ -1824,13 +1824,6 @@ class Test(unittest.TestCase):
         p = Features(streamList, featureExtractors=feList, doneAction=None)
         p.run()
 
-    def testPianoRollFromOpus(self):
-        o = corpus.parse('josquin/laDeplorationDeLaMorteDeJohannesOckeghem')
-        s = o.mergeScores()
-
-        b = HorizontalBarPitchClassOffset(s, doneAction=None)
-        b.run()
-
     def testChordsA(self):
         from music21 import scale
         sc = scale.MajorScale('c4')

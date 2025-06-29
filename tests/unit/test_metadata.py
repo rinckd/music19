@@ -145,25 +145,6 @@ class Test(unittest.TestCase):
         )
         self.assertEqual(str(richMetadata.timeSignatureFirst), '4/4')
 
-    def testWorkIds(self):
-        opus = corpus.parse('essenFolksong/teste')
-        self.assertEqual(len(opus.scores), 8)
-
-        score = opus.getScoreByNumber(4)
-        self.assertEqual(
-            score.metadata.localeOfComposition,
-            'Asien, Ostasien, China, Sichuan'
-        )
-
-        richMetadata = metadata.RichMetadata()
-        richMetadata.merge(score.metadata)
-        richMetadata.update(score)
-
-        self.assertEqual(
-            richMetadata.localeOfComposition,
-            'Asien, Ostasien, China, Sichuan'
-        )
-
     def testMetadataSearch(self):
         score = corpus.parse('ciconia')
         self.assertEqual(

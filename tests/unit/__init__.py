@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
 # Name:         tests/unit/__init__.py
-# Purpose:      Unit tests for music21
+# Purpose:      Unit tests for music19
 #
 # Authors:      Michael Scott Asato Cuthbert
 #               Christopher Ariza
@@ -10,8 +10,8 @@
 # License:      BSD, see license.txt
 # -----------------------------------------------------------------------------
 """
-Unit tests for music21 modules.
+Unit tests for music19 modules.
 
 This package contains unit tests extracted from embedded Test classes
-throughout the music21 codebase.
+throughout the music19 codebase.
 """

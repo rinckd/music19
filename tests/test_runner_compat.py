@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
 # Name:         tests/test_runner_compat.py
-# Purpose:      Compatibility layer for music21.mainTest() with new test structure
+# Purpose:      Compatibility layer for music19.mainTest() with new test structure
 #
 # Authors:      Michael Scott Asato Cuthbert
 #               Christopher Ariza
@@ -10,10 +10,10 @@
 # License:      BSD, see license.txt
 # -----------------------------------------------------------------------------
 """
-Compatibility layer for music21.mainTest() to work with the new consolidated test structure.
+Compatibility layer for music19.mainTest() to work with the new consolidated test structure.
 
 This module provides functions to discover and run tests from the new tests/ directory
-while maintaining backward compatibility with the existing music21.mainTest() interface.
+while maintaining backward compatibility with the existing music19.mainTest() interface.
 """
 from __future__ import annotations
 

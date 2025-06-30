@@ -5,11 +5,11 @@ requires = [
 build-backend = "hatchling.build"
 
 [project]
-name = "music21"
+name = "music19"
 dynamic = [
     "version",
 ]
-description = "A Toolkit for Computer-Aided Musical Analysis and Computational Musicology."
+description = "A slim-downed version of music19: A Toolkit for Computer-Aided Musical Analysis and Computational Musicology."
 readme = "README.md"
 license = "BSD-3-Clause"
 requires-python = ">=3.10"
@@ -58,15 +58,15 @@ name = "Michael Scott Asato Cuthbert"
 email = "michael.asato.cuthbert@gmail.com"
 
 [project.urls]
-Download = "https://github.com/cuthbertLab/music21/releases/"
-Homepage = "https://github.com/cuthbertLab/music21"
-Documentation = "https://www.music21.org/music21docs/"
+Download = "https://github.com/rinck/music19/releases/"
+Homepage = "https://github.com/rinck/music19"
+Documentation = "https://github.com/rinck/music19/blob/master/README.md"
 
 [tool.hatch.version]
-path = "music21/_version.py"
+path = "music19/_version.py"
 
 [tool.hatch.build.targets.sdist]
 include = [
-    "music21",
+    "music19",
     "py.typed",  # indicates source is typed.
 ]

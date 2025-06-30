@@ -19,15 +19,15 @@ from __future__ import annotations
 import copy
 import unittest
 
-from music21 import articulations
-from music21 import corpus
-from music21.duration import DurationTuple
-from music21 import expressions
-from music21 import meter
-from music21 import note
-from music21 import stream
-from music21 import tie
-from music21 import volume
+from music19 import articulations
+from music19 import corpus
+from music19.duration import DurationTuple
+from music19 import expressions
+from music19 import meter
+from music19 import note
+from music19 import stream
+from music19 import tie
+from music19 import volume
 
 
 class TestNote(unittest.TestCase):
@@ -36,20 +36,20 @@ class TestNote(unittest.TestCase):
     def testCopyAndDeepcopy(self):
         """Test from embedded Test class in note.py"""
         from tests.framework.commonTest import testCopyAll
-        import music21.note as note_module
+        import music19.note as note_module
         # Get the module's globals for testing
         testCopyAll(self, note_module.__dict__)
 
     def testLyricRepr(self):
         """Test from existing test_note.py"""
         ly = note.Lyric()
-        self.assertEqual(repr(ly), '<music21.note.Lyric number=1>')
+        self.assertEqual(repr(ly), '<music19.note.Lyric number=1>')
         ly.text = 'hi'
-        self.assertEqual(repr(ly), "<music21.note.Lyric number=1 text='hi'>")
+        self.assertEqual(repr(ly), "<music19.note.Lyric number=1 text='hi'>")
         ly.identifier = 'verse'
-        self.assertEqual(repr(ly), "<music21.note.Lyric number=1 identifier='verse' text='hi'>")
+        self.assertEqual(repr(ly), "<music19.note.Lyric number=1 identifier='verse' text='hi'>")
         ly.text = None
-        self.assertEqual(repr(ly), "<music21.note.Lyric number=1 identifier='verse'>")
+        self.assertEqual(repr(ly), "<music19.note.Lyric number=1 identifier='verse'>")
 
     def testComplex(self):
         """Test from existing test_note.py"""
@@ -347,5 +347,5 @@ class TestNote(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    import music21
-    music21.mainTest(TestNote)
+    import music19
+    music19.mainTest(TestNote)

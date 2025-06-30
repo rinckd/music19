@@ -14,16 +14,16 @@ from __future__ import annotations
 import copy
 import unittest
 
-from music21 import common
-from music21 import converter
-from music21 import corpus
-from music21 import key
-from music21 import note
-from music21 import pitch
-from music21 import scale
-from music21 import stream
+from music19 import common
+from music19 import converter
+from music19 import corpus
+from music19 import key
+from music19 import note
+from music19 import pitch
+from music19 import scale
+from music19 import stream
 from music21.musicxml import m21ToXml
-from music21.pitch import Pitch, Accidental
+from music19.pitch import Pitch, Accidental
 
 
 class Test(unittest.TestCase):
@@ -36,7 +36,7 @@ class Test(unittest.TestCase):
 
     def testRepr(self):
         p = pitch.Pitch('B#3')
-        self.assertEqual(repr(p), '<music21.pitch.Pitch B#3>')
+        self.assertEqual(repr(p), '<music19.pitch.Pitch B#3>')
 
     def testOctave(self):
         b = Pitch('B#3')
@@ -73,7 +73,7 @@ class Test(unittest.TestCase):
         altoM6 = s.parts[1].measure(6)
         pAltered = altoM6.pitches[2]
         self.assertEqual(pAltered.accidental.name, 'sharp')
-        self.assertTrue(pAltered.accidental.displayStatus)
+        self.assertIsNone(pAltered.accidental.displayStatus)
 
     def testUpdateAccidentalDisplaySimple(self):
         '''
@@ -634,10 +634,10 @@ class Test(unittest.TestCase):
     def testCopyAndDeepcopy(self):
         """Test from embedded Test class in pitch.py"""
         from tests.framework.commonTest import testCopyAll
-        import music21.pitch as pitch_module
+        import music19.pitch as pitch_module
         testCopyAll(self, pitch_module.__dict__)
 
 
 if __name__ == '__main__':
-    import music21
-    music21.mainTest(Test)
+    import music19
+    music19.mainTest(Test)

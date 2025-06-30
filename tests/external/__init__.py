@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
 # Name:         tests/external/__init__.py
-# Purpose:      External tests for music21
+# Purpose:      External tests for music19
 #
 # Authors:      Michael Scott Asato Cuthbert
 #               Christopher Ariza
@@ -10,8 +10,8 @@
 # License:      BSD, see license.txt
 # -----------------------------------------------------------------------------
 """
-External tests for music21 modules.
+External tests for music19 modules.
 
-This package contains external/integration tests extracted from embedded 
-TestExternal classes throughout the music21 codebase.
+This package contains external/integration tests extracted from embedded
+TestExternal classes throughout the music19 codebase.
 """

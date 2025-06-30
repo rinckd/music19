@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # ------------------------------------------------------------------------------
 # Name:         test.test_base.py
-# Purpose:      music21 tests for Music21Objects etc.
+# Purpose:      music19 tests for Music21Objects etc.
 #
 # Authors:      Michael Scott Asato Cuthbert
 #               Christopher Ariza
@@ -14,24 +14,24 @@ from __future__ import annotations
 import copy
 import unittest
 
-from music21 import bar
-from music21 import base
-from music21.base import Music21Object, ElementWrapper
-from music21 import clef
-from music21.common.enums import ElementSearch, OffsetSpecial
-from music21 import converter
-from music21 import corpus
-from music21 import dynamics
-from music21 import editorial
-from music21 import exceptions21
-from music21 import key
-from music21 import meter
-from music21 import note
-from music21 import scale
-from music21.sites import SitesException
-from music21 import spanner
-from music21 import stream
-from music21 import tempo
+from music19 import bar
+from music19 import base
+from music19.base import Music21Object, ElementWrapper
+from music19 import clef
+from music19.common.enums import ElementSearch, OffsetSpecial
+from music19 import converter
+from music19 import corpus
+from music19 import dynamics
+from music19 import editorial
+from music19 import exceptions21
+from music19 import key
+from music19 import meter
+from music19 import note
+from music19 import scale
+from music19.sites import SitesException
+from music19 import spanner
+from music19 import stream
+from music19 import tempo
 
 # -----------------------------------------------------------------------------
 class TestMock(Music21Object):
@@ -43,7 +43,7 @@ class Test(unittest.TestCase):
     def testM21ObjRepr(self):
         a = base.Music21Object()
         address = hex(id(a))
-        self.assertEqual(repr(a), f'<music21.base.Music21Object object at {address}>')
+        self.assertEqual(repr(a), f'<music19.Music21Object object at {address}>')
 
     def testObjectCreation(self):
         a = TestMock()
@@ -596,7 +596,7 @@ class Test(unittest.TestCase):
         # if done with default args, we get the same object, as we are using
         # getElementAtOrBefore
         self.assertEqual(str(mm2.getContextByClass(tempo.MetronomeMark)),
-                         '<music21.tempo.MetronomeMark Eighth=150>')
+                         '<music19.tempo.MetronomeMark Eighth=150>')
         # if we provide the getElementMethod parameter, we can use
         # getElementBeforeOffset
         self.assertEqual(
@@ -606,7 +606,7 @@ class Test(unittest.TestCase):
                     getElementMethod=ElementSearch.BEFORE_OFFSET
                 )
             ),
-            '<music21.tempo.MetronomeMark lento 16th=50>')
+            '<music19.tempo.MetronomeMark lento 16th=50>')
 
     def testElementWrapperOffsetAccess(self):
         class Mock:
@@ -791,7 +791,7 @@ class Test(unittest.TestCase):
         # self.assertEqual(str(n1.getContextByClass(meter.TimeSignature)),
         #    '<music21.meter.TimeSignature 3/4>')
         self.assertEqual(str(n2.getContextByClass(meter.TimeSignature)),
-                         '<music21.meter.TimeSignature 3/4>')
+                         '<music19.meter.TimeSignature 3/4>')
 
     def testNextA(self):
         s = stream.Stream()
@@ -843,7 +843,7 @@ class Test(unittest.TestCase):
         p1 = s.parts[0]
         nLast = p1.flatten().notes[-1]
         self.assertEqual(str(nLast.previous(meter.TimeSignature)),
-                         '<music21.meter.TimeSignature 4/4>')
+                         '<music19.meter.TimeSignature 4/4>')
         self.assertEqual(str(nLast.previous(key.KeySignature)),
                          'f# minor')
 
@@ -922,20 +922,20 @@ class Test(unittest.TestCase):
         c = corpus.parse('bwv66.6')
         c.id = 'bach'
         n = c[2][4][2]
-        self.assertEqual(repr(n), '<music21.note.Note G#>')
+        self.assertEqual(repr(n), '<music19.note.Note G#>')
         siteList = []
         for y in n.contextSites():
             yTup = (y.site, y.offset, y.recurseType)
             siteList.append(repr(yTup))
         self.assertEqual(
             siteList,
-            ['(<music21.stream.Measure 3 offset=9.0>, 0.5, <RecursionType.ELEMENTS_FIRST>)',
-             '(<music21.stream.Part Alto>, 9.5, <RecursionType.FLATTEN>)',
-             '(<music21.stream.Score bach>, 9.5, <RecursionType.ELEMENTS_ONLY>)']
+            ['(<music19.stream.Measure 3 offset=9.0>, 0.5, <RecursionType.ELEMENTS_FIRST>)',
+             '(<music19.stream.Part Alto>, 9.5, <RecursionType.FLATTEN>)',
+             '(<music19.stream.Score bach>, 9.5, <RecursionType.ELEMENTS_ONLY>)']
         )
 
         m = c[2][4]
-        self.assertEqual(repr(m), '<music21.stream.Measure 3 offset=9.0>')
+        self.assertEqual(repr(m), '<music19.stream.Measure 3 offset=9.0>')
 
         siteList = []
         for y in m.contextSites():
@@ -943,9 +943,9 @@ class Test(unittest.TestCase):
             siteList.append(repr(yTup))
         self.assertEqual(
             siteList,
-            ['(<music21.stream.Measure 3 offset=9.0>, 0.0, <RecursionType.ELEMENTS_FIRST>)',
-             '(<music21.stream.Part Alto>, 9.0, <RecursionType.FLATTEN>)',
-             '(<music21.stream.Score bach>, 9.0, <RecursionType.ELEMENTS_ONLY>)']
+            ['(<music19.stream.Measure 3 offset=9.0>, 0.0, <RecursionType.ELEMENTS_FIRST>)',
+             '(<music19.stream.Part Alto>, 9.0, <RecursionType.FLATTEN>)',
+             '(<music19.stream.Score bach>, 9.0, <RecursionType.ELEMENTS_ONLY>)']
         )
 
         m2 = copy.deepcopy(m)
@@ -956,10 +956,10 @@ class Test(unittest.TestCase):
             siteList.append(repr(yTup))
         self.assertEqual(
             siteList,
-            ['(<music21.stream.Measure 3333 offset=0.0>, 0.0, <RecursionType.ELEMENTS_FIRST>)',
-             '(<music21.stream.Measure 3 offset=9.0>, 0.0, <RecursionType.ELEMENTS_FIRST>)',
-             '(<music21.stream.Part Alto>, 9.0, <RecursionType.FLATTEN>)',
-             '(<music21.stream.Score bach>, 9.0, <RecursionType.ELEMENTS_ONLY>)']
+            ['(<music19.stream.Measure 3333 offset=0.0>, 0.0, <RecursionType.ELEMENTS_FIRST>)',
+             '(<music19.stream.Measure 3 offset=9.0>, 0.0, <RecursionType.ELEMENTS_FIRST>)',
+             '(<music19.stream.Part Alto>, 9.0, <RecursionType.FLATTEN>)',
+             '(<music19.stream.Score bach>, 9.0, <RecursionType.ELEMENTS_ONLY>)']
         )
         siteList = []
 
@@ -974,10 +974,10 @@ class Test(unittest.TestCase):
 
         self.assertEqual(
             siteList,
-            ['(<music21.stream.Measure 3 offset=9.0>, 0.0, <RecursionType.ELEMENTS_FIRST>)',
-             '(<music21.stream.Part Alto>, 9.0, <RecursionType.FLATTEN>)',
-             '(<music21.stream.Score partStream>, 9.0, <RecursionType.ELEMENTS_ONLY>)',
-             '(<music21.stream.Score bach>, 9.0, <RecursionType.ELEMENTS_ONLY>)']
+            ['(<music19.stream.Measure 3 offset=9.0>, 0.0, <RecursionType.ELEMENTS_FIRST>)',
+             '(<music19.stream.Part Alto>, 9.0, <RecursionType.FLATTEN>)',
+             '(<music19.stream.Score partStream>, 9.0, <RecursionType.ELEMENTS_ONLY>)',
+             '(<music19.stream.Score bach>, 9.0, <RecursionType.ELEMENTS_ONLY>)']
         )
 
     def testContextSitesB(self):
@@ -991,8 +991,8 @@ class Test(unittest.TestCase):
         siteList = []
         for y in n.contextSites():
             siteList.append(repr(y.site))
-        self.assertEqual(siteList, ['<music21.stream.Measure 1 offset=0.0>',
-                                    '<music21.stream.Part p1>'])
+        self.assertEqual(siteList, ['<music19.stream.Measure 1 offset=0.0>',
+                                    '<music19.stream.Part p1>'])
         p2 = stream.Part()
         p2.id = 'p2'
         m2 = stream.Measure()
@@ -1003,26 +1003,26 @@ class Test(unittest.TestCase):
         siteList = []
         for y in n.contextSites():
             siteList.append(repr(y.site))
-        self.assertEqual(siteList, ['<music21.stream.Measure 2 offset=0.0>',
-                                    '<music21.stream.Part p2>',
-                                    '<music21.stream.Measure 1 offset=0.0>',
-                                    '<music21.stream.Part p1>'])
+        self.assertEqual(siteList, ['<music19.stream.Measure 2 offset=0.0>',
+                                    '<music19.stream.Part p2>',
+                                    '<music19.stream.Measure 1 offset=0.0>',
+                                    '<music19.stream.Part p1>'])
 
         siteList = []
         for y in n.contextSites(sortByCreationTime=True):
             siteList.append(repr(y.site))
-        self.assertEqual(siteList, ['<music21.stream.Measure 2 offset=0.0>',
-                                    '<music21.stream.Part p2>',
-                                    '<music21.stream.Measure 1 offset=0.0>',
-                                    '<music21.stream.Part p1>'])
+        self.assertEqual(siteList, ['<music19.stream.Measure 2 offset=0.0>',
+                                    '<music19.stream.Part p2>',
+                                    '<music19.stream.Measure 1 offset=0.0>',
+                                    '<music19.stream.Part p1>'])
 
         siteList = []
         for y in n.contextSites(sortByCreationTime='reverse'):
             siteList.append(repr(y.site))
-        self.assertEqual(siteList, ['<music21.stream.Measure 1 offset=0.0>',
-                                    '<music21.stream.Part p1>',
-                                    '<music21.stream.Measure 2 offset=0.0>',
-                                    '<music21.stream.Part p2>'])
+        self.assertEqual(siteList, ['<music19.stream.Measure 1 offset=0.0>',
+                                    '<music19.stream.Part p1>',
+                                    '<music19.stream.Measure 2 offset=0.0>',
+                                    '<music19.stream.Part p2>'])
 
     def testContextSitesVoices(self):
         v1_n1 = note.Note('D')
@@ -1135,5 +1135,5 @@ class Test(unittest.TestCase):
 
 # -------------------------------------------
 if __name__ == '__main__':
-    import music21
-    music21.mainTest(Test)
+    import music19
+    music19.mainTest(Test)

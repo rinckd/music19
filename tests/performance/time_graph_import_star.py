@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # ------------------------------------------------------------------------------
 # Name:          timeGraphsImportStar.py
-# Purpose:       time how long it takes to import music21, and report biggest offenders
+# Purpose:       time how long it takes to import music19, and report biggest offenders
 #
 # Authors:       Michael Scott Asato Cuthbert
 #                Christopher Ariza
@@ -19,7 +19,7 @@ def main():
     MIN_FRACTION_TO_REPORT = 0.03
 
     with cProfile.Profile() as pr:
-        import music21
+        import music19
 
     print(f'Profile of {music21.__version__}')
     stats = pstats.Stats(pr)

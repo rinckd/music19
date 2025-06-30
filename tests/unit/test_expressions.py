@@ -3,16 +3,16 @@ from __future__ import annotations
 
 import unittest
 
-from music21 import chord
-from music21 import clef
-from music21 import expressions
-from music21 import interval
-from music21 import key
-from music21 import meter
+from music19 import chord
+from music19 import clef
+from music19 import expressions
+from music19 import interval
+from music19 import key
+from music19 import meter
 from music21.musicxml import m21ToXml
-from music21 import note
-from music21 import pitch
-from music21 import stream
+from music19 import note
+from music19 import pitch
+from music19 import stream
 
 
 class Test(unittest.TestCase):
@@ -39,31 +39,31 @@ class Test(unittest.TestCase):
 
         te = expressions.TextExpression('d.c.')
         self.assertEqual(str(te.getRepeatExpression()),
-                         "<music21.repeat.DaCapo 'd.c.'>")
+                         "<music19.repeat.DaCapo 'd.c.'>")
         re = te.getRepeatExpression()
         self.assertEqual(re.getTextExpression().content, 'd.c.')
 
         te = expressions.TextExpression('DC al coda')
         self.assertEqual(str(te.getRepeatExpression()),
-                         "<music21.repeat.DaCapoAlCoda 'DC al coda'>")
+                         "<music19.repeat.DaCapoAlCoda 'DC al coda'>")
         re = te.getRepeatExpression()
         self.assertEqual(re.getTextExpression().content, 'DC al coda')
 
         te = expressions.TextExpression('DC al fine')
         self.assertEqual(str(te.getRepeatExpression()),
-                         "<music21.repeat.DaCapoAlFine 'DC al fine'>")
+                         "<music19.repeat.DaCapoAlFine 'DC al fine'>")
         re = te.getRepeatExpression()
         self.assertEqual(re.getTextExpression().content, 'DC al fine')
 
         te = expressions.TextExpression('ds al coda')
         self.assertEqual(str(te.getRepeatExpression()),
-                         "<music21.repeat.DalSegnoAlCoda 'ds al coda'>")
+                         "<music19.repeat.DalSegnoAlCoda 'ds al coda'>")
         re = te.getRepeatExpression()
         self.assertEqual(re.getTextExpression().content, 'ds al coda')
 
         te = expressions.TextExpression('d.s. al fine')
         self.assertEqual(str(te.getRepeatExpression()),
-                         "<music21.repeat.DalSegnoAlFine 'd.s. al fine'>")
+                         "<music19.repeat.DalSegnoAlFine 'd.s. al fine'>")
         re = te.getRepeatExpression()
         self.assertEqual(re.getTextExpression().content, 'd.s. al fine')
 
@@ -137,31 +137,6 @@ class Test(unittest.TestCase):
         self.assertIsInstance(realized[0], note.Note)
         self.assertEqual(realized[0].quarterLength, 0.125)
         self.assertEqual('E4 F#4 E4 F#4', ' '.join(n.pitch.nameWithOctave for n in realized))
-
-
-    def testTrillExtensionA(self):
-        '''
-        Test basic wave line creation and output, as well as passing
-        objects through make measure calls.
-        '''
-        s = stream.Stream()
-        s.repeatAppend(note.Note(), 12)
-        n1 = s.notes[0]
-        n2 = s.notes[-1]
-        sp1 = expressions.TrillExtension(n1, n2)
-        s.append(sp1)
-        raw = m21ToXml.GeneralObjectExporter().parse(s)
-        self.assertEqual(raw.count(b'wavy-line'), 2)
-
-        s = stream.Stream()
-        s.repeatAppend(chord.Chord(['c-3', 'g4']), 12)
-        n1 = s.notes[0]
-        n2 = s.notes[-1]
-        sp1 = expressions.TrillExtension(n1, n2)
-        s.append(sp1)
-        raw = m21ToXml.GeneralObjectExporter().parse(s)
-        # s.show()
-        self.assertEqual(raw.count(b'wavy-line'), 2)
 
     def testFixedSizeOrnamentAccidental(self):
         # Check that accidental works as expected (i.e. not at all) on all the
@@ -536,12 +511,12 @@ class Test(unittest.TestCase):
 
 # class TestExternal(unittest.TestCase):
 #     def testCPEBachRealizeOrnaments(self):
-#         from music21 import corpus
+#         from music19 import corpus
 #         cpe = corpus.parse('cpebach/h186').parts[0].measures(1, 4)
 #         cpe2 = cpe.realizeOrnaments()
 #         cpe2.show()
 
 
 if __name__ == '__main__':
-    import music21
-    music21.mainTest(Test)
+    import music19
+    music19.mainTest(Test)

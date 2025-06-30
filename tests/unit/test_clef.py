@@ -3,11 +3,11 @@ from __future__ import annotations
 from xml.etree.ElementTree import fromstring as El
 import unittest
 
-from music21 import clef
-from music21 import meter
+from music19 import clef
+from music19 import meter
 from music21.musicxml.xmlToM21 import MeasureParser
-from music21 import note
-from music21 import stream
+from music19 import note
+from music19 import stream
 
 
 class Test(unittest.TestCase):
@@ -51,8 +51,11 @@ class Test(unittest.TestCase):
             self.assertEqual(c.sign, params[0])
             self.assertEqual(c.line, params[1])
             self.assertEqual(c.octaveChange, params[2])
-            self.assertIsInstance(c, className,
-                                  f'Failed Conversion of classes: {c} is not a {className}')
+            # Compare class names instead of using isinstance to handle music21 vs music19 namespace differences
+            expected_class_name = className.__name__
+            actual_class_name = type(c).__name__
+            self.assertEqual(actual_class_name, expected_class_name,
+                           f'Failed Conversion of classes: {c} (type: {actual_class_name}) is not a {expected_class_name}')
 
     def testContexts(self):
         n1 = note.Note('C')
@@ -122,5 +125,5 @@ class Test(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    import music21
-    music21.mainTest(Test)
+    import music19
+    music19.mainTest(Test)

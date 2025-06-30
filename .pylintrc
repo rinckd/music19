@@ -71,7 +71,7 @@ disable=
     too-many-instance-attributes,  # maybe later
     too-many-positional-arguments,  # try to get down to 6 first...
     # no-self-use,  # moved to optional extension.
-    invalid-name,  # these are good music21 names; fix the regexp instead...
+    invalid-name,  # these are good music19 names; fix the regexp instead...
     too-few-public-methods,  # never remove or set to 1
     trailing-whitespace,  # should ignore blank lines with tabs
     missing-docstring,  # gets too many well-documented properties
@@ -95,7 +95,7 @@ disable=
     arguments-renamed,  # same
     simplifiable-if-statement,  # simpler to a computer maybe...
     unsubscriptable-object,  # too many errors
-    import-outside-toplevel,  # allow for import music21, etc.
+    import-outside-toplevel,  # allow for import music19, etc.
     not-callable,  # false positives, for instance on x.next()
     raise-missing-from,  # want to do this eventually, but adding 1000 msgs not helpful
     consider-using-f-string,  # future?

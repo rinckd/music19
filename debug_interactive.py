@@ -1,7 +1,7 @@
 # Interactive debugging script for PyCharm
 # Set breakpoints and run in debug mode
 
-from music21 import scale, note
+from music19 import scale, note
 
 def debug_scale_example():
     # Create B-flat major scale

@@ -10,7 +10,7 @@ Copyright © 2006-2025 [Michael Scott Asato Cuthbert](http://www.trecento.com)
 Released under the BSD (3-clause) license. See LICENSE.
 Externally provided software (including the MIT-licensed Lilypond/MusicXML test Suite) and
 music encoding in the corpus may have different licenses and/or copyrights. 
-A no-corpus version of `music21` is available also on GitHub for those needing strict
+A no-corpus version of `music19` is available also on GitHub for those needing strict
 BSD-license of all parts of the system.
 
 

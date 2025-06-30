@@ -1,0 +1,61 @@
+# -*- coding: utf-8 -*-
+# ------------------------------------------------------------------------------
+# Name:         common.py
+# Purpose:      Basic Utilities
+#
+# Authors:      Michael Scott Asato Cuthbert
+#               Christopher Ariza
+#
+# Copyright:    Copyright © 2009-2015 Michael Scott Asato Cuthbert
+# License:      BSD, see license.txt
+# ------------------------------------------------------------------------------
+'''
+Common is a collection of utility functions, objects, constants and dictionaries used
+throughout music21.
+
+functions in common/ can import from music19.defaults, music21.exceptions21, and music21.ext
+and that is all (except in tests and doctests).
+
+For historical reasons all the (non-private) functions etc. of the common/
+folder are available by importing common.
+
+split according to function -- September 2015
+'''
+from __future__ import annotations
+
+__all__ = [
+    'classTools',
+    'decorators',
+    'enums',
+    'fileTools',
+    'formats',
+    'misc',
+    'numberTools',
+    'objects',
+    'pathTools',
+    'parallel',
+    'types',
+    'weakrefTools',
+]
+
+from music19 import defaults
+from music19 import exceptions21
+from music19.common.classTools import *  # including isNum, isListLike
+from music19.common.decorators import *  # gives the deprecated decorator
+from music19.common.enums import *
+from music19.common.fileTools import *  # file tools.
+from music19.common.formats import *  # most are deprecated!
+from music19.common.misc import *  # most are deprecated!
+from music19.common.numberTools import *  # including opFrac
+from music19.common.objects import *
+from music19.common.pathTools import *
+from music19.common.parallel import *
+from music19.common.stringTools import *
+from music19.common.types import *
+from music19.common.weakrefTools import *  # including wrapWeakref
+
+DEBUG_OFF = 0
+DEBUG_USER = 1
+DEBUG_DEVEL = 63
+DEBUG_ALL = 255
+

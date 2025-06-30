@@ -1,14 +1,14 @@
 ---
 name: Bug report
-about: Report an issue with music21
+about: Report an issue with music19
 title: ''
 labels: ''
 assignees: ''
 
 ---
 
-<!-- Version of music21:  print(music21.__version__) -->
-**music21 version**
+<!-- Version of music19:  print(music19.__version__) -->
+**music19 version**
 
 `1.2.3`   <!-- replace with actual version -->
 

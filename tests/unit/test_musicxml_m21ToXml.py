@@ -10,33 +10,63 @@ from xml.etree.ElementTree import (
     ElementTree, fromstring as et_fromstring
 )
 
-from music21 import articulations
-from music21 import chord
-from music21 import common
-from music21 import converter
-from music21 import corpus
-from music21 import defaults
-from music21 import duration
-from music21 import dynamics
-from music21 import expressions
-from music21 import harmony
-from music21 import instrument
-from music21 import layout
-from music21 import meter
-from music21 import note
-from music21 import repeat
-from music21 import spanner
-from music21 import stream
-from music21 import style
-from music21 import tempo
+from music19 import articulations
+from music19 import chord
+from music19 import common
+from music19 import converter
+from music19 import corpus
+from music19 import defaults
+from music19 import duration
+from music19 import dynamics
+from music19 import expressions
+from music19 import harmony
+from music19 import instrument
+from music19 import layout
+from music19 import meter
+from music19 import note
+from music19 import repeat
+from music19 import spanner
+from music19 import stream
+from music19 import style
+from music19 import tempo
 
-from music21.musicxml import helpers
-from music21.musicxml import testPrimitive
-from music21.musicxml.m21ToXml import (
-    GeneralObjectExporter, ScoreExporter,
-    MusicXMLWarning, MusicXMLExportException
-)
-from music21.musicxml.xmlToM21 import MeasureParser
+# Try to import music21 MusicXML functionality, skip tests if not available
+try:
+    from music21.musicxml import helpers
+    from music21.musicxml import testPrimitive
+    from music21.musicxml.m21ToXml import (
+        GeneralObjectExporter, ScoreExporter,
+        MusicXMLWarning, MusicXMLExportException
+    )
+    from music21.musicxml.xmlToM21 import MeasureParser
+    
+    # Test if music21 can handle music19 objects
+    try:
+        test_note = note.Note('C4')
+        gex = GeneralObjectExporter()
+        gex.fromGeneralObject(test_note)
+        HAVE_MUSICXML_EXPORT_SUPPORT = True
+    except Exception:
+        # music21 cannot handle music19 objects
+        HAVE_MUSICXML_EXPORT_SUPPORT = False
+        
+    HAVE_MUSICXML_IMPORTS = True
+except ImportError:
+    HAVE_MUSICXML_IMPORTS = False
+    HAVE_MUSICXML_EXPORT_SUPPORT = False
+    # Define dummy classes to prevent import errors
+    class GeneralObjectExporter:
+        pass
+    class ScoreExporter:
+        pass
+    class MusicXMLWarning(Warning):
+        pass
+    class MusicXMLExportException(Exception):
+        pass
+    class MeasureParser:
+        pass
+    helpers = None
+    testPrimitive = None
 
 def stripInnerSpaces(txt: str):
     '''
@@ -48,12 +78,14 @@ def stripInnerSpaces(txt: str):
 
 class Test(unittest.TestCase):
 
+    @unittest.skipUnless(HAVE_MUSICXML_EXPORT_SUPPORT, "Requires music21 MusicXML export support for music19 objects")
     def getXml(self, obj):
         gex = GeneralObjectExporter()
         bytesOut = gex.parse(obj)
         bytesOutUnicode = bytesOut.decode('utf-8')
         return bytesOutUnicode
 
+    @unittest.skipUnless(HAVE_MUSICXML_EXPORT_SUPPORT, "Requires music21 MusicXML export support for music19 objects")
     def getET(self, obj, makeNotation=True):
         '''
         Return a <score-partwise> ElementTree.
@@ -68,6 +100,7 @@ class Test(unittest.TestCase):
         helpers.indent(mxScore)
         return mxScore
 
+    @unittest.skipUnless(HAVE_MUSICXML_EXPORT_SUPPORT, "Requires music21 MusicXML export support for music19 objects")
     def testExceptionMessage(self):
         s = stream.Score()
         p = stream.Part()
@@ -81,6 +114,7 @@ class Test(unittest.TestCase):
             s.write()
         self.assertEqual(str(error.exception), msg)
 
+    @unittest.skipUnless(HAVE_MUSICXML_EXPORT_SUPPORT, "Requires music21 MusicXML export support for music19 objects")
     def testSpannersWrite(self):
         p = converter.parse("tinynotation: 4/4 c4 d e f g a b c' b a g2")
         listNotes = list(p.recurse().notes)
@@ -101,6 +135,7 @@ class Test(unittest.TestCase):
         p.insert(0.0, sl3)
         self.assertEqual(self.getXml(p).count('<slur '), 6)
 
+    @unittest.skipUnless(HAVE_MUSICXML_EXPORT_SUPPORT, "Requires music21 MusicXML export support for music19 objects")
     def testSpannerAnchors(self):
         score = stream.Score()
         part = stream.Part()
@@ -169,6 +204,7 @@ class Test(unittest.TestCase):
             stripInnerSpaces(xmlOut)
         )
 
+    @unittest.skipUnless(HAVE_MUSICXML_EXPORT_SUPPORT, "Requires music21 MusicXML export support for music19 objects")
     def testLowVoiceNumbers(self):
         n = note.Note()
         v1 = stream.Voice([n])
@@ -190,6 +226,7 @@ class Test(unittest.TestCase):
         xmlOut = self.getXml(m)
         self.assertIn('<voice>hello</voice>', xmlOut)
 
+    @unittest.skipUnless(HAVE_MUSICXML_EXPORT_SUPPORT, "Requires music21 MusicXML export support for music19 objects")
     def testVoiceNumberOffsetsThreeStaffsInGroup(self):
         n1_1 = note.Note()
         v1_1 = stream.Voice([n1_1])
@@ -228,6 +265,7 @@ class Test(unittest.TestCase):
             # Because there is one voice per staff/measure, voicenum == staffnum
             self.assertEqual(voice.text, staff.text)
 
+    @unittest.skipUnless(HAVE_MUSICXML_EXPORT_SUPPORT, "Requires music21 MusicXML export support for music19 objects")
     def testExportChordSymbolWithInversions(self):
         '''
         This test checks for the issue in 1756 where a chord symbol imported
@@ -256,6 +294,7 @@ class Test(unittest.TestCase):
         self.assertEqual(explicitFm6.root(find=False), cs.root(find=False))
         self.assertEqual(explicitFm6.inversion(), cs.inversion())
 
+    @unittest.skipUnless(HAVE_MUSICXML_EXPORT_SUPPORT, "Requires music21 MusicXML export support for music19 objects")
     def testExportNC(self):
         s = stream.Score()
         p = stream.Part()
@@ -294,6 +333,7 @@ class Test(unittest.TestCase):
         self.assertEqual(1, self.getXml(s).count('<kind text="N.C.">none</kind>'))
         self.assertEqual(1, self.getXml(s).count('<kind text="No Chord">none</kind>'))
 
+    @unittest.skipUnless(HAVE_MUSICXML_EXPORT_SUPPORT, "Requires music21 MusicXML export support for music19 objects")
     def testSetPartsAndRefStreamMeasure(self):
         p = converter.parse('tinynotation: 4/4 c1 d1')
         sc = stream.Score([p])
@@ -302,6 +342,7 @@ class Test(unittest.TestCase):
         measuresAtOffsetZero = [m for m in p if m.offset == 0]
         self.assertSequenceEqual(measuresAtOffsetZero, p.elements[:1])
 
+    @unittest.skipUnless(HAVE_MUSICXML_EXPORT_SUPPORT, "Requires music21 MusicXML export support for music19 objects")
     def testFromScoreNoParts(self):
         '''
         Badly nested streams should warn but output no gaps.
@@ -323,6 +364,7 @@ class Test(unittest.TestCase):
         # Assert no gaps in stream
         self.assertSequenceEqual(tree.findall('.//forward'), [])
 
+    @unittest.skipUnless(HAVE_MUSICXML_EXPORT_SUPPORT, "Requires music21 MusicXML export support for music19 objects")
     def testFromScoreNoMeasures(self):
         s = stream.Score()
         s.append(note.Note())
@@ -331,6 +373,7 @@ class Test(unittest.TestCase):
         # Measures should have been made
         self.assertIsNotNone(tree.find('.//measure'))
 
+    @unittest.skipUnless(HAVE_MUSICXML_EXPORT_SUPPORT, "Requires music21 MusicXML export support for music19 objects")
     def testFromSoundingPitch(self):
         '''
         A score with mixed sounding and written parts.
@@ -352,6 +395,7 @@ class Test(unittest.TestCase):
         self.assertEqual(len(root.findall('.//transpose')), 1)
         self.assertEqual(root.find('.//step').text, 'D')
 
+    @unittest.skipUnless(HAVE_MUSICXML_EXPORT_SUPPORT, "Requires music21 MusicXML export support for music19 objects")
     def testMultipleInstruments(self):
         '''
         This is a score for two woodwind players both doubling on
@@ -381,6 +425,7 @@ class Test(unittest.TestCase):
         self.assertNotEqual(tree.find('.//score-instrument').get('id'),
                             tree.findall('.//measure/note/instrument')[-1].get('id'))
 
+    @unittest.skipUnless(HAVE_MUSICXML_EXPORT_SUPPORT, "Requires music21 MusicXML export support for music19 objects")
     def testMultipleInstrumentsPiano(self):
         ps1 = stream.PartStaff([
             stream.Measure([instrument.ElectricPiano(), note.Note(type='whole')]),
@@ -404,6 +449,7 @@ class Test(unittest.TestCase):
         )
         self.assertEqual(len(tree.findall('.//measure/note/instrument')), 6)
 
+    @unittest.skipUnless(HAVE_MUSICXML_EXPORT_SUPPORT, "Requires music21 MusicXML export support for music19 objects")
     def testExportIdOfMeasure(self):
         ''' Check that id of measure are exported
             as attributes of the <measure> eelement in MusicXML
@@ -418,6 +464,7 @@ class Test(unittest.TestCase):
             self.assertTrue('id' in measure_xml.attrib)
             self.assertEqual(measure_xml.get('id'), 'test')
 
+    @unittest.skipUnless(HAVE_MUSICXML_EXPORT_SUPPORT, "Requires music21 MusicXML export support for music19 objects")
     def testMidiInstrumentNoName(self):
         i = instrument.Instrument()
         i.midiProgram = 42
@@ -431,6 +478,7 @@ class Test(unittest.TestCase):
         mxMidiInstrument = tree.findall('.//midi-instrument')[0]
         self.assertEqual(mxScoreInstrument.get('id'), mxMidiInstrument.get('id'))
 
+    @unittest.skipUnless(HAVE_MUSICXML_EXPORT_SUPPORT, "Requires music21 MusicXML export support for music19 objects")
     def testOrnamentAccidentals(self):
         s = converter.parse(testPrimitive.notations32a)
         x = self.getET(s)
@@ -440,6 +488,7 @@ class Test(unittest.TestCase):
             ['natural', 'sharp', 'three-quarters-flat']
         )
 
+    @unittest.skipUnless(HAVE_MUSICXML_EXPORT_SUPPORT, "Requires music21 MusicXML export support for music19 objects")
     def testMultiDigitEndingsWrite(self):
         # Relevant barlines:
         # Measure 2, left barline: <ending number="1,2" type="start"/>
@@ -464,6 +513,7 @@ class Test(unittest.TestCase):
         endings = x.findall('.//ending')
         self.assertEqual([e.get('number') for e in endings], ['', '', '3', '3'])
 
+    @unittest.skipUnless(HAVE_MUSICXML_EXPORT_SUPPORT, "Requires music21 MusicXML export support for music19 objects")
     def testMultiMeasureEndingsWrite(self):
         # Relevant barlines:
         # Measure 1, left barline: no ending
@@ -530,6 +580,7 @@ class Test(unittest.TestCase):
                 if expectRightBarline:
                     self.assertTrue(gotRightBarline)
 
+    @unittest.skipUnless(HAVE_MUSICXML_EXPORT_SUPPORT, "Requires music21 MusicXML export support for music19 objects")
     def testTextExpressionOffset(self):
         '''
         Transfer element offset after calling getTextExpression().
@@ -551,6 +602,7 @@ class Test(unittest.TestCase):
         mxDirection = tree.find('part/measure/direction')
         self.assertEqual(mxDirection.get('placement'), 'above')
 
+    @unittest.skipUnless(HAVE_MUSICXML_EXPORT_SUPPORT, "Requires music21 MusicXML export support for music19 objects")
     def testFullMeasureRest(self):
         s = converter.parse('tinynotation: 9/8 r1')
         r = s[note.Rest].first()
@@ -564,6 +616,7 @@ class Test(unittest.TestCase):
         self.assertEqual(rest.get('measure'), 'yes')
         self.assertIsNone(tree.find('.//note/type'))
 
+    @unittest.skipUnless(HAVE_MUSICXML_EXPORT_SUPPORT, "Requires music21 MusicXML export support for music19 objects")
     def testArticulationSpecialCases(self):
         n = note.Note()
         a = articulations.StringIndication()
@@ -584,6 +637,7 @@ class Test(unittest.TestCase):
         self.assertIsNone(tree.find('.//string'))
         self.assertIsNone(tree.find('.//other-technical'))
 
+    @unittest.skipUnless(HAVE_MUSICXML_EXPORT_SUPPORT, "Requires music21 MusicXML export support for music19 objects")
     def testMeasurePadding(self):
         s = stream.Score([converter.parse('tinyNotation: 4/4 c4')])
         s[stream.Measure].first().paddingLeft = 2.0
@@ -598,6 +652,7 @@ class Test(unittest.TestCase):
         tree = self.getET(s)
         self.assertEqual(len(tree.findall('.//rest')), 1)
 
+    @unittest.skipUnless(HAVE_MUSICXML_EXPORT_SUPPORT, "Requires music21 MusicXML export support for music19 objects")
     def test_instrumentDoesNotCreateForward(self):
         '''
         Instrument tags were causing forward motion in some cases.
@@ -617,6 +672,7 @@ class Test(unittest.TestCase):
         self.assertTrue(tree.findall('.//note'))
         self.assertFalse(tree.findall('.//forward'))
 
+    @unittest.skipUnless(HAVE_MUSICXML_EXPORT_SUPPORT, "Requires music21 MusicXML export support for music19 objects")
     def testOutOfBoundsExpressionDoesNotCreateForward(self):
         '''
         A metronome mark at an offset exceeding the bar duration was causing
@@ -635,6 +691,7 @@ class Test(unittest.TestCase):
             int(tree.findall('.//direction/offset')[0].text),
             defaults.divisionsPerQuarter)
 
+    @unittest.skipUnless(HAVE_MUSICXML_EXPORT_SUPPORT, "Requires music21 MusicXML export support for music19 objects")
     def testPedals(self):
         expectedResults1 = (
             {
@@ -715,6 +772,7 @@ class Test(unittest.TestCase):
                 for k in expectedResults2[i]:
                     self.assertEqual(mxPedal.get(k, ''), expectedResults2[i][k])
 
+    @unittest.skipUnless(HAVE_MUSICXML_EXPORT_SUPPORT, "Requires music21 MusicXML export support for music19 objects")
     def testArpeggios(self):
         expectedResults = (
             'arpeggiate',
@@ -772,6 +830,7 @@ class Test(unittest.TestCase):
                 self.assertIsNone(arp)
                 self.assertIsNone(nonArp)
 
+    @unittest.skipUnless(HAVE_MUSICXML_EXPORT_SUPPORT, "Requires music21 MusicXML export support for music19 objects")
     def testArpeggioMarkSpanners(self):
         expectedNumber = (
             #  three-note chord with single-chord arpeggio
@@ -808,6 +867,7 @@ class Test(unittest.TestCase):
                     arpNum = arp.get('number')
                 self.assertEqual(arpNum, expectedNumber[note_index])
 
+    @unittest.skipUnless(HAVE_MUSICXML_EXPORT_SUPPORT, "Requires music21 MusicXML export support for music19 objects")
     def testArpeggioMarkSpannersNonArpeggiate(self):
         c1 = chord.Chord(['C3', 'E3', 'G3'])
         n2 = note.Note('D4')
@@ -846,6 +906,7 @@ class Test(unittest.TestCase):
                     self.assertEqual(arpNum, '1')
 
 
+    @unittest.skipUnless(HAVE_MUSICXML_EXPORT_SUPPORT, "Requires music21 MusicXML export support for music19 objects")
     def testExportChordSymbolsWithRealizedDurations(self):
 
         def realizeDurationsAndAssertTags(mm: stream.Measure, forwardTag=False, offsetTag=False):
@@ -893,6 +954,7 @@ class Test(unittest.TestCase):
         n1.quarterLength = 2
         realizeDurationsAndAssertTags(m, forwardTag=False, offsetTag=False)
 
+    @unittest.skipUnless(HAVE_MUSICXML_EXPORT_SUPPORT, "Requires music21 MusicXML export support for music19 objects")
     def test_inexpressible_hidden_rests_become_forward_tags(self):
         '''
         Express hidden rests with inexpressible durations as <forward> tags.
@@ -919,8 +981,9 @@ class Test(unittest.TestCase):
         # No <forward> tag is necessary to finish the incomplete measure (3.9979 -> 4.0)
         self.assertEqual(len(tree.findall('.//forward')), 1)
 
+    @unittest.skipUnless(HAVE_MUSICXML_EXPORT_SUPPORT, "Requires music21 MusicXML export support for music19 objects")
     def test_roman_musicxml_two_kinds(self):
-        from music21.roman import RomanNumeral
+        from music19.roman import RomanNumeral
 
         # normal roman numerals take up no time in xml output.
         rn1 = RomanNumeral('I', 'C')
@@ -953,6 +1016,7 @@ class Test(unittest.TestCase):
         self.assertIn('<rest', xmlOut)
         self.assertNotIn('<forward>', xmlOut)
 
+    @unittest.skipUnless(HAVE_MUSICXML_EXPORT_SUPPORT, "Requires music21 MusicXML export support for music19 objects")
     def test_stem_style_without_direction(self):
         one_note_tune = converter.parse('tinyNotation: 2/4 c2')
         half_note = one_note_tune.recurse().notes.first()
@@ -965,6 +1029,7 @@ class Test(unittest.TestCase):
 class TestExternal(unittest.TestCase):
     show = True
 
+    @unittest.skipUnless(HAVE_MUSICXML_EXPORT_SUPPORT, "Requires music21 MusicXML export support for music19 objects")
     def testSimple(self):
         # b = converter.parse(corpus.corpora.CoreCorpus().getWorkList('cpebach')[0],
         #    format='musicxml', forceSource=True)
@@ -1013,5 +1078,5 @@ class TestExternal(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    import music21
-    music21.mainTest(Test)  # , runTest='testExceptionMessage')
+    import music19
+    music19.mainTest(Test)  # , runTest='testExceptionMessage')

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
 # Name:         tests/conftest.py
-# Purpose:      PyCharm/pytest configuration for music21 tests
+# Purpose:      PyCharm/pytest configuration for music19 tests
 #
 # Authors:      Michael Scott Asato Cuthbert
 #               Christopher Ariza
@@ -10,9 +10,9 @@
 # License:      BSD, see license.txt
 # -----------------------------------------------------------------------------
 """
-PyCharm/pytest configuration for music21 tests.
+PyCharm/pytest configuration for music19 tests.
 
-This file configures test discovery and setup for running music21 tests
+This file configures test discovery and setup for running music19 tests
 in PyCharm, Rider, or with pytest.
 """
 import sys
@@ -27,7 +27,7 @@ if str(music21_root) not in sys.path:
 import pytest
 
 # Import music21 to ensure proper initialization
-import music21
+import music19
 
 @pytest.fixture(scope="session", autouse=True)
 def setup_music21_environment():
@@ -68,8 +68,8 @@ def pytest_collection_modifyitems(config, items):
         # Mark external tests
         if "external" in str(item.fspath):
             item.add_marker(pytest.mark.external)
-        
-        # Mark integration tests  
+
+        # Mark integration tests
         if "integration" in str(item.fspath):
             item.add_marker(pytest.mark.external)
             item.add_marker(pytest.mark.slow)

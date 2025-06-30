@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-music19 is a slim-downed version of music21: A Toolkit for Computer-Aided Musical Analysis and Computational Musicology. It's a sophisticated Python library for music analysis, notation, and computational musicology research.
+music19 is a slim-downed version of music19: A Toolkit for Computer-Aided Musical Analysis and Computational Musicology. It's a sophisticated Python library for music analysis, notation, and computational musicology research.
 
 ## Development Commands
 

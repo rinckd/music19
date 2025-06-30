@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
 # Name:         tests/__init__.py
-# Purpose:      Test package for music21
+# Purpose:      Test package for music19
 #
 # Authors:      Michael Scott Asato Cuthbert
 #               Christopher Ariza
@@ -10,9 +10,9 @@
 # License:      BSD, see license.txt
 # -----------------------------------------------------------------------------
 """
-Test package for music21.
+Test package for music19.
 
-This package contains all tests for music21, organized into:
+This package contains all tests for music19, organized into:
 - unit/: Unit tests extracted from embedded Test classes
 - external/: External/integration tests (TestExternal classes)
 - integration/: End-to-end integration tests
@@ -20,5 +20,5 @@ This package contains all tests for music21, organized into:
 Tests can be run via:
 - PyCharm/Rider test discovery
 - pytest
-- music21.mainTest() (backward compatibility)
+- music19.mainTest() (backward compatibility)
 """

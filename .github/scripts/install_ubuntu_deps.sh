@@ -11,4 +11,4 @@ sh lilypond-2.22.1-1.linux-64.sh --batch
 export PATH=/home/runner/bin:$PATH
 pip3 install wheel
 pip3 install -r requirements_dev.txt
-python3 -m compileall music21
+python3 -m compileall music19

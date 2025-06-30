@@ -10,7 +10,7 @@ if current_dir not in sys.path:
     sys.path.insert(0, current_dir)
 
 # Now import and check
-import music21
+import music19
 
 print(f"Python executable: {sys.executable}")
 print(f"music21 location: {music21.__file__}")

@@ -2,10 +2,10 @@ from __future__ import annotations
 
 import unittest
 
-from music21 import corpus
-from music21 import interval
-from music21 import note
-from music21 import pitch
+from music19 import corpus
+from music19 import interval
+from music19 import note
+from music19 import pitch
 
 
 class Test(unittest.TestCase):
@@ -230,9 +230,9 @@ class Test(unittest.TestCase):
         sSub = s.parts[3].measures(2, 6)
 
         self.assertEqual(collectAccidentalDisplayStatus(sSub),
-                         ['x', False, 'x', 'x', True, False, 'x', False, False, False,
-                          False, False, False, 'x', 'x', 'x', False, False, False,
-                          'x', 'x', 'x', 'x', True, False])
+                         ['x', None, 'x', 'x', None, None, 'x', None, None, None,
+                          None, None, None, 'x', 'x', 'x', None, None, None,
+                          'x', 'x', 'x', 'x', None, None])
 
         sTransposed = sSub.flatten().transpose('p5')
         # sTransposed.show()
@@ -263,19 +263,19 @@ class Test(unittest.TestCase):
         self.assertEqual(i.cents, 525.0)
         # we can subtract the two to get an offset
         self.assertEqual(i.cents, 525.0)
-        self.assertEqual(str(i), '<music21.interval.Interval P4 (+25c)>')
+        self.assertEqual(str(i), '<music19.interval.Interval P4 (+25c)>')
         self.assertEqual(i._diatonicIntervalCentShift(), 25)
 
         i = interval.Interval(4.75)  # a flat p4
-        self.assertEqual(str(i), '<music21.interval.Interval P4 (-25c)>')
+        self.assertEqual(str(i), '<music19.interval.Interval P4 (-25c)>')
         self.assertEqual(i._diatonicIntervalCentShift(), -25)
 
         i = interval.Interval(4.48)  # a sharp M3
-        self.assertEqual(str(i), '<music21.interval.Interval M3 (+48c)>')
+        self.assertEqual(str(i), '<music19.interval.Interval M3 (+48c)>')
         self.assertAlmostEqual(i._diatonicIntervalCentShift(), 48.0)
 
         i = interval.Interval(4.5)  # a sharp M3
-        self.assertEqual(str(i), '<music21.interval.Interval M3 (+50c)>')
+        self.assertEqual(str(i), '<music19.interval.Interval M3 (+50c)>')
         self.assertAlmostEqual(i._diatonicIntervalCentShift(), 50.0)
 
         i = interval.Interval(5.25)  # a sharp p4
@@ -345,10 +345,10 @@ class Test(unittest.TestCase):
 
     def testIntervalMicrotonesB(self):
         i = interval.Interval(note.Note('c4'), note.Note('c#4'))
-        self.assertEqual(str(i), '<music21.interval.Interval A1>')
+        self.assertEqual(str(i), '<music19.interval.Interval A1>')
 
         i = interval.Interval(note.Note('c4'), note.Note('c~4'))
-        self.assertEqual(str(i), '<music21.interval.Interval A1 (-50c)>')
+        self.assertEqual(str(i), '<music19.interval.Interval A1 (-50c)>')
 
     def testDescendingAugmentedUnison(self):
         ns = note.Note('C4')
@@ -449,5 +449,5 @@ class Test(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    import music21
-    music21.mainTest(Test)
+    import music19
+    music19.mainTest(Test)

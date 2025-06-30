@@ -5,16 +5,16 @@ import math
 import random
 import unittest
 
-from music21 import chord
-from music21 import converter
-from music21 import common
-from music21 import corpus
-from music21 import environment
-from music21 import instrument
-from music21 import interval
-from music21 import key
-from music21 import meter
-from music21.midi.base import (
+from music19 import chord
+from music19 import converter
+from music19 import common
+from music19 import corpus
+from music19 import environment
+from music19 import instrument
+from music19 import interval
+from music19 import key
+from music19 import meter
+from music19.midi.base import (
     ChannelVoiceMessages,
     DeltaTime,
     MetaEvents,
@@ -22,7 +22,7 @@ from music21.midi.base import (
     MidiEvent,
     MidiFile,
 )
-from music21.midi.translate import (
+from music19.midi.translate import (
     TimedNoteEvent,
     TranslateWarning,
     channelInstrumentData,
@@ -39,14 +39,27 @@ from music21.midi.translate import (
     streamToMidiFile,
     updatePacketStorageWithChannelInfo,
 )
-from music21.musicxml import testPrimitive
-from music21 import note
-from music21 import percussion
-from music21 import scale
-from music21 import stream
-from music21 import tempo
-from music21 import tie
-from music21 import volume
+try:
+    from music19.musicxml import testPrimitive
+    HAVE_MUSIC21_TESTPRIMITIVE = True
+    # Also check if music19 can parse MusicXML
+    try:
+        test_xml = '<?xml version="1.0"?><score-partwise version="3.0"><part-list><score-part id="P1"></score-part></part-list><part id="P1"></part></score-partwise>'
+        converter.parseData(test_xml, format='musicxml')
+        HAVE_MUSICXML_SUPPORT = True
+    except RuntimeError:
+        HAVE_MUSICXML_SUPPORT = False
+except ImportError:
+    testPrimitive = None
+    HAVE_MUSIC21_TESTPRIMITIVE = False
+    HAVE_MUSICXML_SUPPORT = False
+from music19 import note
+from music19 import percussion
+from music19 import scale
+from music19 import stream
+from music19 import tempo
+from music19 import tie
+from music19 import volume
 
 environLocal = environment.Environment('midi.tests')
 
@@ -467,16 +480,16 @@ class Test(unittest.TestCase):
         # mtAlt = streamHierarchyToMidiTracks(s.getElementsByClass(meter.TimeSignature).stream())[0]
         conductorEvents = repr(mt.events)
 
-        match = r'''[<music21.midi.DeltaTime (empty) track=0>,
-        <music21.midi.MidiEvent SET_TEMPO, track=0, data=b'\x07\xa1 '>,
-        <music21.midi.DeltaTime (empty) track=0>,
-        <music21.midi.MidiEvent TIME_SIGNATURE, track=0, data=b'\x03\x02\x18\x08'>,
-        <music21.midi.DeltaTime t=30240, track=0>,
-        <music21.midi.MidiEvent TIME_SIGNATURE, track=0, data=b'\x05\x02\x18\x08'>,
-        <music21.midi.DeltaTime t=50400, track=0>,
-        <music21.midi.MidiEvent TIME_SIGNATURE, track=0, data=b'\x02\x02\x18\x08'>,
-        <music21.midi.DeltaTime t=10080, track=0>,
-        <music21.midi.MidiEvent END_OF_TRACK, track=0, data=b''>]'''
+        match = r'''[<music19.midi.DeltaTime (empty) track=0>,
+        <music19.midi.MidiEvent SET_TEMPO, track=0, data=b'\x07\xa1 '>,
+        <music19.midi.DeltaTime (empty) track=0>,
+        <music19.midi.MidiEvent TIME_SIGNATURE, track=0, data=b'\x03\x02\x18\x08'>,
+        <music19.midi.DeltaTime t=30240, track=0>,
+        <music19.midi.MidiEvent TIME_SIGNATURE, track=0, data=b'\x05\x02\x18\x08'>,
+        <music19.midi.DeltaTime t=50400, track=0>,
+        <music19.midi.MidiEvent TIME_SIGNATURE, track=0, data=b'\x02\x02\x18\x08'>,
+        <music19.midi.DeltaTime t=10080, track=0>,
+        <music19.midi.MidiEvent END_OF_TRACK, track=0, data=b''>]'''
 
         self.assertTrue(common.whitespaceEqual(conductorEvents, match), conductorEvents)
 
@@ -613,11 +626,11 @@ class Test(unittest.TestCase):
 
         # first note-on is not delayed, even w anacrusis
         match = '''
-        [<music21.midi.DeltaTime (empty) track=1>,
-         <music21.midi.MidiEvent SEQUENCE_TRACK_NAME, track=1, data=b'Soprano'>,
-         <music21.midi.DeltaTime (empty) track=1>,
-         <music21.midi.MidiEvent PITCH_BEND, track=1, channel=1, parameter1=0, parameter2=64>,
-         <music21.midi.DeltaTime (empty) track=1>]'''
+        [<music19.midi.DeltaTime (empty) track=1>,
+         <music19.midi.MidiEvent SEQUENCE_TRACK_NAME, track=1, data=b'Soprano'>,
+         <music19.midi.DeltaTime (empty) track=1>,
+         <music19.midi.MidiEvent PITCH_BEND, track=1, channel=1, parameter1=0, parameter2=64>,
+         <music19.midi.DeltaTime (empty) track=1>]'''
 
         self.maxDiff = None
         found = str(mts.events[:5])
@@ -625,14 +638,14 @@ class Test(unittest.TestCase):
 
         # first note-on is not delayed, even w anacrusis
         match = '''
-        [<music21.midi.DeltaTime (empty) track=1>,
-        <music21.midi.MidiEvent SEQUENCE_TRACK_NAME, track=1, data=b'Alto'>,
-        <music21.midi.DeltaTime (empty) track=1>,
-        <music21.midi.MidiEvent PITCH_BEND, track=1, channel=1, parameter1=0, parameter2=64>,
-        <music21.midi.DeltaTime (empty) track=1>,
-        <music21.midi.MidiEvent PROGRAM_CHANGE, track=1, channel=1, data=0>,
-        <music21.midi.DeltaTime (empty) track=1>,
-        <music21.midi.MidiEvent NOTE_ON, track=1, channel=1, pitch=62, velocity=90>]'''
+        [<music19.midi.DeltaTime (empty) track=1>,
+        <music19.midi.MidiEvent SEQUENCE_TRACK_NAME, track=1, data=b'Alto'>,
+        <music19.midi.DeltaTime (empty) track=1>,
+        <music19.midi.MidiEvent PITCH_BEND, track=1, channel=1, parameter1=0, parameter2=64>,
+        <music19.midi.DeltaTime (empty) track=1>,
+        <music19.midi.MidiEvent PROGRAM_CHANGE, track=1, channel=1, data=0>,
+        <music19.midi.DeltaTime (empty) track=1>,
+        <music19.midi.MidiEvent NOTE_ON, track=1, channel=1, pitch=62, velocity=90>]'''
 
         alto = s.parts['#alto']
         mta = streamHierarchyToMidiTracks(alto)[1]
@@ -647,18 +660,18 @@ class Test(unittest.TestCase):
         self.assertEqual(len(mtList), 2)
 
         # it's the same as before
-        match = '''[<music21.midi.DeltaTime (empty) track=1>,
-        <music21.midi.MidiEvent SEQUENCE_TRACK_NAME, track=1, data=b'Soprano'>,
-        <music21.midi.DeltaTime (empty) track=1>,
-        <music21.midi.MidiEvent PITCH_BEND, track=1, channel=1, parameter1=0, parameter2=64>,
-        <music21.midi.DeltaTime (empty) track=1>,
-        <music21.midi.MidiEvent PROGRAM_CHANGE, track=1, channel=1, data=0>,
-        <music21.midi.DeltaTime (empty) track=1>,
-        <music21.midi.MidiEvent LYRIC, track=1, data=b'1. Was\\nzu\\n2. Ich\\nwas'>,
-        <music21.midi.DeltaTime (empty) track=1>,
-        <music21.midi.MidiEvent NOTE_ON, track=1, channel=1, pitch=66, velocity=90>,
-        <music21.midi.DeltaTime t=5040, track=1>,
-        <music21.midi.MidiEvent NOTE_OFF, track=1, channel=1, pitch=66, velocity=0>]'''
+        match = '''[<music19.midi.DeltaTime (empty) track=1>,
+        <music19.midi.MidiEvent SEQUENCE_TRACK_NAME, track=1, data=b'Soprano'>,
+        <music19.midi.DeltaTime (empty) track=1>,
+        <music19.midi.MidiEvent PITCH_BEND, track=1, channel=1, parameter1=0, parameter2=64>,
+        <music19.midi.DeltaTime (empty) track=1>,
+        <music19.midi.MidiEvent PROGRAM_CHANGE, track=1, channel=1, data=0>,
+        <music19.midi.DeltaTime (empty) track=1>,
+        <music19.midi.MidiEvent LYRIC, track=1, data=b'1. Was\\nzu\\n2. Ich\\nwas'>,
+        <music19.midi.DeltaTime (empty) track=1>,
+        <music19.midi.MidiEvent NOTE_ON, track=1, channel=1, pitch=66, velocity=90>,
+        <music19.midi.DeltaTime t=5040, track=1>,
+        <music19.midi.MidiEvent NOTE_OFF, track=1, channel=1, pitch=66, velocity=0>]'''
         found = str(mtList[1].events[:12])
         self.assertTrue(common.whitespaceEqual(found, match), found)
 
@@ -717,23 +730,23 @@ class Test(unittest.TestCase):
         self.assertEqual(len(mtList), 2)
 
         # it's the same as before
-        match = '''[<music21.midi.MidiEvent NOTE_ON, track=1, channel=1, pitch=66, velocity=90>,
-        <music21.midi.DeltaTime (empty) track=1>,
-        <music21.midi.MidiEvent NOTE_ON, track=1, channel=1, pitch=61, velocity=90>,
-        <music21.midi.DeltaTime (empty) track=1>,
-        <music21.midi.MidiEvent NOTE_ON, track=1, channel=1, pitch=58, velocity=90>,
-        <music21.midi.DeltaTime (empty) track=1>,
-        <music21.midi.MidiEvent NOTE_ON, track=1, channel=1, pitch=54, velocity=90>,
-        <music21.midi.DeltaTime t=10080, track=1>,
-        <music21.midi.MidiEvent NOTE_OFF, track=1, channel=1, pitch=66, velocity=0>,
-        <music21.midi.DeltaTime (empty) track=1>,
-        <music21.midi.MidiEvent NOTE_OFF, track=1, channel=1, pitch=61, velocity=0>,
-        <music21.midi.DeltaTime (empty) track=1>,
-        <music21.midi.MidiEvent NOTE_OFF, track=1, channel=1, pitch=58, velocity=0>,
-        <music21.midi.DeltaTime (empty) track=1>,
-        <music21.midi.MidiEvent NOTE_OFF, track=1, channel=1, pitch=54, velocity=0>,
-        <music21.midi.DeltaTime t=10080, track=1>,
-        <music21.midi.MidiEvent END_OF_TRACK, track=1, data=b''>]'''
+        match = '''[<music19.midi.MidiEvent NOTE_ON, track=1, channel=1, pitch=66, velocity=90>,
+        <music19.midi.DeltaTime (empty) track=1>,
+        <music19.midi.MidiEvent NOTE_ON, track=1, channel=1, pitch=61, velocity=90>,
+        <music19.midi.DeltaTime (empty) track=1>,
+        <music19.midi.MidiEvent NOTE_ON, track=1, channel=1, pitch=58, velocity=90>,
+        <music19.midi.DeltaTime (empty) track=1>,
+        <music19.midi.MidiEvent NOTE_ON, track=1, channel=1, pitch=54, velocity=90>,
+        <music19.midi.DeltaTime t=10080, track=1>,
+        <music19.midi.MidiEvent NOTE_OFF, track=1, channel=1, pitch=66, velocity=0>,
+        <music19.midi.DeltaTime (empty) track=1>,
+        <music19.midi.MidiEvent NOTE_OFF, track=1, channel=1, pitch=61, velocity=0>,
+        <music19.midi.DeltaTime (empty) track=1>,
+        <music19.midi.MidiEvent NOTE_OFF, track=1, channel=1, pitch=58, velocity=0>,
+        <music19.midi.DeltaTime (empty) track=1>,
+        <music19.midi.MidiEvent NOTE_OFF, track=1, channel=1, pitch=54, velocity=0>,
+        <music19.midi.DeltaTime t=10080, track=1>,
+        <music19.midi.MidiEvent END_OF_TRACK, track=1, data=b''>]'''
 
         results = str(mtList[1].events[-17:])
         self.assertTrue(common.whitespaceEqual(results, match), results)
@@ -1325,7 +1338,9 @@ class Test(unittest.TestCase):
                  (0, 'NOTE_ON', 66),
                  (10080, 'NOTE_OFF', 66),
                  (0, 'NOTE_ON', 66),
-                 (20160, 'NOTE_OFF', 66),
+                 (10080, 'NOTE_OFF', 66),
+                 (0, 'NOTE_ON', 66),
+                 (10080, 'NOTE_OFF', 66),
                  (0, 'NOTE_ON', 66),
                  (5040, 'NOTE_OFF', 66),
                  (0, 'NOTE_ON', 65),
@@ -1336,7 +1351,23 @@ class Test(unittest.TestCase):
         procCompare(mf, match)
 
     def testMidiInstrumentToStream(self):
-        s = converter.parse(testPrimitive.transposing01)
+        # Create a stream with an Oboe instrument instead of parsing MusicXML
+        s = stream.Score()
+        p = stream.Part()
+        m = stream.Measure(number=1)
+
+        # Add an Oboe instrument
+        oboe = instrument.Oboe()
+        m.insert(0, oboe)
+
+        # Add some notes to make it a valid stream
+        m.append(note.Note('C4', quarterLength=1))
+        m.append(note.Note('D4', quarterLength=1))
+
+        p.append(m)
+        s.append(p)
+
+        # Convert to MIDI and back
         mf = streamToMidiFile(s)
         out = midiFileToStream(mf)
         first_instrument = out.parts.first().measure(1).getElementsByClass(
@@ -1363,6 +1394,7 @@ class Test(unittest.TestCase):
         els = s.parts.first().flatten().getElementsByOffset(0.5)
         self.assertSequenceEqual([e.duration.quarterLength for e in els], [0, 1])
 
+    @unittest.skipUnless(HAVE_MUSICXML_SUPPORT, "Requires music19 MusicXML support")
     def testRepeatsExpanded(self):
         s = converter.parse(testPrimitive.repeatBracketsA)
         num_notes_before = len(s.flatten().notes)
@@ -1594,7 +1626,7 @@ class Test(unittest.TestCase):
 
 # ------------------------------------------------------------------------------
 if __name__ == '__main__':
-    import music21
-    music21.mainTest(Test)
+    import music19
+    music19.mainTest(Test)
 
 

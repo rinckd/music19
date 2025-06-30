@@ -27,9 +27,9 @@ import unittest.runner
 from unittest.signals import registerResult
 import warnings
 
-import music21
-from music21 import environment
-from music21 import common
+import music19
+from music19 import environment
+from music19 import common
 
 environLocal = environment.Environment('test.commonTest')
 
@@ -102,7 +102,7 @@ def testImports():
         raise ImportError('pip install python-Levenshtein : needed for running test suites') from e
 
     # Lilypond support removed - no longer required for test suites
-    # from music21.lily.translate import LilypondConverter, LilyTranslateException
+    # from music19.lily.translate import LilypondConverter, LilyTranslateException
     # try:
     #     LilypondConverter()
     # except LilyTranslateException as e:
@@ -203,7 +203,7 @@ class ModuleGather:
     Utility class for gathering and importing all modules in the music21
     package. Puts them in self.modulePaths.
 
-    >>> from music21.test import commonTest
+    >>> from music19.test import commonTest
     >>> mg = commonTest.ModuleGather(useExtended=True)
     >>> #_DOCS_SHOW print(mg.modulePaths[0])
     D:\Web\eclipse\music21base\music21\volume.py
@@ -341,7 +341,7 @@ class ModuleGather:
         r'''
         Given full file pathlib.Path, find a name for the module with _ as the separator.
 
-        >>> from music21.test import commonTest
+        >>> from music19.test import commonTest
         >>> mg = commonTest.ModuleGather()
         >>> #_DOCS_SHOW mg._getName(r'D:\Web\eclipse\music21base\music21\chord.py')
         'chord'
@@ -357,7 +357,7 @@ class ModuleGather:
         r'''
         Given full file path, find a name for the module with . as the separator.
 
-        >>> from music21.test import commonTest
+        >>> from music19.test import commonTest
         >>> mg = commonTest.ModuleGather()
         >>> name = '/Users/cuthbert/git/music21base/music21/features/native.py'
         >>> #_DOCS_SHOW mg._getNamePeriod(name)
@@ -482,4 +482,4 @@ class ModuleGather:
 
 
 if __name__ == '__main__':
-    music21.mainTest()
+    music19.mainTest()

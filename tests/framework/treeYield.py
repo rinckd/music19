@@ -15,7 +15,7 @@ from __future__ import annotations
 
 import weakref
 
-import music21
+import music19
 
 class TreeYielder:  # pragma: no cover
     def __init__(self, yieldValue=None):
@@ -141,9 +141,9 @@ def testCode():  # pragma: no cover
 
 
 def testMIDIParse():  # pragma: no cover
-    from music21 import converter
-    from music21 import common
-    from music21 import freezeThaw
+    from music19 import converter
+    from music19 import common
+    from music19 import freezeThaw
 
     # a = 'https://github.com/ELVIS-Project/vis/raw/master/test_corpus/prolationum-sanctus.midi'
     # c = converter.parse(a)

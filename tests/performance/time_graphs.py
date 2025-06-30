@@ -17,8 +17,8 @@ import cProfile
 import pstats
 # import time
 
-import music21
-# from music21.common.objects import Timer
+import music19
+# from music19.common.objects import Timer
 
 
 
@@ -127,7 +127,7 @@ class TestMusicXMLOutputParts(Test):
     creation is much faster than score creation.
     '''
     def __init__(self):
-        from music21 import corpus
+        from music19 import corpus
 
         self.s = corpus.parse('bach/bwv66.6', forceSource=True)
         # self.s = corpus.parse('beethoven/opus59no2/movement3', forceSource=True)
@@ -142,7 +142,7 @@ class TestMusicXMLOutputParts(Test):
 class TestCreateTimeSignature(Test):
 
     def __init__(self):
-        from music21.test import testPerformance
+        from music19.test import testPerformance
         self.t = testPerformance.Test()
 
     def testFocus(self):
@@ -154,7 +154,7 @@ class TestCreateTimeSignature(Test):
 class TestCreateDurations(Test):
 
     def __init__(self):
-        from music21.test import testPerformance
+        from music19.test import testPerformance
         self.t = testPerformance.Test()
 
     def testFocus(self):
@@ -167,7 +167,7 @@ class TestCreateDurations(Test):
 class TestParseABC(Test):
 
     def __init__(self):
-        from music21.test import testPerformance
+        from music19.test import testPerformance
         self.t = testPerformance.Test()
 
     def testFocus(self):
@@ -182,10 +182,10 @@ class TestParseABC(Test):
 class TestGetContextByClassA(Test):
 
     def __init__(self):
-        from music21 import corpus
-        from music21 import meter
-        from music21 import clef
-        from music21 import key
+        from music19 import corpus
+        from music19 import meter
+        from music19 import clef
+        from music19 import key
         self.s = corpus.parse('bwv66.6')
         self.m = meter
         self.c = clef
@@ -209,7 +209,7 @@ class TestGetContextByClassA(Test):
 class TestParseRNText(Test):
 
     def __init__(self):
-        from music21.test import testPerformance
+        from music19.test import testPerformance
         self.t = testPerformance.Test()
 
     def testFocus(self):
@@ -220,8 +220,8 @@ class TestParseRNText(Test):
 class TestMusicXMLMultiPartOutput(Test):
 
     def __init__(self):
-        from music21 import note
-        from music21 import stream
+        from music19 import note
+        from music19 import stream
         self.s = stream.Score()
         for i in range(10):  # parts
             p = stream.Part()
@@ -244,7 +244,7 @@ class TestMusicXMLMultiPartOutput(Test):
 class TestCommonContextSearches(Test):
 
     def __init__(self):
-        from music21 import corpus
+        from music19 import corpus
         self.s = corpus.parse('bwv66.6')
 
     def testFocus(self):
@@ -255,7 +255,7 @@ class TestCommonContextSearches(Test):
 class TestBigMusicXML(Test):
 
     def __init__(self):
-        from music21 import corpus
+        from music19 import corpus
         self.s = corpus.parse('opus41no1')
 
     def testFocus(self):
@@ -265,7 +265,7 @@ class TestBigMusicXML(Test):
 class TestGetElementsByClassA(Test):
 
     def __init__(self):
-        from music21 import corpus
+        from music19 import corpus
         self.s = corpus.parse('bwv66.6')
 
     def testFocus(self):
@@ -276,11 +276,11 @@ class TestGetElementsByClassA(Test):
 class TestGetElementsByClassB(Test):
 
     def __init__(self):
-        from music21 import stream
-        from music21 import note
-        from music21 import clef
-        from music21 import meter
-        from music21 import chord
+        from music19 import stream
+        from music19 import note
+        from music19 import clef
+        from music19 import meter
+        from music19 import chord
         self.s = stream.Stream()
         self.s.repeatAppend(note.Note(), 300)
         self.s.repeatAppend(note.Rest(), 300)
@@ -301,9 +301,9 @@ class TestGetElementsByClassB(Test):
 
 class TestGetContextByClassB(Test):
     def __init__(self):
-        from music21 import meter
-        from music21 import note
-        from music21 import stream
+        from music19 import meter
+        from music19 import note
+        from music19 import stream
 
         self.s = stream.Score()
 
@@ -362,7 +362,7 @@ class TestGetContextByClassB(Test):
 class TestMeasuresA(Test):
 
     def __init__(self):
-        from music21 import corpus
+        from music19 import corpus
         self.s = corpus.parse('symphony94/02')
 
     def testFocus(self):
@@ -371,9 +371,9 @@ class TestMeasuresA(Test):
 
 class TestMeasuresB(Test):
     def __init__(self):
-        from music21 import stream
-        from music21 import note
-        from music21 import meter
+        from music19 import stream
+        from music19 import note
+        from music19 import meter
 
         self.s = stream.Score()
         for j in [1]:

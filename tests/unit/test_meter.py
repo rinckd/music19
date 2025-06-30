@@ -15,15 +15,15 @@ import copy
 import random
 import unittest
 
-from music21 import common
-from music21 import duration
-from music21 import note
-from music21 import stream
-from music21.meter.base import TimeSignature
-from music21.meter.core import MeterSequence, MeterTerminal
+from music19 import common
+from music19 import duration
+from music19 import note
+from music19 import stream
+from music19.meter.base import TimeSignature
+from music19.meter.core import MeterSequence, MeterTerminal
 
 class TestExternal(unittest.TestCase):
-    show = True
+    show = False
 
     def testSingle(self):
         '''
@@ -110,16 +110,16 @@ class Test(unittest.TestCase):
 
         notesList = [note.Note(quarterLength=4 / d) for d in durList]
         beams = ts.getBeams(notesList)
-        match = '''[<music21.beam.Beams <music21.beam.Beam 1/start>/<music21.beam.Beam 2/start>>,
-        <music21.beam.Beams <music21.beam.Beam 1/continue>/<music21.beam.Beam 2/continue>>,
-        <music21.beam.Beams <music21.beam.Beam 1/continue>/<music21.beam.Beam 2/continue>>,
-        <music21.beam.Beams <music21.beam.Beam 1/continue>/<music21.beam.Beam 2/stop>>,
-        <music21.beam.Beams <music21.beam.Beam 1/stop>>,
-        <music21.beam.Beams <music21.beam.Beam 1/start>/<music21.beam.Beam 2/start>>,
-        <music21.beam.Beams <music21.beam.Beam 1/continue>/<music21.beam.Beam 2/continue>>,
-        <music21.beam.Beams <music21.beam.Beam 1/continue>/<music21.beam.Beam 2/continue>>,
-        <music21.beam.Beams <music21.beam.Beam 1/continue>/<music21.beam.Beam 2/stop>>,
-        <music21.beam.Beams <music21.beam.Beam 1/stop>>]'''
+        match = '''[<music19.beam.Beams <music19.beam.Beam 1/start>/<music19.beam.Beam 2/start>>,
+        <music19.beam.Beams <music19.beam.Beam 1/continue>/<music19.beam.Beam 2/continue>>,
+        <music19.beam.Beams <music19.beam.Beam 1/continue>/<music19.beam.Beam 2/continue>>,
+        <music19.beam.Beams <music19.beam.Beam 1/continue>/<music19.beam.Beam 2/stop>>,
+        <music19.beam.Beams <music19.beam.Beam 1/stop>>,
+        <music19.beam.Beams <music19.beam.Beam 1/start>/<music19.beam.Beam 2/start>>,
+        <music19.beam.Beams <music19.beam.Beam 1/continue>/<music19.beam.Beam 2/continue>>,
+        <music19.beam.Beams <music19.beam.Beam 1/continue>/<music19.beam.Beam 2/continue>>,
+        <music19.beam.Beams <music19.beam.Beam 1/continue>/<music19.beam.Beam 2/stop>>,
+        <music19.beam.Beams <music19.beam.Beam 1/stop>>]'''
 
         self.assertTrue(common.whitespaceEqual(str(beams), match))
 
@@ -137,20 +137,20 @@ class Test(unittest.TestCase):
         for b in beams[1:]:
             self.assertIsNotNone(b)
         match = '''[None,
-        <music21.beam.Beams <music21.beam.Beam 1/start>>,
-        <music21.beam.Beams <music21.beam.Beam 1/continue>>,
-        <music21.beam.Beams <music21.beam.Beam 1/continue>>,
-        <music21.beam.Beams <music21.beam.Beam 1/stop>>]'''
+        <music19.beam.Beams <music19.beam.Beam 1/start>>,
+        <music19.beam.Beams <music19.beam.Beam 1/continue>>,
+        <music19.beam.Beams <music19.beam.Beam 1/continue>>,
+        <music19.beam.Beams <music19.beam.Beam 1/stop>>]'''
         self.assertTrue(common.whitespaceEqual(str(beams), match))
 
         m.append(note.Note(type='eighth'))
         beams = ts.getBeams(m, measureStartOffset=1.0)
-        match = '''[<music21.beam.Beams <music21.beam.Beam 1/start>>,
-        <music21.beam.Beams <music21.beam.Beam 1/stop>>,
-        <music21.beam.Beams <music21.beam.Beam 1/start>>,
-        <music21.beam.Beams <music21.beam.Beam 1/continue>>,
-        <music21.beam.Beams <music21.beam.Beam 1/continue>>,
-        <music21.beam.Beams <music21.beam.Beam 1/stop>>]'''
+        match = '''[<music19.beam.Beams <music19.beam.Beam 1/start>>,
+        <music19.beam.Beams <music19.beam.Beam 1/stop>>,
+        <music19.beam.Beams <music19.beam.Beam 1/start>>,
+        <music19.beam.Beams <music19.beam.Beam 1/continue>>,
+        <music19.beam.Beams <music19.beam.Beam 1/continue>>,
+        <music19.beam.Beams <music19.beam.Beam 1/stop>>]'''
         self.assertTrue(common.whitespaceEqual(str(beams), match), str(beams))
 
         m = stream.Measure()
@@ -159,10 +159,10 @@ class Test(unittest.TestCase):
 
         beams = ts.getBeams(m, measureStartOffset=3.5)
         match = '''[None,
-        <music21.beam.Beams <music21.beam.Beam 1/start>>,
-        <music21.beam.Beams <music21.beam.Beam 1/continue>>,
-        <music21.beam.Beams <music21.beam.Beam 1/continue>>,
-        <music21.beam.Beams <music21.beam.Beam 1/stop>>]'''
+        <music19.beam.Beams <music19.beam.Beam 1/start>>,
+        <music19.beam.Beams <music19.beam.Beam 1/continue>>,
+        <music19.beam.Beams <music19.beam.Beam 1/continue>>,
+        <music19.beam.Beams <music19.beam.Beam 1/stop>>]'''
         self.assertTrue(common.whitespaceEqual(str(beams), match))
 
 
@@ -171,18 +171,18 @@ class Test(unittest.TestCase):
         ts = TimeSignature('6/8')
         beams = ts.getBeams(m, measureStartOffset=1.0)
         match = '''[None,
-        <music21.beam.Beams <music21.beam.Beam 1/start>>,
-        <music21.beam.Beams <music21.beam.Beam 1/continue>>,
-        <music21.beam.Beams <music21.beam.Beam 1/stop>>]'''
+        <music19.beam.Beams <music19.beam.Beam 1/start>>,
+        <music19.beam.Beams <music19.beam.Beam 1/continue>>,
+        <music19.beam.Beams <music19.beam.Beam 1/stop>>]'''
         self.assertTrue(common.whitespaceEqual(str(beams), match))
 
         m.append(note.Note(type='eighth'))
         beams = ts.getBeams(m, measureStartOffset=0.5)
-        match = '''[<music21.beam.Beams <music21.beam.Beam 1/start>>,
-        <music21.beam.Beams <music21.beam.Beam 1/stop>>,
-        <music21.beam.Beams <music21.beam.Beam 1/start>>,
-        <music21.beam.Beams <music21.beam.Beam 1/continue>>,
-        <music21.beam.Beams <music21.beam.Beam 1/stop>>]'''
+        match = '''[<music19.beam.Beams <music19.beam.Beam 1/start>>,
+        <music19.beam.Beams <music19.beam.Beam 1/stop>>,
+        <music19.beam.Beams <music19.beam.Beam 1/start>>,
+        <music19.beam.Beams <music19.beam.Beam 1/continue>>,
+        <music19.beam.Beams <music19.beam.Beam 1/stop>>]'''
         self.assertTrue(common.whitespaceEqual(str(beams), match), str(beams))
 
 
@@ -425,20 +425,8 @@ class Test(unittest.TestCase):
             ts1._setDefaultAccentWeights(3)  # going to a lower level here
             self.assertEqual([mt.weight for mt in ts1.accentSequence], match)
 
-    def testMusicxmlDirectOut(self):
-        # test rendering musicxml directly from meter
-        from music21.musicxml import m21ToXml
-
-        ts = TimeSignature('3/8')
-        xmlOut = m21ToXml.GeneralObjectExporter().parse(ts).decode('utf-8')
-
-        match = '<time><beats>3</beats><beat-type>8</beat-type></time>'
-        xmlOut = xmlOut.replace(' ', '')
-        xmlOut = xmlOut.replace('\n', '')
-        self.assertNotEqual(xmlOut.find(match), -1)
-
     def testSlowSixEight(self):
-        from music21 import meter
+        from music19 import meter
         # create a meter with 6 beats but beams in 2 groups
         ts = meter.TimeSignature('6/8')
         ts.beatSequence.partition(6)
@@ -483,22 +471,22 @@ class Test(unittest.TestCase):
         beamList = fourFour.getBeams(dList)
         self.assertEqual([repr(b) for b in beamList],
                          ['None', 'None', 'None',
-                          '<music21.beam.Beams <music21.beam.Beam 1/start>>',
-                          '<music21.beam.Beams <music21.beam.Beam 1/stop>>',
+                          '<music19.beam.Beams <music19.beam.Beam 1/start>>',
+                          '<music19.beam.Beams <music19.beam.Beam 1/stop>>',
                           'None'])
 
     def testMixedDurationBeams2(self):
-        from music21 import converter
+        from music19 import converter
         bm = converter.parse('tinyNotation: 3/8 b8 c16 r e. d32').flatten()
         bm2 = bm.makeNotation()
         beamList = [n.beams for n in bm2.recurse().notes]
         self.assertEqual(
             [repr(b) for b in beamList],
-            ['<music21.beam.Beams <music21.beam.Beam 1/start>>',
-             '<music21.beam.Beams <music21.beam.Beam 1/stop>/<music21.beam.Beam 2/partial/left>>',
-             '<music21.beam.Beams <music21.beam.Beam 1/start>/<music21.beam.Beam 2/start>>',
-             '<music21.beam.Beams <music21.beam.Beam 1/stop>/<music21.beam.Beam 2/stop>/'
-             + '<music21.beam.Beam 3/partial/left>>', ]
+            ['<music19.beam.Beams <music19.beam.Beam 1/start>>',
+             '<music19.beam.Beams <music19.beam.Beam 1/stop>/<music19.beam.Beam 2/partial/left>>',
+             '<music19.beam.Beams <music19.beam.Beam 1/start>/<music19.beam.Beam 2/start>>',
+             '<music19.beam.Beams <music19.beam.Beam 1/stop>/<music19.beam.Beam 2/stop>/'
+             + '<music19.beam.Beam 3/partial/left>>', ]
         )
 
         bm = converter.parse("tinyNotation: 2/4 b16 c' b a g f# g r")
@@ -507,24 +495,24 @@ class Test(unittest.TestCase):
         beamListRepr = [str(i) + ' ' + repr(beamList[i]) for i in range(len(beamList))]
         self.maxDiff = 2000
         self.assertEqual(beamListRepr, [
-            '0 <music21.beam.Beams <music21.beam.Beam 1/start>/<music21.beam.Beam 2/start>>',
-            '1 <music21.beam.Beams <music21.beam.Beam 1/continue>/<music21.beam.Beam 2/stop>>',
-            '2 <music21.beam.Beams <music21.beam.Beam 1/continue>/<music21.beam.Beam 2/start>>',
-            '3 <music21.beam.Beams <music21.beam.Beam 1/stop>/<music21.beam.Beam 2/stop>>',
-            '4 <music21.beam.Beams <music21.beam.Beam 1/start>/<music21.beam.Beam 2/start>>',
-            '5 <music21.beam.Beams <music21.beam.Beam 1/continue>/<music21.beam.Beam 2/continue>>',
-            '6 <music21.beam.Beams <music21.beam.Beam 1/stop>/<music21.beam.Beam 2/stop>>',
+            '0 <music19.beam.Beams <music19.beam.Beam 1/start>/<music19.beam.Beam 2/start>>',
+            '1 <music19.beam.Beams <music19.beam.Beam 1/continue>/<music19.beam.Beam 2/stop>>',
+            '2 <music19.beam.Beams <music19.beam.Beam 1/continue>/<music19.beam.Beam 2/start>>',
+            '3 <music19.beam.Beams <music19.beam.Beam 1/stop>/<music19.beam.Beam 2/stop>>',
+            '4 <music19.beam.Beams <music19.beam.Beam 1/start>/<music19.beam.Beam 2/start>>',
+            '5 <music19.beam.Beams <music19.beam.Beam 1/continue>/<music19.beam.Beam 2/continue>>',
+            '6 <music19.beam.Beams <music19.beam.Beam 1/stop>/<music19.beam.Beam 2/stop>>',
         ])
 
     def testBestTimeSignature(self):
-        from music21 import converter
-        from music21 import meter
+        from music19 import converter
+        from music19 import meter
         s6 = converter.parse('C4 D16.', format='tinyNotation').flatten().notes
         m6 = stream.Measure()
         for el in s6:
             m6.insert(el.offset, el)
         ts6 = meter.bestTimeSignature(m6)
-        self.assertEqual(repr(ts6), '<music21.meter.TimeSignature 11/32>')
+        self.assertEqual(repr(ts6), '<music19.meter.TimeSignature 11/32>')
 
     def testBestTimeSignatureB(self):
         '''
@@ -532,7 +520,7 @@ class Test(unittest.TestCase):
         of 12, 11.5, 12, 13 quarters, where one of the parts is a PartStaff with
         multiple voices.
         '''
-        from music21 import corpus
+        from music19 import corpus
         faulty = corpus.parse('demos/incorrect_time_signature_pv')
         for m in faulty.recurse().getElementsByClass(stream.Measure):
             m.timeSignature = m.bestTimeSignature()
@@ -540,78 +528,78 @@ class Test(unittest.TestCase):
         tsReps = []
         for m in p1.getElementsByClass(stream.Measure):
             tsReps.append(repr(m.timeSignature))
-        self.assertEqual(tsReps, ['<music21.meter.TimeSignature 12/4>',
-                                  '<music21.meter.TimeSignature 23/8>',
-                                  '<music21.meter.TimeSignature 12/4>',
-                                  '<music21.meter.TimeSignature 13/4>'])
+        self.assertEqual(tsReps, ['<music19.meter.TimeSignature 12/4>',
+                                  '<music19.meter.TimeSignature 23/8>',
+                                  '<music19.meter.TimeSignature 12/4>',
+                                  '<music19.meter.TimeSignature 13/4>'])
 
     def testBestTimeSignatureDoubleDotted(self):
-        from music21 import converter
-        from music21 import meter
+        from music19 import converter
+        from music19 import meter
 
         s6 = converter.parse('C4.', format='tinyNotation').flatten().notes
         m6 = stream.Measure()
         for el in s6:
             m6.insert(el.offset, el)
         ts6 = meter.bestTimeSignature(m6)
-        self.assertEqual(repr(ts6), '<music21.meter.TimeSignature 3/8>')
+        self.assertEqual(repr(ts6), '<music19.meter.TimeSignature 3/8>')
 
         s6 = converter.parse('C2..', format='tinyNotation').flatten().notes
         m6 = stream.Measure()
         for el in s6:
             m6.insert(el.offset, el)
         ts6 = meter.bestTimeSignature(m6)
-        self.assertEqual(repr(ts6), '<music21.meter.TimeSignature 7/8>')
+        self.assertEqual(repr(ts6), '<music19.meter.TimeSignature 7/8>')
 
         s6 = converter.parse('C2...', format='tinyNotation').flatten().notes
         m6 = stream.Measure()
         for el in s6:
             m6.insert(el.offset, el)
         ts6 = meter.bestTimeSignature(m6)
-        self.assertEqual(repr(ts6), '<music21.meter.TimeSignature 15/16>')
+        self.assertEqual(repr(ts6), '<music19.meter.TimeSignature 15/16>')
 
     def testBestTimeSignatureDoubleDottedB(self):
         '''
         These add up the same as testBestTimeSignatureDoubleDotted, but
         use multiple notes.
         '''
-        from music21 import converter
-        from music21 import meter
+        from music19 import converter
+        from music19 import meter
         s6 = converter.parse('C2 D4 E8', format='tinyNotation').flatten().notes
         m6 = stream.Measure()
         for el in s6:
             m6.insert(el.offset, el)
         ts6 = meter.bestTimeSignature(m6)
-        self.assertEqual(repr(ts6), '<music21.meter.TimeSignature 7/8>')
+        self.assertEqual(repr(ts6), '<music19.meter.TimeSignature 7/8>')
 
         s6 = converter.parse('C2 D4 E8 F16', format='tinyNotation').flatten().notes
         m6 = stream.Measure()
         for el in s6:
             m6.insert(el.offset, el)
         ts6 = meter.bestTimeSignature(m6)
-        self.assertEqual(repr(ts6), '<music21.meter.TimeSignature 15/16>')
+        self.assertEqual(repr(ts6), '<music19.meter.TimeSignature 15/16>')
 
     def testBestTimeSignatureDoubleDottedC(self):
         '''
         These add up the same as testBestTimeSignatureDoubleDotted, but
         use multiple notes which are dotted divisions of the original
         '''
-        from music21 import converter
-        from music21 import meter
+        from music19 import converter
+        from music19 import meter
 
         s6 = converter.parse('C4.. D4..', format='tinyNotation').flatten().notes
         m6 = stream.Measure()
         for el in s6:
             m6.insert(el.offset, el)
         ts6 = meter.bestTimeSignature(m6)
-        self.assertEqual(repr(ts6), '<music21.meter.TimeSignature 7/8>')
+        self.assertEqual(repr(ts6), '<music19.meter.TimeSignature 7/8>')
 
         s6 = converter.parse('C4... D4...', format='tinyNotation').flatten().notes
         m6 = stream.Measure()
         for el in s6:
             m6.insert(el.offset, el)
         ts6 = meter.bestTimeSignature(m6)
-        self.assertEqual(repr(ts6), '<music21.meter.TimeSignature 15/16>')
+        self.assertEqual(repr(ts6), '<music19.meter.TimeSignature 15/16>')
 
     def testCompoundSameDenominator(self):
         ts328 = TimeSignature('3+2/8')
@@ -662,5 +650,5 @@ class Test(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    import music21
-    music21.mainTest(Test)
+    import music19
+    music19.mainTest(Test)

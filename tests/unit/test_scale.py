@@ -15,16 +15,16 @@ from pprint import pformat
 from textwrap import dedent
 import unittest
 
-from music21 import common
-from music21 import corpus
-from music21 import instrument
-from music21 import meter
-from music21 import note
-from music21 import pitch
-from music21 import scale
-from music21.scale import intervalNetwork
-from music21.scale import Terminus, Direction
-from music21 import stream
+from music19 import common
+from music19 import corpus
+from music19 import instrument
+from music19 import meter
+from music19 import note
+from music19 import pitch
+from music19 import scale
+from music19.scale import intervalNetwork
+from music19.scale import Terminus, Direction
+from music19 import stream
 
 # ------------------------------------------------------------------------------
 class Test(unittest.TestCase):
@@ -161,13 +161,13 @@ class Test(unittest.TestCase):
         # deriving a new scale from the pitches found in a collection
         s = corpus.parse('bwv66.6')
         sc3 = sc1.derive(s.parts['#soprano'])
-        self.assertEqual(str(sc3), '<music21.scale.MajorScale A major>')
+        self.assertEqual(str(sc3), '<music19.scale.MajorScale A major>')
 
         sc3 = sc1.derive(s.parts['#tenor'])
-        self.assertEqual(str(sc3), '<music21.scale.MajorScale A major>')
+        self.assertEqual(str(sc3), '<music19.scale.MajorScale A major>')
 
         sc3 = sc2.derive(s.parts['#bass'])
-        self.assertEqual(str(sc3), '<music21.scale.MinorScale F# minor>')
+        self.assertEqual(str(sc3), '<music19.scale.MinorScale F# minor>')
 
         # composing with a scale
         s = stream.Stream()
@@ -227,12 +227,12 @@ class Test(unittest.TestCase):
         self.assertNotEqual(sc1, sc3)
         self.assertNotEqual(sc1.abstract, sc3.abstract)
         # getting details on comparison
-        self.assertEqual(pformat(sc1.match(sc2)), '''{'matched': [<music21.pitch.Pitch A4>,
-             <music21.pitch.Pitch B4>,
-             <music21.pitch.Pitch D5>,
-             <music21.pitch.Pitch E5>,
-             <music21.pitch.Pitch F#5>],
- 'notMatched': [<music21.pitch.Pitch C#5>, <music21.pitch.Pitch G#5>]}''', pformat(sc1.match(sc2)))
+        self.assertEqual(pformat(sc1.match(sc2)), '''{'matched': [<music19.pitch.Pitch A4>,
+             <music19.pitch.Pitch B4>,
+             <music19.pitch.Pitch D5>,
+             <music19.pitch.Pitch E5>,
+             <music19.pitch.Pitch F#5>],
+ 'notMatched': [<music19.pitch.Pitch C#5>, <music19.pitch.Pitch G#5>]}''', pformat(sc1.match(sc2)))
 
     def testCyclicalScales(self):
         sc = scale.CyclicalScale('c4', ['m2', 'm2'])
@@ -276,14 +276,14 @@ class Test(unittest.TestCase):
     def testDeriveByDegree(self):
         sc1 = scale.MajorScale()
         self.assertEqual(str(sc1.deriveByDegree(7, 'G#')),
-                         '<music21.scale.MajorScale A major>')
+                         '<music19.scale.MajorScale A major>')
 
         sc1 = scale.HarmonicMinorScale()
         # what scale has g# as its 7th degree
         self.assertEqual(str(sc1.deriveByDegree(7, 'G#')),
-                         '<music21.scale.HarmonicMinorScale A harmonic minor>')
+                         '<music19.scale.HarmonicMinorScale A harmonic minor>')
         self.assertEqual(str(sc1.deriveByDegree(2, 'E')),
-                         '<music21.scale.HarmonicMinorScale D harmonic minor>')
+                         '<music19.scale.HarmonicMinorScale D harmonic minor>')
 
         # TODO(CA): add serial rows as scales
 
@@ -618,10 +618,10 @@ class Test(unittest.TestCase):
 
     def testIntervalBetweenDegrees(self):
         sc = scale.MajorScale('c4')
-        self.assertEqual(str(sc.intervalBetweenDegrees(3, 4)), '<music21.interval.Interval m2>')
-        self.assertEqual(str(sc.intervalBetweenDegrees(1, 7)), '<music21.interval.Interval M7>')
-        self.assertEqual(str(sc.intervalBetweenDegrees(1, 5)), '<music21.interval.Interval P5>')
-        self.assertEqual(str(sc.intervalBetweenDegrees(2, 4)), '<music21.interval.Interval m3>')
+        self.assertEqual(str(sc.intervalBetweenDegrees(3, 4)), '<music19.interval.Interval m2>')
+        self.assertEqual(str(sc.intervalBetweenDegrees(1, 7)), '<music19.interval.Interval M7>')
+        self.assertEqual(str(sc.intervalBetweenDegrees(1, 5)), '<music19.interval.Interval P5>')
+        self.assertEqual(str(sc.intervalBetweenDegrees(2, 4)), '<music19.interval.Interval m3>')
 
         # with a probabilistic non-deterministic scale,
         # an exception may be raised for step that may not exist
@@ -634,7 +634,7 @@ class Test(unittest.TestCase):
             except scale.ScaleException:
                 exceptCount += 1
             if post is not None:
-                self.assertEqual(str(post), '<music21.interval.Interval A1>')
+                self.assertEqual(str(post), '<music19.interval.Interval A1>')
         self.assertLess(exceptCount, 3)
 
     def testScalaScaleA(self):
@@ -659,7 +659,7 @@ class Test(unittest.TestCase):
             ''')
         # provide a raw scala string
         sc = scale.ScalaScale('c4', msg)
-        self.assertEqual(str(sc), '<music21.scale.ScalaScale C Scala: fj-12tet.scl>')
+        self.assertEqual(str(sc), '<music19.scale.ScalaScale C Scala: fj-12tet.scl>')
         # noinspection PyTypeChecker
         pitchesOut = self.pitchOut(sc.getPitches('c2', 'c4'))
         self.assertTrue(common.whitespaceEqual(pitchesOut,
@@ -675,7 +675,7 @@ class Test(unittest.TestCase):
         ss = sc.getScalaData()
         self.assertEqual(ss.pitchCount, 7)
         msg = '''!
-            <music21.scale.MajorScale C major>
+            <music19.scale.MajorScale C major>
             7
             !
             200.0
@@ -892,10 +892,10 @@ class Test(unittest.TestCase):
         d = scale.ConcreteScale(pitches=['A', 'B', 'C', 'D', 'E', 'F', 'G#', 'A'])
         e = d.deriveRanked(['C', 'E', 'G'], comparisonAttribute='name')
         self.assertEqual(str(e),
-                         ''.join(['[(3, <music21.scale.ConcreteScale F Concrete>), ',
-                                   '(3, <music21.scale.ConcreteScale E Concrete>), ',
-                                   '(2, <music21.scale.ConcreteScale B Concrete>), ',
-                                   '(2, <music21.scale.ConcreteScale A Concrete>)]']),
+                         ''.join(['[(3, <music19.scale.ConcreteScale F Concrete>), ',
+                                   '(3, <music19.scale.ConcreteScale E Concrete>), ',
+                                   '(2, <music19.scale.ConcreteScale B Concrete>), ',
+                                   '(2, <music19.scale.ConcreteScale A Concrete>)]']),
                          str(e)
                          )
 
@@ -923,5 +923,5 @@ class Test(unittest.TestCase):
 # ------------------------------------------------------------------------------
 if __name__ == '__main__':
     # sys.arg test options will be used in mainTest()
-    import music21
-    music21.mainTest(Test)
+    import music19
+    music19.mainTest(Test)

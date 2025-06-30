@@ -19,10 +19,10 @@ from __future__ import annotations
 
 import unittest
 
-import music21
-from music21 import common
-from music21 import corpus
-from music21 import environment
+import music19
+from music19 import common
+from music19 import corpus
+from music19 import environment
 from music21.musicxml.m21ToXml import GeneralObjectExporter as GEX
 
 environLocal = environment.Environment('test.testPerformance')
@@ -36,8 +36,8 @@ class Test(unittest.TestCase):
         '''
         Stream iteration by iterator
         '''
-        from music21 import note
-        from music21 import stream
+        from music19 import note
+        from music19 import stream
         # create a stream with 750 notes, 250 rests
         s = stream.Stream()
         for i in range(1000):
@@ -55,8 +55,8 @@ class Test(unittest.TestCase):
         '''
         Stream iteration by .elements access
         '''
-        from music21 import note
-        from music21 import stream
+        from music19 import note
+        from music19 import stream
         # create a stream with 750 notes, 250 rests
         s = stream.Stream()
         for i in range(1000):
@@ -74,8 +74,8 @@ class Test(unittest.TestCase):
         '''
         Getting elements by class type
         '''
-        from music21 import note
-        from music21 import stream
+        from music19 import note
+        from music19 import stream
 
         # create a stream with 750 notes, 250 rests
         s = stream.Stream()
@@ -94,8 +94,8 @@ class Test(unittest.TestCase):
         '''
         Getting elements by string
         '''
-        from music21 import note
-        from music21 import stream
+        from music19 import note
+        from music19 import stream
 
         # create a stream with 750 notes, 250 rests
         s = stream.Stream()
@@ -162,7 +162,7 @@ class Test(unittest.TestCase):
         '''
         Creating 500 TimeSignature objects
         '''
-        from music21 import meter
+        from music19 import meter
         tsStr = ['4/4', '4/4', '4/4', '3/4', '3/4', '2/4', '2/4', '2/2',
                  '2/2', '3/8', '6/8', '9/8', '5/4', '12/8']
 
@@ -173,7 +173,7 @@ class Test(unittest.TestCase):
         '''
         Creating 10000 Duration objects
         '''
-        from music21 import duration
+        from music19 import duration
         qlList = [4, 2, 1, 0.5, 1 / 3, 0.25, 0.125]
 
         for i in range(10000):
@@ -186,7 +186,7 @@ class Test(unittest.TestCase):
         '''
         Creating 50000 Pitch objects
         '''
-        from music21 import pitch
+        from music19 import pitch
         pList = [1.5, 5, 20.333333, 8, 2.5, 'A#', 'b`', 'c6#~']
 
         for i in range(50000):
@@ -204,10 +204,10 @@ class Test(unittest.TestCase):
         '''
         Test getting elements by context from a Stream
         '''
-        from music21 import stream
-        from music21 import clef
-        from music21 import key
-        from music21 import meter
+        from music19 import stream
+        from music19 import clef
+        from music19 import key
+        from music19 import meter
 
         s = corpus.parse('bwv66.6')
         # create a few secondary streams to add more sites
@@ -237,10 +237,10 @@ class Test(unittest.TestCase):
         '''
         Test getting elements by using the previous method
         '''
-        from music21 import stream
-        from music21 import clef
-        from music21 import key
-        from music21 import meter
+        from music19 import stream
+        from music19 import clef
+        from music19 import key
+        from music19 import meter
 
         s = corpus.parse('bwv66.6')
         # create a few secondary streams to add more sites
@@ -416,6 +416,6 @@ if __name__ == '__main__':
 
     if len(sys.argv) == 1:  # normal conditions
         # sys.arg test options will be used in mainTest()
-        music21.mainTest(Test)
+        music19.mainTest(Test)
 
 

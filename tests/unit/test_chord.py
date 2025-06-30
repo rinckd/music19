@@ -2,23 +2,23 @@ import copy
 import random
 import unittest
 
-from music21 import chord
-from music21.chord import Chord
-from music21 import converter
-from music21 import key
+from music19 import chord
+from music19.chord import Chord
+from music19 import converter
+from music19 import key
 from music21.musicxml import m21ToXml
 from music21.musicxml import testPrimitive
-from music21 import note
-from music21 import pitch
-from music21 import scale
-from music21 import stream
-from music21 import tempo
-from music21 import tie
-from music21 import volume
+from music19 import note
+from music19 import pitch
+from music19 import scale
+from music19 import stream
+from music19 import tempo
+from music19 import tie
+from music19 import volume
 
 # ------------------------------------------------------------------------------
 class TestExternal(unittest.TestCase):
-    show = True
+    show = False  # MusicXML functionality removed from music19
 
     def testBasic(self):
         for pitchList in [['g2', 'c4', 'c#6'],
@@ -62,8 +62,8 @@ class Test(unittest.TestCase):
         c2 = copy.deepcopy(c1)
         c1.pitches[0].accidental = pitch.Accidental('sharp')
         c1.pitches[1].accidental.set(1)
-        self.assertEqual(repr(c1), '<music21.chord.Chord C#4 E#4 G4>')
-        self.assertEqual(repr(c2), '<music21.chord.Chord C4 E-4 G4>')
+        self.assertEqual(repr(c1), '<music19.chord.Chord C#4 E#4 G4>')
+        self.assertEqual(repr(c2), '<music19.chord.Chord C4 E-4 G4>')
 
         c1 = chord.Chord(['C#3', 'E4'])
         c2 = copy.deepcopy(c1)
@@ -399,7 +399,7 @@ class Test(unittest.TestCase):
     def testClosedPosition(self):
         chord1 = chord.Chord(['C#4', 'G5', 'E6'])
         chord2 = chord1.closedPosition()
-        self.assertEqual(repr(chord2), '<music21.chord.Chord C#4 E4 G4>')
+        self.assertEqual(repr(chord2), '<music19.chord.Chord C#4 E4 G4>')
 
     def testPostTonalChordsA(self):
         c1 = Chord([0, 1, 3, 6, 8, 9, 12])
@@ -428,16 +428,16 @@ class Test(unittest.TestCase):
         st1.append(key.Key('c#'))   # c-sharp minor
         st1.append(chord1)
         self.assertEqual(repr(chord1.scaleDegrees),
-                         '[(1, None), (3, <music21.pitch.Accidental sharp>), (5, None)]')
+                         '[(1, None), (3, <music19.pitch.Accidental sharp>), (5, None)]')
 
         st2 = stream.Stream()
         st2.append(key.Key('c'))    # c minor
         st2.append(chord1)          # same pitches as before gives different scaleDegrees
         sd2 = chord1.scaleDegrees
         self.assertEqual(repr(sd2),
-                         '[(1, <music21.pitch.Accidental sharp>), '
-                         + '(3, <music21.pitch.Accidental double-sharp>), '
-                         + '(5, <music21.pitch.Accidental sharp>)]')
+                         '[(1, <music19.pitch.Accidental sharp>), '
+                         + '(3, <music19.pitch.Accidental double-sharp>), '
+                         + '(5, <music19.pitch.Accidental sharp>)]')
 
         st3 = stream.Stream()
         st3.append(key.Key('C'))    # C major
@@ -445,8 +445,8 @@ class Test(unittest.TestCase):
         st3.append(chord2)
         sd3 = chord2.scaleDegrees
         self.assertEqual(repr(sd3),
-                         '[(1, None), (1, <music21.pitch.Accidental sharp>), (2, None), '
-                         + '(3, <music21.pitch.Accidental flat>), (3, None), (4, None)]')
+                         '[(1, None), (1, <music19.pitch.Accidental sharp>), (2, None), '
+                         + '(3, <music19.pitch.Accidental flat>), (3, None), (4, None)]')
 
     def testScaleDegreesB(self):
         # trying to isolate problematic context searches
@@ -456,7 +456,7 @@ class Test(unittest.TestCase):
         st1.append(chord1)
         self.assertEqual(chord1.activeSite, st1)
         self.assertEqual(str(chord1.scaleDegrees),
-                         '[(1, None), (3, <music21.pitch.Accidental sharp>), (5, None)]')
+                         '[(1, None), (3, <music19.pitch.Accidental sharp>), (5, None)]')
 
         st2 = stream.Stream()
         st2.append(key.Key('c'))    # c minor
@@ -473,8 +473,8 @@ class Test(unittest.TestCase):
 
         self.assertEqual(
             str(chord1.scaleDegrees),
-            '[(1, <music21.pitch.Accidental sharp>), '
-            + '(3, <music21.pitch.Accidental double-sharp>), (5, <music21.pitch.Accidental sharp>)]'
+            '[(1, <music19.pitch.Accidental sharp>), '
+            + '(3, <music19.pitch.Accidental double-sharp>), (5, <music19.pitch.Accidental sharp>)]'
         )
 
     def testTiesA(self):
@@ -510,31 +510,9 @@ class Test(unittest.TestCase):
         self.assertEqual(id(c1.getTie(c1.pitches[1])), id(t4))
         self.assertEqual(id(c1.getTie(c1.pitches[2])), id(t5))
 
-        s = converter.parse(testPrimitive.chordIndependentTies)
-        chords = s.flatten().getElementsByClass(chord.Chord)
-        # the middle pitch should have a tie
-        self.assertEqual(chords[0].getTie(pitch.Pitch('a4')).type, 'start')
-        self.assertEqual(chords[0].getTie(pitch.Pitch('c5')), None)
-        self.assertEqual(chords[0].getTie(pitch.Pitch('f4')), None)
-
-        self.assertEqual(chords[1].getTie(pitch.Pitch('a4')).type, 'continue')
-        self.assertEqual(chords[1].getTie(pitch.Pitch('g5')), None)
-
-        self.assertEqual(chords[2].getTie(pitch.Pitch('a4')).type, 'continue')
-        self.assertEqual(chords[2].getTie(pitch.Pitch('f4')).type, 'start')
-        self.assertEqual(chords[2].getTie(pitch.Pitch('c5')), None)
-
-        # s.show()
-        GEX = m21ToXml.GeneralObjectExporter()
-        out = GEX.parse(s).decode('utf-8')
-        out = out.replace(' ', '')
-        out = out.replace('\n', '')
-        # print(out)
-        self.assertTrue(out.find('<pitch><step>A</step><octave>4</octave></pitch>'
-                                 + '<duration>15120</duration><tietype="start"/>'
-                                 + '<type>quarter</type><dot/><stem>up</stem>'
-                                 + '<notations><tiedtype="start"/></notations>') != -1,
-                        out)
+        # MusicXML parsing and export tests removed - functionality not available in music19
+        # Original test parsed testPrimitive.chordIndependentTies and tested tie functionality
+        # in parsed MusicXML data, then exported back to XML to verify tie elements
 
     def testTiesB(self):
         sc = scale.WholeToneScale()
@@ -682,9 +660,9 @@ class Test(unittest.TestCase):
         self.assertEqual(str(c['2.pitch']), 'G4')
         # cannot do this, as this provides raw access
         # self.assertEqual(str(c[0]['volume']), 'C4')
-        self.assertEqual(str(c['0.volume']), '<music21.volume.Volume realized=0.71>')
-        self.assertEqual(str(c['1.volume']), '<music21.volume.Volume realized=0.71>')
-        self.assertEqual(str(c['1.volume']), '<music21.volume.Volume realized=0.71>')
+        self.assertEqual(str(c['0.volume']), '<music19.volume.Volume realized=0.71>')
+        self.assertEqual(str(c['1.volume']), '<music19.volume.Volume realized=0.71>')
+        self.assertEqual(str(c['1.volume']), '<music19.volume.Volume realized=0.71>')
         c['0.volume'].velocity = 20
         c['1.volume'].velocity = 80
         c['2.volume'].velocity = 120
@@ -711,13 +689,13 @@ class Test(unittest.TestCase):
         self.assertEqual(s.highestOffset, 2.0)
         self.assertEqual(
             str(s.pitches),
-            '[<music21.pitch.Pitch D2>, <music21.pitch.Pitch E-1>, <music21.pitch.Pitch B-6>]')
+            '[<music19.pitch.Pitch D2>, <music19.pitch.Pitch E-1>, <music19.pitch.Pitch B-6>]')
 
     def testInvertingSimple(self):
         a = chord.Chord(['g4', 'b4', 'd5', 'f5'])
         self.assertEqual(a.inversion(), 0)
         a.inversion(1)
-        self.assertEqual(repr(a), '<music21.chord.Chord B4 D5 F5 G5>')
+        self.assertEqual(repr(a), '<music19.chord.Chord B4 D5 F5 G5>')
 
     def testDeepcopyChord(self):
         ch = Chord('C4 E4 G4')
@@ -737,7 +715,7 @@ class Test(unittest.TestCase):
         # TODO(msc): overrides do not invalidate.  Should they?
 
     def testChordCannotContainUnpitched(self):
-        msg = r'Use a PercussionChord to contain Unpitched objects; got \[<music21.note.Unpitched'
+        msg = r'Use a PercussionChord to contain Unpitched objects; got \[<music19.note.Unpitched'
         with self.assertRaisesRegex(TypeError, msg):
             # noinspection PyTypeChecker
             Chord([note.Unpitched()])  # type: ignore
@@ -752,5 +730,5 @@ class Test(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    import music21
-    music21.mainTest(Test)  # , runTest='testInvertingSimple')
+    import music19
+    music19.mainTest(Test)  # , runTest='testInvertingSimple')

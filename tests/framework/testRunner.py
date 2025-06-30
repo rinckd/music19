@@ -23,7 +23,7 @@ import re
 import sys
 import unittest
 
-from music21.common.stringTools import parenthesesMatch, ParenthesesMatch
+from music19.common.stringTools import parenthesesMatch, ParenthesesMatch
 
 defaultImports = ['music21']
 
@@ -190,9 +190,9 @@ def mainTest(*testClasses, **keywords):
                 hello = 'Hello'
                 self.assertEqual('Hello', hello)
 
-        import music21
+        import music19
         if __name__ == '__main__':
-            music21.mainTest(Test)
+            music19.mainTest(Test)
 
 
     This module tries to fix up some differences between python2 and python3 so

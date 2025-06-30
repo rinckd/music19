@@ -12,7 +12,7 @@
 # ------------------------------------------------------------------------------
 from __future__ import annotations
 
-from music21.test import testSingleCoreAll as test
+from music19.test import testSingleCoreAll as test
 
 # ------------------------------------------------------------------------------
 if __name__ == '__main__':

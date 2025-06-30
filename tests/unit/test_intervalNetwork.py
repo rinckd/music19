@@ -13,9 +13,9 @@ from __future__ import annotations
 import sys
 import unittest
 
-from music21 import common
-from music21 import scale
-from music21.scale.intervalNetwork import Terminus, Direction, IntervalNetwork
+from music19 import common
+from music19 import scale
+from music19.scale.intervalNetwork import Terminus, Direction, IntervalNetwork
 
 # ------------------------------------------------------------------------------
 class Test(unittest.TestCase):
@@ -95,14 +95,14 @@ class Test(unittest.TestCase):
         # in this case, the nearest major keys are G and D
         results = net.find(['g', 'a', 'b', 'd', 'f#'])
         self.assertEqual(str(results),
-                         '[(5, <music21.pitch.Pitch G>), (5, <music21.pitch.Pitch D>), '
-                         + '(4, <music21.pitch.Pitch A>), (4, <music21.pitch.Pitch C>)]')
+                         '[(5, <music19.pitch.Pitch G>), (5, <music19.pitch.Pitch D>), '
+                         + '(4, <music19.pitch.Pitch A>), (4, <music19.pitch.Pitch C>)]')
 
         # with an f#, D is the most-matched first node pitch
         results = net.find(['g', 'a', 'b', 'c#', 'd', 'f#'])
         self.assertEqual(str(results),
-                         '[(6, <music21.pitch.Pitch D>), (5, <music21.pitch.Pitch A>), '
-                         + '(5, <music21.pitch.Pitch G>), (4, <music21.pitch.Pitch E>)]')
+                         '[(6, <music19.pitch.Pitch D>), (5, <music19.pitch.Pitch A>), '
+                         + '(5, <music19.pitch.Pitch G>), (4, <music19.pitch.Pitch E>)]')
 
     def testHarmonyModel(self):
         # can define a chord type as a sequence of intervals
@@ -134,14 +134,14 @@ class Test(unittest.TestCase):
         # this is independent of any realization
         results = net.find(['c', 'e', 'g'])
         self.assertEqual(str(results),
-                         '[(3, <music21.pitch.Pitch C>), (1, <music21.pitch.Pitch A>), '
-                         + '(1, <music21.pitch.Pitch G#>), (1, <music21.pitch.Pitch G>)]')
+                         '[(3, <music19.pitch.Pitch C>), (1, <music19.pitch.Pitch A>), '
+                         + '(1, <music19.pitch.Pitch G#>), (1, <music19.pitch.Pitch G>)]')
 
         # in this case, most likely an e triad
         results = net.find(['e', 'g#'])
         self.assertEqual(str(results),
-                         '[(2, <music21.pitch.Pitch E>), (1, <music21.pitch.Pitch A>), '
-                         + '(1, <music21.pitch.Pitch G#>), (1, <music21.pitch.Pitch D->)]')
+                         '[(2, <music19.pitch.Pitch E>), (1, <music19.pitch.Pitch A>), '
+                         + '(1, <music19.pitch.Pitch G#>), (1, <music19.pitch.Pitch D->)]')
 
         # we can do the same with larger or more complicated chords
         # again, we must provide the interval to the octave
@@ -158,8 +158,8 @@ class Test(unittest.TestCase):
         # of the lowest node that provides the best fit
         results = net.find(['e', 'g#', 'b', 'd#'])
         self.assertEqual(str(results),
-                         '[(3, <music21.pitch.Pitch E>), (2, <music21.pitch.Pitch C>), '
-                         + '(1, <music21.pitch.Pitch B>), (1, <music21.pitch.Pitch G#>)]')
+                         '[(3, <music19.pitch.Pitch E>), (2, <music19.pitch.Pitch C>), '
+                         + '(1, <music19.pitch.Pitch B>), (1, <music19.pitch.Pitch G#>)]')
 
     def testScaleAndHarmony(self):
         # start with a major scale
@@ -177,8 +177,8 @@ class Test(unittest.TestCase):
         results = netScale.find(netHarmony.realizePitch('c#', 1))
         # most likely, a  D
         self.assertEqual(str(results),
-                         '[(5, <music21.pitch.Pitch D>), (4, <music21.pitch.Pitch B>), '
-                         + '(4, <music21.pitch.Pitch A>), (4, <music21.pitch.Pitch E>)]')
+                         '[(5, <music19.pitch.Pitch D>), (4, <music19.pitch.Pitch B>), '
+                         + '(4, <music19.pitch.Pitch A>), (4, <music19.pitch.Pitch E>)]')
         # what scale degree is c# in this scale? the seventh
         self.assertEqual(netScale.getRelativeNodeDegree('d', 1, 'c#'), 7)
 
@@ -200,23 +200,23 @@ class Test(unittest.TestCase):
         self.assertEqual(sorted([str(x) for x in net.nodes.keys()]),
                          ['0', '1', '2', '3', '4', '5', 'Terminus.HIGH', 'Terminus.LOW'])
 
-        self.assertEqual(repr(net.nodes[0]), '<music21.scale.intervalNetwork.Node id=0>')
+        self.assertEqual(repr(net.nodes[0]), '<music19.scale.intervalNetwork.Node id=0>')
         self.assertEqual(repr(net.nodes[Terminus.LOW]),
-                         '<music21.scale.intervalNetwork.Node id=Terminus.LOW>')
+                         '<music19.scale.intervalNetwork.Node id=Terminus.LOW>')
 
         self.assertEqual(
             repr(net.edges[0]),
-            '<music21.scale.intervalNetwork.Edge Direction.BI M2 '
+            '<music19.scale.intervalNetwork.Edge Direction.BI M2 '
             + '[(Terminus.LOW, 0), (0, Terminus.LOW)]>'
         )
 
         self.assertEqual(
             repr(net.edges[3]),
-            '<music21.scale.intervalNetwork.Edge Direction.BI M2 [(2, 3), (3, 2)]>')
+            '<music19.scale.intervalNetwork.Edge Direction.BI M2 [(2, 3), (3, 2)]>')
 
         self.assertEqual(
             repr(net.edges[6]),
-            '<music21.scale.intervalNetwork.Edge Direction.BI m2 '
+            '<music19.scale.intervalNetwork.Edge Direction.BI m2 '
             + '[(5, Terminus.HIGH), (Terminus.HIGH, 5)]>'
         )
 
@@ -291,24 +291,24 @@ class Test(unittest.TestCase):
         # returns a list of edges and notes
         self.assertEqual(
             repr(net.getNext(net.nodes[Terminus.LOW], Direction.ASCENDING)),
-            '([<music21.scale.intervalNetwork.Edge Direction.ASCENDING M2 '
-            + '[(Terminus.LOW, 0)]>], [<music21.scale.intervalNetwork.Node id=0>])')
+            '([<music19.scale.intervalNetwork.Edge Direction.ASCENDING M2 '
+            + '[(Terminus.LOW, 0)]>], [<music19.scale.intervalNetwork.Node id=0>])')
 
         self.assertEqual(
             repr(net.getNext(net.nodes[Terminus.LOW], Direction.DESCENDING)),
-            '([<music21.scale.intervalNetwork.Edge Direction.DESCENDING M2 '
-            + '[(Terminus.HIGH, 11)]>], [<music21.scale.intervalNetwork.Node id=11>])')
+            '([<music19.scale.intervalNetwork.Edge Direction.DESCENDING M2 '
+            + '[(Terminus.HIGH, 11)]>], [<music19.scale.intervalNetwork.Node id=11>])')
 
         # high terminus gets the same result, as this is the wrapping point
         self.assertEqual(
             repr(net.getNext(net.nodes[Terminus.HIGH], Direction.ASCENDING)),
-            '([<music21.scale.intervalNetwork.Edge Direction.ASCENDING M2 '
-            + '[(Terminus.LOW, 0)]>], [<music21.scale.intervalNetwork.Node id=0>])')
+            '([<music19.scale.intervalNetwork.Edge Direction.ASCENDING M2 '
+            + '[(Terminus.LOW, 0)]>], [<music19.scale.intervalNetwork.Node id=0>])')
 
         self.assertEqual(
             repr(net.getNext(net.nodes[Terminus.LOW], Direction.DESCENDING)),
-            '([<music21.scale.intervalNetwork.Edge Direction.DESCENDING M2 '
-            + '[(Terminus.HIGH, 11)]>], [<music21.scale.intervalNetwork.Node id=11>])')
+            '([<music19.scale.intervalNetwork.Edge Direction.DESCENDING M2 '
+            + '[(Terminus.HIGH, 11)]>], [<music19.scale.intervalNetwork.Node id=11>])')
 
         # this is ascending from a4 to a5, then descending from a4 to a3
         # this seems like the right thing to do
@@ -330,12 +330,12 @@ class Test(unittest.TestCase):
         # form
         self.assertEqual(
             str(net.nodeNameToNodes(3)),
-            '[<music21.scale.intervalNetwork.Node id=1>, '
-            + '<music21.scale.intervalNetwork.Node id=7>]')
+            '[<music19.scale.intervalNetwork.Node id=1>, '
+            + '<music19.scale.intervalNetwork.Node id=7>]')
         self.assertEqual(
             str(net.nodeNameToNodes(7)),
-            '[<music21.scale.intervalNetwork.Node id=5>, '
-            + '<music21.scale.intervalNetwork.Node id=11>]')
+            '[<music19.scale.intervalNetwork.Node id=5>, '
+            + '<music19.scale.intervalNetwork.Node id=11>]')
         # net.plot()
 
     def testScaleArbitrary(self):
@@ -363,15 +363,15 @@ class Test(unittest.TestCase):
         net = IntervalNetwork()
         net.fillArbitrary(nodes, edges)
         match = '''
-            OrderedDict({0: <music21.scale.intervalNetwork.Edge Direction.BI m2
+            OrderedDict({0: <music19.scale.intervalNetwork.Edge Direction.BI m2
                                 [(Terminus.LOW, 0), (0, Terminus.LOW)]>,
-                         1: <music21.scale.intervalNetwork.Edge Direction.BI M3
+                         1: <music19.scale.intervalNetwork.Edge Direction.BI M3
                                 [(0, Terminus.HIGH), (Terminus.HIGH, 0)]>})'''
         if sys.version_info < (3, 12):
             match = '''
-                OrderedDict([(0, <music21.scale.intervalNetwork.Edge Direction.BI m2
+                OrderedDict([(0, <music19.scale.intervalNetwork.Edge Direction.BI m2
                                     [(Terminus.LOW, 0), (0, Terminus.LOW)]>),
-                             (1, <music21.scale.intervalNetwork.Edge Direction.BI M3
+                             (1, <music19.scale.intervalNetwork.Edge Direction.BI M3
                                     [(0, Terminus.HIGH), (Terminus.HIGH, 0)]>)])'''
 
         self.assertTrue(common.whitespaceEqual(str(net.edges), match),
@@ -402,7 +402,7 @@ class Test(unittest.TestCase):
         # this only gets one pitch as this is descending and includes reference
         # pitch
         self.assertEqual(str(net.realizeDescending('c3', 1, includeFirst=True)),
-                         '([<music21.pitch.Pitch C3>], [Terminus.LOW])')
+                         '([<music19.pitch.Pitch C3>], [Terminus.LOW])')
 
         self.assertTrue(
             common.whitespaceEqual(
@@ -644,5 +644,5 @@ class Test(unittest.TestCase):
 
 # ------------------------------------------------------------------------------
 if __name__ == '__main__':
-    import music21
-    music21.mainTest(Test)
+    import music19
+    music19.mainTest(Test)

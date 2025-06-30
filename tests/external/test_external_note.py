@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
 # Name:         tests/external/test_external_note.py
-# Purpose:      External tests for music21.note
+# Purpose:      External tests for music19.note
 #
 # Authors:      Michael Scott Asato Cuthbert
 #               Christopher Ariza
@@ -10,7 +10,7 @@
 # License:      BSD, see license.txt
 # -----------------------------------------------------------------------------
 """
-External tests for music21.note module.
+External tests for music19.note module.
 
 These are tests that open windows and rely on external software.
 Extracted from embedded TestExternal classes.
@@ -19,13 +19,13 @@ from __future__ import annotations
 
 import unittest
 
-from music21 import note
-from music21 import stream
+from music19 import note
+from music19 import stream
 
 
 class TestExternalNote(unittest.TestCase):
     """
-    External tests for music21.note module.
+    External tests for music19.note module.
     These are tests that open windows and rely on external software.
     """
     show = False  # Set to True for manual testing with external software
@@ -60,5 +60,5 @@ class TestExternalNote(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    import music21
-    music21.mainTest(TestExternalNote)
+    import music19
+    music19.mainTest(TestExternalNote)

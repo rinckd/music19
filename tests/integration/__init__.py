@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
 # Name:         tests/integration/__init__.py
-# Purpose:      Integration tests for music21
+# Purpose:      Integration tests for music19
 #
 # Authors:      Michael Scott Asato Cuthbert
 #               Christopher Ariza
@@ -10,7 +10,7 @@
 # License:      BSD, see license.txt
 # -----------------------------------------------------------------------------
 """
-Integration tests for music21.
+Integration tests for music19.
 
 This package contains end-to-end integration tests.
 """

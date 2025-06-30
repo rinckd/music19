@@ -22,5 +22,5 @@ def warn_with_traceback(message, category, filename, lineno, file=None, line=Non
 if __name__ == '__main__':
     warnings.showwarning = warn_with_traceback
     warnings.simplefilter('always')
-    from music21.test import multiprocessTest
+    from music19.test import multiprocessTest
     multiprocessTest.mainPoolRunner()

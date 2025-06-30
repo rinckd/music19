@@ -22,12 +22,12 @@ import sys
 import unittest
 import warnings
 
-from music21 import common
-from music21 import environment
+from music19 import common
+from music19 import environment
 
-from music21.test import commonTest
-from music21.test import coverageM21
-from music21.test import testRunner
+from music19.test import commonTest
+from music19.test import coverageM21
+from music19.test import testRunner
 
 environLocal = environment.Environment('test.testSingleCoreAll')
 

@@ -8,7 +8,7 @@ For C major scale (C D E F G A B C), we'll show all 5 positions.
 Each position connects to the next, covering the entire fretboard.
 """
 
-from music21 import tablature, scale, stream, note
+from music19 import tablature, scale, stream, note
 
 # Create C major scale for reference
 c_major_scale = scale.MajorScale('C')

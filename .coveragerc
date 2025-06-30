@@ -1,9 +1,9 @@
 [run]
 source =
-    music21/
+    music19/
 
 omit =
-    music21/test/timeGraph*
+    music19/test/timeGraph*
 
 [report]
 exclude_lines =

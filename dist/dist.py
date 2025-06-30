@@ -10,7 +10,7 @@
 # License:      BSD, see license.txt
 # ------------------------------------------------------------------------------
 '''
-Builds various kinds of music21 distribution files and uploads them to PyPI and GoogleCode.
+Builds various kinds of music19 distribution files and uploads them to PyPI and GoogleCode.
 
 To do a release,
 
@@ -28,7 +28,7 @@ so allocate time (2 min on M4).  Start working on the announcement while it's ru
 
 
 4. run test/warningMultiprocessTest.py for lowest and highest Py version -- fix all warnings!
-5. run `from music21.test import treeYield
+5. run `from music19.test import treeYield
     and then run `treeYield.find_all_non_hashable_m21objects()` and check that the set returned is
     empty.  Note -- it will print a bunch of module names, but only the final set matters.
     Then do the same for `treeYield.find_all_non_default_instantiation_m21objects()`.
@@ -50,21 +50,21 @@ so allocate time (2 min on M4).  Start working on the announcement while it's ru
 
 [*] you will need sphinx, Jupyter (pip or easy_install), markdown, and pandoc (.dmg) installed
 
-10. move music21 documentation/build/html to music21.org/music21docs/
+10. move music19 documentation/build/html to music19.org/music19docs/
     via Amazon S3 (contact MSAC for authentication if need be)
 
 11. zip up documentation/build/html and get ready to upload/delete it (you can put on your
     desktop or wherever you like).
-    Rename to music21.v.9.5.0-docs.zip (skip for Alpha/Beta)
+    Rename to music19.v.9.5.0-docs.zip (skip for Alpha/Beta)
 
-12. From the music21 main folder (not subfolder) run "hatch build" --
+12. From the music19 main folder (not subfolder) run "hatch build" --
     requires hatch to be installed "pip install hatch" -- brew version of hatch
     was giving Environment `default` is incompatible messages recently. (mysql? why relevant?)
 
-    This builds the dist/music21-9.3.0.tar.gz and dist/music21-9.3.0-py3-none-any.whl
+    This builds the dist/music19-9.3.0.tar.gz and dist/music19-9.3.0-py3-none-any.whl
     files.  That used to be what *this* script did, but now hatch does it better!
 
-13. Run this (dist.py) file: it builds the no-corpus version of music21.  (need Python 3.12 or higher)
+13. Run this (dist.py) file: it builds the no-corpus version of music19.  (need Python 3.12 or higher)
     DO NOT RUN THIS ON A PC or the Mac .tar.gz might have an incorrect permission if you do.
 
 14. PR and Commit to GitHub at this point w/ commit comment of the new version,
@@ -73,7 +73,7 @@ so allocate time (2 min on M4).  Start working on the announcement while it's ru
 
 15. Switch back to master/main branch
 
-16. Tag the commit: git tag -a vX.Y.Z -m "music21 vX.Y.Z"
+16. Tag the commit: git tag -a vX.Y.Z -m "music19 vX.Y.Z"
     Don't forget the "v" in the release tag.
     Sanity check that the correct commit was tagged: git log
 
@@ -86,7 +86,7 @@ so allocate time (2 min on M4).  Start working on the announcement while it's ru
 
     Finish this before doing the next step, even though it looks like it could be done in parallel.
 
-19a. Upload the tar.gz file to PyPI with "twine upload music21-9.3.0.tar.gz" [*]
+19a. Upload the tar.gz file to PyPI with "twine upload music19-9.3.0.tar.gz" [*]
 
 19b. Do the same for the whl file (but not for the no-corpus file) [*]
 
@@ -121,8 +121,8 @@ import os
 import shutil
 import tarfile
 
-from music21._version import __version__ as version
-from music21.common.pathTools import getRootFilePath, getCorpusContentDirs
+from music19._version import __version__ as version
+from music19.common.pathTools import getRootFilePath, getCorpusContentDirs
 
 def removeCorpus():
     '''

@@ -1,6 +1,6 @@
 ---
 name: Feature request
-about: Suggest a feature to be included in music21
+about: Suggest a feature to be included in music19
 title: ''
 labels: 'enhancement'
 assignees: ''
@@ -8,7 +8,7 @@ assignees: ''
 ---
 
 **Motivation**
-<!-- E.g. does this fill a gap? build on music21's strengths? improve usability? -->
+<!-- E.g. does this fill a gap? build on music19's strengths? improve usability? -->
 
 
 **Feature summary**

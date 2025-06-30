@@ -23,8 +23,8 @@ omit_modules = [
 
 # THESE ARE NOT RELEVANT FOR coveralls.io -- edit .coveragerc to change that
 exclude_lines = [
-    r'\s*import music21\s*',
-    r'\s*music21.mainTest\(\)\s*',
+    r'\s*import music19\s*',
+    r'\s*music19.mainTest\(\)\s*',
     r'.*#\s*pragma:\s*no cover.*',
     r'class TestExternal.*',
     r'class TestSlow.*',
@@ -53,7 +53,7 @@ def getCoverage(overrideVersion=False):
             for e in exclude_lines:
                 cov.exclude(e, which='exclude')
             cov.start()
-            import music21  # pylint: disable=unused-import
+            import music19  # pylint: disable=unused-import
         except ImportError:
             cov = None
     else:

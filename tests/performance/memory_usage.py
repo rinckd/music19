@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import annotations
 
-from music21 import exceptions21
-from music21 import corpus
+from music19 import exceptions21
+from music19 import corpus
 
 if __name__ == '__main__':
     try:

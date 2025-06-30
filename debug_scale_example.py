@@ -1,5 +1,5 @@
 """
-This file demonstrates two music21 features:
+This file demonstrates two music19 features:
 
 1. SCALES - Creating and working with musical scales
    - Shows how to create a B-flat major scale
@@ -10,7 +10,7 @@ This file demonstrates two music21 features:
    - FretBoard: Represents a full fretboard with multiple notes
    - Instrument-specific fretboards: Guitar, Ukulele, Bass, Mandolin
    - ChordWithFretBoard: Combines chord symbols with tablature notation
-   
+
 The tablature module is useful for:
 - Converting between tablature notation and pitches
 - Representing guitar chord diagrams
@@ -19,7 +19,7 @@ The tablature module is useful for:
 """
 
 # Creating a B-flat major scale
-from music21 import scale, note
+from music19 import scale, note
 
 # Create B-flat major scale
 bb_scale = scale.MajorScale('B-')
@@ -46,7 +46,7 @@ print("\n" + "="*50)
 print("TABLATURE EXAMPLE")
 print("="*50 + "\n")
 
-from music21 import tablature, stream, chord
+from music19 import tablature, stream, chord
 
 # Example 1: Basic FretNote creation
 print("Example 1: Creating individual FretNotes")
@@ -67,7 +67,7 @@ print("-" * 40)
 # D minor chord shape: xx0231 (strings 6 to 1)
 dm_notes = [
     tablature.FretNote(string=4, fret=0),        # D (open 4th string)
-    tablature.FretNote(string=3, fret=2, fingering=2),  # A 
+    tablature.FretNote(string=3, fret=2, fingering=2),  # A
     tablature.FretNote(string=2, fret=3, fingering=3),  # D
     tablature.FretNote(string=1, fret=1, fingering=1),  # F
 ]
@@ -125,8 +125,8 @@ am_notes = [
 # Note: ChordWithFretBoard needs tuning to be set
 chord_with_fb = tablature.ChordWithFretBoard('Am', fretNotes=am_notes)
 # Set the tuning manually (it doesn't inherit from GuitarFretBoard)
-chord_with_fb.tuning = [tablature.pitch.Pitch('E2'), tablature.pitch.Pitch('A2'), 
-                        tablature.pitch.Pitch('D3'), tablature.pitch.Pitch('G3'), 
+chord_with_fb.tuning = [tablature.pitch.Pitch('E2'), tablature.pitch.Pitch('A2'),
+                        tablature.pitch.Pitch('D3'), tablature.pitch.Pitch('G3'),
                         tablature.pitch.Pitch('B3'), tablature.pitch.Pitch('E4')]
 
 print(f"Chord symbol: {chord_with_fb.figure}")

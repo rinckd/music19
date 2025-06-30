@@ -17,8 +17,8 @@ from __future__ import annotations
 import argparse
 import os
 
-from music21 import common
-from music21.test import commonTest
+from music19 import common
+from music19.test import commonTest
 
 try:
     # noinspection PyPackageRequirements

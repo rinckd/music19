@@ -10,7 +10,7 @@
 # ------------------------------------------------------------------------------
 '''
 Multiprocess testing.  Tests all doctests and Test unittest objects in all
-modules that are imported when running "import music21".  Runs a thread on
+modules that are imported when running "import music19".  Runs a thread on
 each core of a multicore system unless there are more than 2 cores, in which
 case it runs on n-1 cores.
 
@@ -31,10 +31,10 @@ import time
 import unittest
 import typing as t
 
-from music21 import environment
-from music21 import common
-from music21.test import testRunner
-from music21.test import commonTest
+from music19 import environment
+from music19 import common
+from music19.test import testRunner
+from music19.test import commonTest
 
 environLocal = environment.Environment('test.multiprocessTest')
 

@@ -1778,17 +1778,3 @@ class BachException(exceptions21.Music21Exception):
     pass
 
 
-class TestExternal(unittest.TestCase):
-    show = True
-
-    def testGetRiemenschneider1(self):
-        from music21 import corpus
-        for chorale in corpus.chorales.Iterator(1, 2,
-                                                numberingSystem='riemenschneider', analysis=True):
-            if self.show:
-                chorale.show()
-
-
-if __name__ == '__main__':
-    import music21
-    music21.mainTest()  # External)

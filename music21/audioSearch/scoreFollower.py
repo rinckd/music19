@@ -565,19 +565,6 @@ class ScoreFollower:
 
         return totalLength, lastNotePosition, probabilityHit, END_OF_SCORE
 
-
-# -----------------------------------------------------------------------------
-
-
-class TestExternal(unittest.TestCase):
-
-    def xtestRunScoreFollower(self):
-        from music21 import corpus
-        scNotes = corpus.parse('luca/gloria').parts[0].flatten().notesAndRests
-        ScF = ScoreFollower(scoreStream=scNotes)
-        ScF.runScoreFollower(plot=False, useMic=True, seconds=10.0)
-
-
 # -----------------------------------------------------------------------------
 
 

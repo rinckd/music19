@@ -144,13 +144,7 @@ class Test(unittest.TestCase):
 class TestExternal(unittest.TestCase):
     show = True
 
-    def testMergeJacopoVariants(self):
-        from music21 import corpus
-        j1 = corpus.parse('trecento/PMFC_06-Jacopo-03a')
-        j2 = corpus.parse('trecento/PMFC_06-Jacopo-03b')
-        jMerged = mergeVariantScores(j1, j2)
-        if self.show:
-            jMerged.show('musicxml.png')
+
 
 
 if __name__ == '__main__':

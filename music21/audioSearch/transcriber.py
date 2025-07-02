@@ -137,19 +137,6 @@ def monophonicStreamFromFile(fileName, useScale=None):
     return myScore.parts.first()
 
 
-class TestExternal(unittest.TestCase):
-
-    def x_testRunTranscribe(self):
-        saveFile = environLocal.getRootTempDir() / 'new_song.wav'
-        runTranscribe(show=False, plot=False, saveFile=saveFile, seconds=10.0)
-
-    def x_testTranscribePachelbel(self):
-        saveFile = environLocal.getRootTempDir() / 'pachelbel.wav'
-        runTranscribe(useMic=False, saveFile=saveFile, plot=False, show=False)
-        # _myScore = runTranscribe(useMic=False, saveFile=saveFile, plot=False, show=False)
-        # myScore.show()
-
-
 if __name__ == '__main__':
     import music21
     music21.mainTest(TestExternal)

@@ -3,7 +3,31 @@
 
 import unittest
 
-from music21.graph.plot import *
+from music21 import corpus, converter, dynamics, environment, stream, chord, note
+from music21.graph import axis, primitives
+from music21.graph.plot import (
+    HorizontalBarPitchSpaceOffset,
+    HorizontalBarPitchClassOffset,
+    ScatterWeightedPitchSpaceQuarterLength,
+    ScatterWeightedPitchClassQuarterLength,
+    HistogramPitchSpace,
+    HistogramPitchClass,
+    HistogramQuarterLength,
+    ScatterPitchSpaceQuarterLength,
+    ScatterPitchClassQuarterLength,
+    ScatterPitchClassOffset,
+    ScatterPitchSpaceDynamicSymbol,
+    ScatterWeightedPitchSpaceDynamicSymbol,
+    Plot3DBarsPitchSpaceQuarterLength,
+    WindowedKey,
+    WindowedAmbitus,
+    Histogram,
+    Scatter,
+    Features,
+    Dolan,
+)
+
+environLocal = environment.Environment('graph.plot')
 
 
 class Test(unittest.TestCase):
@@ -380,6 +404,161 @@ class Test(unittest.TestCase):
         b.run()
 
         # b.show()
+
+
+class TestExternalManual(unittest.TestCase):  # pragma: no cover
+
+    def testHorizontalBarPitchSpaceOffset(self):
+        a = corpus.parse('bach/bwv57.8')
+        # do not need to call flat version
+        b = HorizontalBarPitchSpaceOffset(a.parts[0], title='Bach (soprano voice)', doneAction=None)
+        b.run()
+
+        b = HorizontalBarPitchSpaceOffset(a, title='Bach (all parts)', doneAction=None)
+        b.run()
+
+    def testHorizontalBarPitchClassOffset(self):
+        a = corpus.parse('bach/bwv57.8')
+        b = HorizontalBarPitchClassOffset(a.parts[0], title='Bach (soprano voice)', doneAction=None)
+        b.run()
+
+        a = corpus.parse('bach/bwv57.8')
+        b = HorizontalBarPitchClassOffset(a.parts[0].measures(3, 6),
+                                              title='Bach (soprano voice, mm 3-6)', doneAction=None)
+        b.run()
+
+    def testScatterWeightedPitchSpaceQuarterLength(self):
+        a = corpus.parse('bach/bwv57.8').parts[0].flatten()
+        for xLog in [True, False]:
+            b = ScatterWeightedPitchSpaceQuarterLength(
+                a, title='Pitch Space Bach (soprano voice)', doneAction=None
+            )
+            b.axisX.useLogScale = xLog
+            b.run()
+
+            b = ScatterWeightedPitchClassQuarterLength(
+                a, title='Pitch Class Bach (soprano voice)',doneAction=None
+            )
+            b.axisX.useLogScale = xLog
+            b.run()
+
+    def testPitchSpace(self):
+        a = corpus.parse('bach/bwv57.8')
+        b = HistogramPitchSpace(a.parts[0].flatten(), title='Bach (soprano voice)', doneAction=None)
+        b.run()
+
+    def testPitchClass(self):
+        a = corpus.parse('bach/bwv57.8')
+        b = HistogramPitchClass(a.parts[0].flatten(), title='Bach (soprano voice)', doneAction=None)
+        b.run()
+
+    def testQuarterLength(self):
+        a = corpus.parse('bach/bwv57.8')
+        b = HistogramQuarterLength(a.parts[0].flatten(), title='Bach (soprano voice)', doneAction=None)
+        b.run()
+
+    def testScatterPitchSpaceQuarterLength(self):
+        for xLog in [True, False]:
+
+            a = corpus.parse('bach/bwv57.8')
+            b = ScatterPitchSpaceQuarterLength(a.parts[0].flatten(), title='Bach (soprano voice)', doneAction=None
+                                               )
+            b.axisX.useLogScale = xLog
+            b.run()
+
+            b = ScatterPitchClassQuarterLength(a.parts[0].flatten(), title='Bach (soprano voice)', doneAction=None
+                                               )
+            b.axisX.useLogScale = xLog
+            b.run()
+
+    def testScatterPitchClassOffset(self):
+        a = corpus.parse('bach/bwv57.8')
+        b = ScatterPitchClassOffset(a.parts[0].flatten(), title='Bach (soprano voice)', doneAction=None)
+        b.run()
+
+    def testScatterPitchSpaceDynamicSymbol(self):
+        a = corpus.parse('schumann_robert/opus41no1', 2)
+        b = ScatterPitchSpaceDynamicSymbol(
+            a.parts[0].flatten(),
+            title='Robert Schumann (soprano voice)', doneAction=None
+        )
+        b.run()
+
+        b = ScatterWeightedPitchSpaceDynamicSymbol(
+            a.parts[0].flatten(),
+            title='Robert Schumann (soprano voice)', doneAction=None)
+        b.run()
+
+    def testPlot3DPitchSpaceQuarterLengthCount(self):
+        a = corpus.parse('schoenberg/opus19', 6)  # also tests Tuplets
+        b = Plot3DBarsPitchSpaceQuarterLength(a.flatten().stripTies(),
+                                              title='Schoenberg pitch space', doneAction=None)
+        b.run()
+
+    def writeAllPlots(self):
+        '''
+        Write a graphic file for all graphs, naming them after the appropriate class.
+        This is used to generate documentation samples.
+        '''
+        # TODO: need to add strip() ties here; but need stripTies on Score
+        from music21.musicxml import testFiles
+
+        plotClasses = [
+            # histograms
+            (HistogramPitchSpace, None, None),
+            (HistogramPitchClass, None, None),
+            (HistogramQuarterLength, None, None),
+            # scatters
+            (ScatterPitchSpaceQuarterLength, None, None),
+            (ScatterPitchClassQuarterLength, None, None),
+            (ScatterPitchClassOffset, None, None),
+            (
+                ScatterPitchSpaceDynamicSymbol,
+                corpus.getWork(
+                    'schumann_robert/opus41no1', 2
+                ),
+                'Robert Schumann Opus 41 No 1'
+            ),
+
+            # offset based horizontal
+            (HorizontalBarPitchSpaceOffset, None, None),
+            (HorizontalBarPitchClassOffset, None, None),
+            # weighted scatter
+            (ScatterWeightedPitchSpaceQuarterLength, None, None),
+            (ScatterWeightedPitchClassQuarterLength, None, None),
+            (ScatterWeightedPitchSpaceDynamicSymbol,
+             corpus.getWork('schumann_robert/opus41no1', 2),
+             'Robert Schumann Opus 41 No 1'),
+
+            # 3d graphs
+            (Plot3DBarsPitchSpaceQuarterLength,
+             testFiles.mozartTrioK581Excerpt,
+             'Mozart Trio K581 Excerpt'),
+
+            (WindowedKey, corpus.getWork('bach/bwv66.6.xml'), 'Bach BWV 66.6'),
+            (WindowedAmbitus, corpus.getWork('bach/bwv66.6.xml'), 'Bach BWV 66.6'),
+
+        ]
+
+        sDefault = corpus.parse('bach/bwv57.8')
+
+        for plotClassName, work, titleStr in plotClasses:
+            if work is None:
+                s = sDefault
+
+            else:  # expecting data
+                s = converter.parse(work)
+
+            if titleStr is not None:
+                obj = plotClassName(s, doneAction=None, title=titleStr)
+            else:
+                obj = plotClassName(s, doneAction=None)
+
+            obj.run()
+            fn = obj.__class__.__name__ + '.png'
+            fp = str(environLocal.getRootTempDir() / fn)
+            environLocal.printDebug(['writing fp:', fp])
+            obj.write(fp)
 
 
 if __name__ == '__main__':

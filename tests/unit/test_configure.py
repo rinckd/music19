@@ -84,6 +84,75 @@ class Test(unittest.TestCase):
         # d.performAction()
 
 
+class TestUserInput(unittest.TestCase):  # pragma: no cover
+
+    def testYesOrNo(self):
+        print()
+        print('starting: YesOrNo()')
+        d = YesOrNo()
+        d.askUser()
+        print('getResult():', d.getResult())
+
+        print()
+        print('starting: YesOrNo(default=True)')
+        d = YesOrNo(default=True)
+        d.askUser()
+        print('getResult():', d.getResult())
+
+        print()
+        print('starting: YesOrNo(default=False)')
+        d = YesOrNo(default=False)
+        d.askUser()
+        print('getResult():', d.getResult())
+
+    def testSelectMusicXMLReader(self):
+        print()
+        print('starting: SelectMusicXMLReader()')
+        d = SelectMusicXMLReader()
+        d.askUser()
+        print('getResult():', d.getResult())
+
+    def testSelectMusicXMLReaderDefault(self):
+        print()
+        print('starting: SelectMusicXMLReader(default=1)')
+        d = SelectMusicXMLReader(default=1)
+        d.askUser()
+        print('getResult():', d.getResult())
+
+    def testOpenInBrowser(self):
+        print()
+        d = AskOpenInBrowser('https://www.music21.org/')
+        d.askUser()
+        print('getResult():', d.getResult())
+        d.performAction()
+
+    def testSelectMusicXMLReader2(self):
+        print()
+        print('starting: SelectMusicXMLReader()')
+        d = SelectMusicXMLReader()
+        d.askUser()
+        print('getResult():', d.getResult())
+        d.performAction()
+
+        print()
+        print('starting: SelectMusicXMLReader() w/o results')
+        d = SelectMusicXMLReader()
+        # force request to user by returning no valid results
+
+        def getValidResults(force=None):
+            return []
+
+        d._getValidResults = getValidResults
+        d.askUser()
+        print('getResult():', d.getResult())
+        d.performAction()
+
+    def testConfigurationAssistant(self):
+        print('Running ConfigurationAssistant all')
+        configAsst = ConfigurationAssistant(simulate=True)
+        configAsst.run()
+
+
 def run():
     ca = ConfigurationAssistant()
     ca.run()

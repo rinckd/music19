@@ -259,7 +259,7 @@ class Test(unittest.TestCase):
         self._matchWeightedData(match, target)
 
         if show is True:
-            p = graph.plot.Dolan(s, title='Dynamics')
+            p = graph.plot.Dolan(s, title='Dynamics', doneAction=None)
             p.run()
 
 

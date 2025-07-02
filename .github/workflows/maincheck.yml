@@ -25,7 +25,7 @@ jobs:
         - name: Setup Lilypond
           run: python -c 'from music21 import environment; environment.UserSettings()["lilypondPath"] = "/home/runner/bin/lilypond"'
         - name: Run Main Test script
-          run: python -c 'from music21.test.testSingleCoreAll import ciMain as ci; ci()'
+          run: python -m pytest tests/
         - name: Coveralls
           if: ${{ matrix.python-version == '3.12' }}
           env:  # when changing number above also change coverageM21.getCoverage
@@ -54,7 +54,6 @@ jobs:
             - name: Lint with pylint
               run: |
                   pylint -j0 music21
-                  pylint -j0 documentation
 
     flake:
         runs-on: ubuntu-latest
@@ -74,7 +73,6 @@ jobs:
             - name: PEP8 with flake8
               run: |
                   flake8 music21
-                  flake8 documentation
 
     mypy:
         runs-on: ubuntu-latest

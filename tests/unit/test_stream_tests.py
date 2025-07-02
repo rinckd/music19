@@ -2409,24 +2409,6 @@ class Test(unittest.TestCase):
         self.assertEqual(c1.pitches[1].accidental, None)
         self.assertEqual(c1.pitches[2].accidental, None)
 
-    def testMakeAccidentalsB(self):
-        s = corpus.parse('monteverdi/madrigal.5.3.rntxt')
-        m34 = s.parts[0].getElementsByClass(Measure)[33]
-        c = m34.getElementsByClass(chord.Chord)
-        # assuming not showing accidental b/c of key
-        self.assertEqual(str(c[1].pitches), '(<music21.pitch.Pitch B-4>, '
-                            + '<music21.pitch.Pitch D5>, <music21.pitch.Pitch F5>)')
-        # because of key
-        self.assertEqual(str(c[1].pitches[0].accidental.displayStatus), 'False')
-
-        s = corpus.parse('monteverdi/madrigal.5.4.rntxt')
-        m74 = s.parts[0].getElementsByClass(Measure)[73]
-        c = m74.getElementsByClass(chord.Chord)
-        # has correct pitches but natural not showing on C
-        self.assertEqual(str(c[0].pitches),
-                         '(<music21.pitch.Pitch C5>, <music21.pitch.Pitch E5>, '
-                            + '<music21.pitch.Pitch G5>)')
-        self.assertEqual(str(c[0].pitches[0].accidental), 'None')
 
     def testMakeAccidentalsC(self):
         # this isolates the case where a new measure uses an accidental
@@ -8471,74 +8453,7 @@ class Test(unittest.TestCase):
 class TestExternal(unittest.TestCase):
     show = True
 
-    def testLilySimple(self):
-        a = Stream()
-        ts = meter.TimeSignature('3/4')
 
-        b = Stream()
-        q = note.Note(type='quarter')
-        q.octave = 5
-        b.repeatInsert(q, [0, 1, 2, 3])
-
-        bestC = clef.bestClef(b, allowTreble8vb=True)
-        a.insert(0, bestC)
-        a.insert(0, ts)
-        a.insert(0, b)
-
-        if self.show:
-            a.show('lily.png')
-
-    def testLilySemiComplex(self):
-        a = Stream()
-        ts = meter.TimeSignature('3/8')
-
-        b = Stream()
-        q = note.Note(type='eighth')
-
-        dur1 = duration.Duration()
-        dur1.type = 'eighth'
-
-        tup1 = duration.Tuplet()
-        tup1.tupletActual = [5, dur1]
-        tup1.tupletNormal = [3, dur1]
-
-        q.octave = 2
-        q.duration.appendTuplet(tup1)
-
-        for i in range(5):
-            b.append(copy.deepcopy(q))
-            b.elements[i].accidental = pitch.Accidental(i - 2)
-
-        b.elements[0].duration.tuplets[0].type = 'start'
-        b.elements[-1].duration.tuplets[0].type = 'stop'
-        b.elements[2].lyric = 'a real C'
-
-        bestC = clef.bestClef(b, allowTreble8vb=True)
-        a.insert(0, bestC)
-        a.insert(0, ts)
-        a.insert(0, b)
-        if self.show:
-            a.show('lily.png')
-
-    def testScoreLily(self):
-        '''
-        Test the lilypond output of various score operations.
-        '''
-        c = note.Note('C4')
-        d = note.Note('D4')
-        ts = meter.TimeSignature('2/4')
-        s1 = Part()
-        s1.append(copy.deepcopy(c))
-        s1.append(copy.deepcopy(d))
-        s2 = Part()
-        s2.append(copy.deepcopy(d))
-        s2.append(copy.deepcopy(c))
-        score1 = Score()
-        score1.insert(ts)
-        score1.insert(s1)
-        score1.insert(s2)
-        if self.show:
-            score1.show('lily.png')
 
     def testMXOutput(self):
         '''

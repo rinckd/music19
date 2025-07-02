@@ -4235,15 +4235,6 @@ class ElementWrapper(Music21Object):
         return object.__getattribute__(storedObj, name)
 
 
-class Test(unittest.TestCase):
-    '''
-    All other tests moved to test/test_base.py
-    '''
-    def testCopyAndDeepcopy(self):
-        from music21.test.commonTest import testCopyAll
-        testCopyAll(self, globals())
-
-
 # ------------------------------------------------------------------------------
 # define presented order in documentation
 _DOC_ORDER = [Music21Object, ElementWrapper]

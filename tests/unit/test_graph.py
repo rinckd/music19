@@ -76,7 +76,7 @@ class TestExternal(unittest.TestCase):
         a.parts[0].insert(0, dynamics.Dynamic('mf'))
         a.parts[0].insert(10, dynamics.Dynamic('f'))
         if self.show:
-            plotStream(a, 'all')
+            plotStream(a, 'all', doneAction=None)
 
 
 if __name__ == '__main__':

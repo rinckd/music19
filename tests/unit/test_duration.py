@@ -431,8 +431,9 @@ class TestExternal(unittest.TestCase):
 
     def testSingle(self):
         from music21 import note
+        from fractions import Fraction
         a = Duration()
-        a.quarterLength = 2.66666
+        a.quarterLength = Fraction(8, 3)
         n = note.Note()
         n.duration = a
         if self.show:

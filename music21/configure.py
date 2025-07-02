@@ -17,7 +17,6 @@ import time
 import sys
 import sysconfig
 import textwrap
-import unittest
 import webbrowser
 
 from importlib import reload
@@ -1442,74 +1441,6 @@ class ConfigurationAssistant:
 # define presented order in documentation
 _DOC_ORDER: list[type] = []
 
-class TestUserInput(unittest.TestCase):  # pragma: no cover
-
-    def testYesOrNo(self):
-        print()
-        print('starting: YesOrNo()')
-        d = YesOrNo()
-        d.askUser()
-        print('getResult():', d.getResult())
-
-        print()
-        print('starting: YesOrNo(default=True)')
-        d = YesOrNo(default=True)
-        d.askUser()
-        print('getResult():', d.getResult())
-
-        print()
-        print('starting: YesOrNo(default=False)')
-        d = YesOrNo(default=False)
-        d.askUser()
-        print('getResult():', d.getResult())
-
-    def testSelectMusicXMLReader(self):
-        print()
-        print('starting: SelectMusicXMLReader()')
-        d = SelectMusicXMLReader()
-        d.askUser()
-        print('getResult():', d.getResult())
-
-    def testSelectMusicXMLReaderDefault(self):
-        print()
-        print('starting: SelectMusicXMLReader(default=1)')
-        d = SelectMusicXMLReader(default=1)
-        d.askUser()
-        print('getResult():', d.getResult())
-
-    def testOpenInBrowser(self):
-        print()
-        d = AskOpenInBrowser('https://www.music21.org/')
-        d.askUser()
-        print('getResult():', d.getResult())
-        d.performAction()
-
-    def testSelectMusicXMLReader2(self):
-        print()
-        print('starting: SelectMusicXMLReader()')
-        d = SelectMusicXMLReader()
-        d.askUser()
-        print('getResult():', d.getResult())
-        d.performAction()
-
-        print()
-        print('starting: SelectMusicXMLReader() w/o results')
-        d = SelectMusicXMLReader()
-        # force request to user by returning no valid results
-
-        def getValidResults(force=None):
-            return []
-
-        d._getValidResults = getValidResults
-        d.askUser()
-        print('getResult():', d.getResult())
-        d.performAction()
-
-    def testConfigurationAssistant(self):
-        print('Running ConfigurationAssistant all')
-        configAsst = ConfigurationAssistant(simulate=True)
-        configAsst.run()
-
 if __name__ == '__main__':
     if len(sys.argv) == 1:  # normal conditions
         # music21.mainTest(Test)
@@ -1518,16 +1449,11 @@ if __name__ == '__main__':
     else:
         # only if running tests
         testInstance = Test()
-        te = TestUserInput()
 
         if len(sys.argv) < 2 or sys.argv[1] in ['all', 'test']:
             import music21
             music21.mainTest(Test)
 
-        # arg[1] is the test to launch
-        elif sys.argv[1] == 'te':
-            # run test user input
-            getattr(te, sys.argv[2])()
         # just run named Test
         elif hasattr(testInstance, sys.argv[1]):
             getattr(testInstance, sys.argv[1])()

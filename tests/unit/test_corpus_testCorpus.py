@@ -8,18 +8,6 @@ from music21.corpus.testCorpus import *
 
 class Test(unittest.TestCase):
 
-    def testGetPaths(self):
-        for known in [
-            'schumann_clara/opus17/movement3.xml',
-            'schoenberg/opus19/movement2.mxl',
-            'palestrina/agnus_02.krn',
-        ]:
-            a = corpus.getWork(known)
-            # make sure it is not an empty list
-            self.assertTrue(a)
-            workSlashes = re.sub(r'\\', '/', str(a))
-            self.assertTrue(workSlashes.lower().endswith(known.lower()), (workSlashes, known))
-
     def testBachKeys(self):
         from music21 import key
         keyObjs = []

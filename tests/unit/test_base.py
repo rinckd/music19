@@ -40,6 +40,10 @@ class TestMock(Music21Object):
 
 class Test(unittest.TestCase):
 
+    def testCopyAndDeepcopy(self):
+        from music21.test.commonTest import testCopyAll
+        testCopyAll(self, globals())
+
     def testM21ObjRepr(self):
         a = base.Music21Object()
         address = hex(id(a))

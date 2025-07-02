@@ -346,6 +346,45 @@ class TestNote(unittest.TestCase):
         self.assertEqual(n1Copy.volume.client, n1Copy)
 
 
+class TestExternal(unittest.TestCase):  # pragma: no cover
+    """
+    Tests that would open windows and rely on external software.
+    Migrated from embedded TestExternal class in note.py.
+    Modified to use doneAction=None to prevent actual display.
+    """
+    show = False  # Changed from True to False for unit testing
+
+    def testSingle(self):
+        """
+        Need to test direct note creation w/o stream
+        """
+        from music21 import note
+        a = note.Note('D-3')
+        a.quarterLength = 2.25
+        if self.show:
+            a.show(doneAction=None)  # Added doneAction=None
+
+    def testBasic(self):
+        from music21 import note
+        from music21 import stream
+        a = stream.Stream()
+
+        for pitchName, qLen in [('d-3', 2.5), ('c#6', 3.25), ('a--5', 0.5),
+                                ('f', 1.75), ('g3', 1.5), ('d##4', 1.25),
+                                ('d-3', 2.5), ('c#6', 3.25), ('a--5', 0.5),
+                                ('f#2', 1.75), ('g-3', (4 / 3)), ('d#6', (2 / 3))
+                                ]:
+            b = note.Note()
+            b.quarterLength = qLen
+            b.name = pitchName
+            # Pylint going crazy here
+            b.style.color = '#FF00FF'  # pylint: disable=attribute-defined-outside-init
+            a.append(b)
+
+        if self.show:
+            a.show(doneAction=None)  # Added doneAction=None
+
+
 if __name__ == '__main__':
     import music21
     music21.mainTest(TestNote)

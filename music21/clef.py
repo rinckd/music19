@@ -1005,19 +1005,7 @@ def bestClef(streamObj: stream.Stream,
 
 
 # ------------------------------------------------------------------------------
-# all other tests in test/test_clef
-class Test(unittest.TestCase):
+# tests moved to tests/unit/test_clef.py
 
-    def testCopyAndDeepcopy(self):
-        from music21.test.commonTest import testCopyAll
-        testCopyAll(self, globals())
-
-
-# ------------------------------------------------------------------------------
 # define presented order in documentation
 _DOC_ORDER = [Clef, TrebleClef, BassClef]
-
-
-if __name__ == '__main__':
-    import music21
-    music21.mainTest(Test)

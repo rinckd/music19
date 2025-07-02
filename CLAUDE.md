@@ -11,17 +11,20 @@ music19 is a slim-downed version of music21: A Toolkit for Computer-Aided Musica
 ### Running Tests
 
 ```bash
-# Run all tests
-python -m music21.test.testSingleCoreAll
+# Run all tests (preferred method)
+python -m pytest tests/
 
 # Run tests for a specific module
-python -c "import music21; music21.mainTest(music21.scale)"
+python -m pytest tests/unit/test_scale.py
 
 # Run a single test method
-python -m unittest music21.scale.test_scale_main.Test.testBasicLegacy
+python -m pytest tests/unit/test_scale.py::Test::testBasicLegacy
 
-# Run tests with options (noDocTest, verbose, onlyDocTest)
-python -c "import music21; music21.mainTest('noDocTest', 'verbose')"
+# Run with verbose output
+python -m pytest tests/ -v
+
+# Run with coverage
+python -m pytest tests/ --cov=music21
 ```
 
 ### Running Tests in PyCharm
@@ -31,21 +34,19 @@ python -c "import music21; music21.mainTest('noDocTest', 'verbose')"
    - Set Default test runner to "pytest"
 
 2. **Run tests using pytest**:
-   - Right-click on `music21/scale/test_scale_main.py`
-   - Select "Run pytest in test_scale_main.py"
+   - Right-click on `tests/unit/test_scale.py`
+   - Select "Run pytest in test_scale.py"
    - Or click green arrows next to individual test methods
 
-3. **Run tests using music21's test runner**:
-   - Run `test_scale_in_pycharm.py` script
-   - Or create custom run configuration with script content:
-     ```python
-     import music21; music21.mainTest(music21.scale)
-     ```
+3. **Run all tests**:
+   - Right-click on `tests/` directory
+   - Select "Run pytest in tests"
 
 4. **Debug tests**:
    - Set breakpoints in test methods or source code
    - Right-click → "Debug" instead of "Run"
    - Step through both test code and music21 implementation
+
 
 ### Linting and Code Quality
 
@@ -76,7 +77,7 @@ pip install -e .
 
 ### Core Structure
 - **Main Package**: `/music21/` - Contains all library modules
-- **Tests**: `/music21/test/` - Comprehensive test suite
+- **Tests**: `/tests/` - Comprehensive test suite (migrated from embedded tests)
 - **Documentation**: `/documentation/` - Sphinx docs and Jupyter notebooks
 - **Corpus**: Musical works for testing and examples
 
@@ -106,8 +107,9 @@ pip install -e .
 
 ### Testing Philosophy
 - Every public method should have doctests
-- Complex functionality requires unit tests
+- Complex functionality requires unit tests in `tests/unit/`
 - Use the corpus for real-world test cases
+- Tests are organized by module: `test_[module_name].py`
 
 ### Code Style
 - Follow PEP8 (enforced by flake8)
@@ -134,10 +136,12 @@ s.append(note.Note('C4'))
 ```
 
 ### Running a Quick Test
-```python
-# In Python interpreter
-import music21
-music21.mainTest(music21.note.Test.testSpecificMethod)
+```bash
+# Run specific test class
+python -m pytest tests/unit/test_note.py::Test
+
+# Run specific test method
+python -m pytest tests/unit/test_note.py::Test::testSpecificMethod
 ```
 
 ### Debugging Import Issues
@@ -153,3 +157,79 @@ GitHub Actions runs:
 - Coverage reporting (Python 3.12 only)
 
 All checks must pass before merging PRs.
+
+## Dependency Analysis & Refactor Plan
+
+### Current Dependency Issues
+
+The music21 codebase has several architectural challenges that are being addressed through a planned refactor:
+
+#### Circular Dependencies
+- **base.py ↔ higher-level modules**: `base.py` needs to import `note`, `chord`, `stream` for specific operations
+- **stream ↔ core modules**: `stream` imports most core modules while they need stream for context
+- **TYPE_CHECKING pattern**: Extensive use of `if t.TYPE_CHECKING:` blocks (58+ files)
+
+#### Late Import Workarounds
+- **Function-level imports**: 99+ instances of imports inside functions to avoid circular dependencies
+- **Performance impact**: Late imports affect import performance and code clarity
+- **Maintenance burden**: Makes dependency relationships unclear
+
+#### Import Pattern Examples
+```python
+# Common late import pattern
+def some_method(self):
+    from music21 import chord  # Avoid circular dependency
+    from music21 import note
+    # ... function logic
+```
+
+### Planned Refactor Phases
+
+#### Phase 1: Dependency Inversion & Interface Extraction
+1. Extract protocol/interface classes from `base.py`
+2. Create factory patterns for object creation
+3. Move utility functions requiring high-level imports
+
+#### Phase 2: Stream Module Restructuring
+1. Split `stream/base.py` into focused modules:
+   - `stream/core.py` (container logic)
+   - `stream/operations.py` (operations requiring other modules)
+   - `stream/context.py` (context-aware operations)
+2. Reduce stream's import footprint
+
+#### Phase 3: Late Import Consolidation
+1. Replace function-level imports with dependency injection
+2. Consolidate TYPE_CHECKING imports where runtime imports needed
+3. Create import utilities for commonly late-imported modules
+
+#### Phase 4: Module Responsibility Clarification
+1. Define clear module boundaries with explicit APIs
+2. Move cross-cutting concerns to dedicated utilities
+3. Document and enforce dependency hierarchy
+
+### Development Guidelines for Refactor
+
+#### When Working with Dependencies
+- **Avoid adding new circular dependencies**: Check import chains before adding imports
+- **Use TYPE_CHECKING appropriately**: Only for static analysis, not runtime needs
+- **Document late imports**: If you must use late imports, document why
+- **Follow the hierarchy**: Lower-level modules should not import higher-level ones
+
+#### Import Best Practices
+```python
+# Good: Use TYPE_CHECKING for static analysis
+from __future__ import annotations
+import typing as t
+
+if t.TYPE_CHECKING:
+    from music21 import stream  # Only for type hints
+
+# Good: Late import with documentation
+def method_requiring_stream(self):
+    """Method that needs stream - imported late to avoid circular dependency."""
+    from music21 import stream
+    # ... implementation
+
+# Avoid: Direct import that creates circular dependency
+# from music21 import stream  # This would create circular import
+```

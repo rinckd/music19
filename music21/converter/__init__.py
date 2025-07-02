@@ -1508,20 +1508,8 @@ def _osCanLoad(fp: str) -> bool:
         return False
 
 # ------------------------------------------------------------------------------
-class TestSlow(unittest.TestCase):  # pragma: no cover
+# tests moved to tests/unit/test_converter.py
 
-    def testMusicXMLConversion(self):
-        from music21.musicxml import testFiles
-        for mxString in testFiles.ALL:
-            a = subConverters.ConverterMusicXML()
-            a.parseData(mxString)
-
-# ------------------------------------------------------------------------------
 # define presented order in documentation
 _DOC_ORDER = [parse, parseFile, parseData, parseURL, freeze, thaw, freezeStr, thawStr,
               Converter, registerSubConverter, unregisterSubConverter]
-
-if __name__ == '__main__':
-    # sys.arg test options will be used in mainTest()
-    import music21
-    music21.mainTest(Test)  # , runTest='testConverterFromPath')

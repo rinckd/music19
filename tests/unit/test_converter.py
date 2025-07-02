@@ -448,6 +448,16 @@ class Test(unittest.TestCase):
             parse('nonexistent_path_ending_in_correct_extension.musicxml')
 
 
+class TestSlow(unittest.TestCase):  # pragma: no cover
+    """Test from embedded TestSlow class in converter/__init__.py"""
+    
+    def testMusicXMLConversion(self):
+        from music21.musicxml import testFiles
+        for mxString in testFiles.ALL:
+            a = subConverters.ConverterMusicXML()
+            a.parseData(mxString)
+
+
 class TestExternal(unittest.TestCase):
     show = True
 
@@ -504,4 +514,4 @@ class TestExternal(unittest.TestCase):
 
 if __name__ == '__main__':
     import music21
-    music21.mainTest(Test, TestExternal)
+    music21.mainTest(Test, TestSlow, TestExternal)

@@ -120,6 +120,12 @@ class Test(unittest.TestCase):
 
         self.assertEqual(m.notes[0].stemDirection, 'down')
 
+    def testCopyAndDeepcopy(self):
+        """Test from embedded Test class in clef.py"""
+        from tests.framework.commonTest import testCopyAll
+        import music21.clef as clef_module
+        testCopyAll(self, clef_module.__dict__)
+
 
 if __name__ == '__main__':
     import music21

@@ -750,6 +750,12 @@ class Test(unittest.TestCase):
         # value should no longer be cached.
         self.assertFalse(ch.isConsonant())
 
+    def testCopyAndDeepcopy(self):
+        """Test from embedded Test class in chord/__init__.py"""
+        from tests.framework.commonTest import testCopyAll
+        import music21.chord as chord_module
+        testCopyAll(self, chord_module.__dict__)
+
 
 if __name__ == '__main__':
     import music21

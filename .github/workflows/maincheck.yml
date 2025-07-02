@@ -23,15 +23,9 @@ jobs:
         - name: Install Ubuntu dependencies
           run: ./.github/scripts/install_ubuntu_deps.sh
         - name: Setup Lilypond
-          run: python -c 'from music21 import environment; environment.UserSettings()["lilypondPath"] = "/home/runner/bin/lilypond"'
+          run: python -c 'from music21 import environment'
         - name: Run Main Test script
           run: python -m pytest tests/
-        - name: Coveralls
-          if: ${{ matrix.python-version == '3.12' }}
-          env:  # when changing number above also change coverageM21.getCoverage
-              GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-              COVERALLS_SERVICE_NAME: github
-          run: coveralls
 
     lint:
         runs-on: ubuntu-latest

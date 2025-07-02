@@ -5444,18 +5444,7 @@ class Pitch(prebase.ProtoM21Object):
 
 
 # ------------------------------------------------------------------------------
-# nearly all tests moved to test_pitch.py
-
-class Test(unittest.TestCase):
-    def testCopyAndDeepcopy(self):
-        from music21.test.commonTest import testCopyAll
-        testCopyAll(self, globals())
-
+# tests moved to tests/unit/test_pitch.py
 
 # define presented order in documentation
 _DOC_ORDER = [Pitch, Accidental, Microtone]
-
-
-if __name__ == '__main__':
-    import music21
-    music21.mainTest(Test)

@@ -6125,19 +6125,6 @@ def fromIntervalVector(notation, getZRelation=False):
 
 
 # ------------------------------------------------------------------------------
-class Test(unittest.TestCase):
-    '''
-    Most tests now in test/test_chord
-    '''
-    def testCopyAndDeepcopy(self):
-        from music21.test.commonTest import testCopyAll
-        testCopyAll(self, globals())
-
-
+# tests moved to tests/unit/test_chord.py
 
 _DOC_ORDER = [Chord]
-
-
-if __name__ == '__main__':
-    import music21
-    music21.mainTest(Test)  # , runTest='testInvertingSimple')

@@ -65,10 +65,10 @@ defaultTempoValues = {
     'prestissimo': 208,
 }
 
-def convertTempoByReferent(
-    numberSrc: int|float,
-    quarterLengthBeatSrc: int|float,
-    quarterLengthBeatDst=1.0
+def convert_tempo_by_referent(
+    number_src: int | float,
+    quarter_length_beat_src: int | float,
+    quarter_length_beat_dst=1.0
 ) -> float:
     '''
     Convert between equivalent tempi, where the speed stays the
@@ -76,44 +76,44 @@ def convertTempoByReferent(
 
     60 bpm at quarter, going to half
 
-    >>> tempo.convertTempoByReferent(60, 1, 2)
+    >>> tempo.convert_tempo_by_referent(60, 1, 2)
     30.0
 
     60 bpm at quarter, going to 16th
 
-    >>> tempo.convertTempoByReferent(60, 1, 0.25)
+    >>> tempo.convert_tempo_by_referent(60, 1, 0.25)
     240.0
 
     60 at dotted quarter, get quarter
 
-    >>> tempo.convertTempoByReferent(60, 1.5, 1)
+    >>> tempo.convert_tempo_by_referent(60, 1.5, 1)
     90.0
 
     60 at dotted quarter, get half
 
-    >>> tempo.convertTempoByReferent(60, 1.5, 2)
+    >>> tempo.convert_tempo_by_referent(60, 1.5, 2)
     45.0
 
     60 at dotted quarter, get trip
 
-    >>> tempo.convertTempoByReferent(60, 1.5, 1/3)
+    >>> tempo.convert_tempo_by_referent(60, 1.5, 1/3)
     270.0
 
     A Fraction instance can also be used:
 
-    >>> tempo.convertTempoByReferent(60, 1.5, common.opFrac(1/3))
+    >>> tempo.convert_tempo_by_referent(60, 1.5, common.opFrac(1/3))
     270.0
 
     '''
     # find duration in seconds of quarter length
-    srcDurPerBeat = 60 / numberSrc
+    src_dur_per_beat = 60 / number_src
     # convert to dur for one quarter length
-    dur = srcDurPerBeat / quarterLengthBeatSrc
+    dur = src_dur_per_beat / quarter_length_beat_src
     # multiply dur by dst quarter
-    dstDurPerBeat = dur * float(quarterLengthBeatDst)
-    # environLocal.printDebug(['dur', dur, 'dstDurPerBeat', dstDurPerBeat])
+    dst_dur_per_beat = dur * float(quarter_length_beat_dst)
+    # environLocal.printDebug(['dur', dur, 'dst_dur_per_beat', dst_dur_per_beat])
     # find tempo
-    return float(60 / dstDurPerBeat)
+    return float(60 / dst_dur_per_beat)
 
 # ------------------------------------------------------------------------------
 class TempoException(exceptions21.Music21Exception):
@@ -608,14 +608,14 @@ class MetronomeMark(TempoIndication):
         60.0
         '''
         if useNumberSounding and self.numberSounding is not None:
-            return convertTempoByReferent(self.numberSounding,
-                                          self.referent.quarterLength,
-                                          1.0)
+            return convert_tempo_by_referent(self.numberSounding,
+                                             self.referent.quarterLength,
+                                             1.0)
         if self.number is not None:
             # target quarter length is always 1.0
-            return convertTempoByReferent(self.number,
-                                          self.referent.quarterLength,
-                                          1.0)
+            return convert_tempo_by_referent(self.number,
+                                             self.referent.quarterLength,
+                                             1.0)
         return None
 
     def setQuarterBPM(self, value, setNumber=True):
@@ -630,7 +630,7 @@ class MetronomeMark(TempoIndication):
         120
         '''
         # assuming a quarter value coming in, what is with our current beat
-        value = convertTempoByReferent(value, 1.0, self.referent.quarterLength)
+        value = convert_tempo_by_referent(value, 1.0, self.referent.quarterLength)
         if not setNumber:
             # convert this to a quarter bpm
             self._numberSounding = value
@@ -758,9 +758,9 @@ class MetronomeMark(TempoIndication):
             quarterLength = referent.quarterLength
 
         if self.number is not None:
-            newNumber = convertTempoByReferent(self.number,
-                                               self.referent.quarterLength,
-                                               quarterLength)
+            newNumber = convert_tempo_by_referent(self.number,
+                                                  self.referent.quarterLength,
+                                                  quarterLength)
         else:
             newNumber = None
 

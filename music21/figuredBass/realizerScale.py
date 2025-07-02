@@ -11,8 +11,6 @@ from __future__ import annotations
 
 import copy
 import itertools
-import unittest
-
 from music21 import exceptions21
 from music21 import note
 from music21 import pitch
@@ -29,12 +27,10 @@ scaleModes = {'major': scale.MajorScale,
 
 # ------------------------------------------------------------------------------
 
-
 class FiguredBassScale:
     '''
     Acts as a wrapper for :class:`~music21.scale.Scale`. Used to represent the
     concept of a figured bass scale, with a scale value and mode.
-
 
     Accepted scale types: major, minor, dorian, phrygian, and hypophrygian.
     A FiguredBassScaleException is raised if an invalid scale type is provided.
@@ -201,18 +197,7 @@ class FiguredBassScale:
     def _reprInternal(self):
         return f'{self.realizerScale!r}'
 
-
 class FiguredBassScaleException(exceptions21.Music21Exception):
     pass
 
 # ------------------------------------------------------------------------------
-
-
-class Test(unittest.TestCase):
-    pass
-
-
-if __name__ == '__main__':
-    import music21
-    music21.mainTest(Test)
-

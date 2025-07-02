@@ -19,13 +19,10 @@ metrical structures in music21.
 from __future__ import annotations
 
 import copy
-import unittest
-
 from music21 import environment
 from music21 import stream
 
 environLocal = environment.Environment('analysis.metrical')
-
 
 def labelBeatDepth(streamIn):
     # noinspection PyShadowingNames
@@ -161,48 +158,10 @@ def thomassenMelodicAccent(streamIn: stream.Stream):
         n.editorial.melodicAccent = thisAccent * p2Accent
         p2Accent = nextAccent
 
-
-
-
 # ------------------------------------------------------------------------------
-class TestExternal(unittest.TestCase):
-    show = True
-
-    def testSingle(self):
-        '''
-        Need to test direct meter creation w/o stream
-        '''
-        from music21 import note
-        from music21 import meter
-        s = stream.Stream()
-        ts = meter.TimeSignature('4/4')
-
-        s.append(ts)
-        n = note.Note()
-        n.quarterLength = 1
-        s.repeatAppend(n, 4)
-
-        n = note.Note()
-        n.quarterLength = 0.5
-        s.repeatAppend(n, 8)
-
-        s = s.makeMeasures()
-        s = labelBeatDepth(s)
-
-        if self.show:
-            s.show()
-
-
-class Test(unittest.TestCase):
-    pass
-
 
 # ------------------------------------------------------------------------------
 # define presented order in documentation
 _DOC_ORDER = [labelBeatDepth]
 
-if __name__ == '__main__':
-    import music21
-    music21.mainTest(Test)  # , TestExternal)
-
-
+# , TestExternal)

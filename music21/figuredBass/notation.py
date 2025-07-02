@@ -11,8 +11,6 @@ from __future__ import annotations
 
 import copy
 import re
-import unittest
-
 from music21 import exceptions21
 from music21 import pitch
 from music21 import prebase
@@ -268,7 +266,6 @@ class Notation(prebase.ProtoM21Object):
         >>> notation2.origModStrings
         ('-', '-')
 
-
         An example of a seventh chord with extender:
 
         >>> notation3 = n.Notation('7_')
@@ -422,7 +419,6 @@ class Notation(prebase.ProtoM21Object):
         Turns the numbers and Modifier objects into Figure objects, each corresponding
         to a number with its Modifier.
 
-
         >>> from music21.figuredBass import notation as n
         >>> notation2 = n.Notation('-6,-')  #__init__ method calls _getFigures()
         >>> notation2.figures[0]
@@ -452,12 +448,10 @@ class Notation(prebase.ProtoM21Object):
 
         self.figuresFromNotationColumn = figuresFromNotaCol
 
-
 class NotationException(exceptions21.Music21Exception):
     pass
 
 # ------------------------------------------------------------------------------
-
 
 class Figure(prebase.ProtoM21Object):
     '''
@@ -555,7 +549,6 @@ class Figure(prebase.ProtoM21Object):
         mod = repr(self.modifier).replace('music21.figuredBass.notation.', '')
         return f'{num}{ext} {mod}'
 
-
 # ------------------------------------------------------------------------------
 specialModifiers = {
     '+': '#',
@@ -577,14 +570,12 @@ specialModifiers = {
     '\U0001d12b': '--'
 }
 
-
 class Modifier(prebase.ProtoM21Object):
     '''
     Turns a modifierString (a modifier in a
     :attr:`~music21.figuredBass.notation.Notation.notationColumn`)
     to an :class:`~music21.pitch.Accidental`. A ModifierException
     is raised if the modifierString is not valid.
-
 
     Accepted inputs are those accepted by Accidental, as well as the following:
 
@@ -746,14 +737,12 @@ class Modifier(prebase.ProtoM21Object):
         if not inPlace:
             return pitchToAlter
 
-
 class ModifierException(exceptions21.Music21Exception):
     pass
 
 # ------------------------------------------------------------------------------
 
 # Helper Methods
-
 
 def convertToPitch(pitchString):
     '''
@@ -777,14 +766,4 @@ def convertToPitch(pitchString):
 
     raise TypeError('Cannot convert ' + pitchString + ' to a music21 Pitch.')
 
-
 _DOC_ORDER = [Notation, Figure, Modifier]
-
-
-class Test(unittest.TestCase):
-    pass
-
-
-if __name__ == '__main__':
-    import music21
-    music21.mainTest(Test)

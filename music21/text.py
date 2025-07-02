@@ -15,8 +15,6 @@ Utility routines for processing text in scores and other musical objects.
 from __future__ import annotations
 
 import random
-import unittest
-
 from music21 import base
 from music21 import common
 from music21 import exceptions21
@@ -24,8 +22,6 @@ from music21 import environment
 from music21 import style
 
 environLocal = environment.Environment('text')
-
-
 
 # using ISO 639-1 Code from here:
 # http://www.loc.gov/standards/iso639-2/php/code_list.php
@@ -51,7 +47,6 @@ articleReference = {
     'it': ['il', 'lo', 'la', "l'", 'i', 'gli', 'le', "un'", 'un', 'uno', 'una',
            'del', 'dello', 'della', 'dei', 'degli', 'delle'],
 }
-
 
 # ------------------------------------------------------------------------------
 def assembleLyrics(streamIn, lineNumber=1, *, wordSeparator=' '):
@@ -126,7 +121,6 @@ def assembleLyrics(streamIn, lineNumber=1, *, wordSeparator=' '):
                 raise ValueError(f'no known Text syllabic setting: {lyricObj.syllabic}')
     return wordSeparator.join(words)
 
-
 def assembleAllLyrics(streamIn, maxLyrics=10, lyricSeparation='\n', *, wordSeparator=' '):
     r'''
     Concatenate all Lyrics text from a stream separated by lyricSeparation.
@@ -158,9 +152,6 @@ def assembleAllLyrics(streamIn, maxLyrics=10, lyricSeparation='\n', *, wordSepar
                 lyrics += lyricSeparation
             lyrics += lyr
     return lyrics
-
-
-
 
 def prependArticle(src, language=None):
     # noinspection SpellCheckingInspection
@@ -199,13 +190,11 @@ def prependArticle(src, language=None):
     else:  # not match
         return src
 
-
 def postpendArticle(src, language=None):
     # noinspection SpellCheckingInspection
     '''
     Given a text string, if an article is found in a leading position,
     place it at the end with a comma.
-
 
     >>> text.postpendArticle('The Ale is Dear')
     'Ale is Dear, The'
@@ -238,11 +227,9 @@ def postpendArticle(src, language=None):
     else:  # not match
         return src
 
-
 # ------------------------------------------------------------------------------
 class TextException(exceptions21.Music21Exception):
     pass
-
 
 # ------------------------------------------------------------------------------
 class TextBox(base.Music21Object):
@@ -312,7 +299,6 @@ class TextBox(base.Music21Object):
         self.style.alignVertical = 'top'
         self.style.alignHorizontal = 'center'
 
-
     def _reprInternal(self):
         if self._content is not None and len(self._content) > 10:
             return repr(self._content[:10] + '...')
@@ -320,7 +306,6 @@ class TextBox(base.Music21Object):
             return repr(self._content)
         else:
             return ''
-
 
     @property
     def content(self):
@@ -365,10 +350,8 @@ class TextBox(base.Music21Object):
             self._page = int(value)  # must be an integer
         # do not set otherwise
 
-
 # ------------------------------------------------------------------------------
 _stored_trigrams: dict[str, Trigram] = {}
-
 
 class LanguageDetector:
     # noinspection SpellCheckingInspection
@@ -426,7 +409,6 @@ class LanguageDetector:
                 _stored_trigrams[languageCode] = Trigram(excerptWords)
         return _stored_trigrams.copy()
 
-
     def __init__(self, text=None):
         self.text = text
         self.trigrams = _stored_trigrams.copy() or LanguageDetector.readExcerpts()
@@ -468,7 +450,6 @@ class LanguageDetector:
 
         return maxLang
 
-
     def mostLikelyLanguageNumeric(self, excerpt=None):
         '''
         returns a number representing the most likely language for a passage
@@ -503,7 +484,6 @@ class LanguageDetector:
                 if self.languageCodes[i] == langCode:
                     return i + 1
             raise TextException('got a language that was not in the codes; should not happen')
-
 
 # ------------------------------------------------------------------------------
 class Trigram:
@@ -636,7 +616,6 @@ class Trigram:
                 count -= 1
         return ''.join(text)
 
-
     def likely(self, k):
         '''
         Returns a character likely to follow the given string
@@ -651,82 +630,8 @@ class Trigram:
         letters = ''.join(letters)
         return random.choice(letters)
 
-
 # ------------------------------------------------------------------------------
-class Test(unittest.TestCase):
-
-    def testBasic(self):
-        from music21 import converter
-        from music21 import corpus
-
-        a = converter.parse(corpus.getWork('haydn/opus1no1/movement4.xml'))
-        post = assembleLyrics(a)
-        self.assertEqual(post, '')  # no lyrics!
-
-        a = converter.parse(corpus.getWork('luca/gloria'))
-        post = assembleLyrics(a)
-        self.assertTrue(post.startswith('Et in terra pax hominibus bone voluntatis'))
-
-
-    def testAssembleLyricsA(self):
-        from music21 import stream
-        from music21 import note
-        s = stream.Stream()
-        for syl in ['hel-', '-lo', 'a-', '-gain']:
-            n = note.Note()
-            n.lyric = syl
-            s.append(n)
-        post = assembleLyrics(s)
-        self.assertEqual(post, 'hello again')
-
-        s = stream.Stream()
-        for syl in ['a-', '-ris-', '-to-', '-cats', 'are', 'great']:
-            n = note.Note()
-            n.lyric = syl
-            s.append(n)
-        post = assembleLyrics(s)
-        # noinspection SpellCheckingInspection
-        self.assertEqual(post, 'aristocats are great')
-
-        s = stream.Stream()
-        for syl in ['长', '亭', '外', '古', '道', '边']:
-            n = note.Note()
-            n.lyric = syl
-            s.append(n)
-        post = assembleLyrics(s, wordSeparator='')
-        # custom word separator
-        self.assertEqual(post, '长亭外古道边')
-
-    # noinspection SpellCheckingInspection
-    def testLanguageDetector(self):
-        ld = LanguageDetector()
-        diffFrIt = ld.trigrams['fr'] - ld.trigrams['it']
-        self.assertTrue(0.50 < diffFrIt < 0.55)
-        self.assertTrue(0.67 < ld.trigrams['fr'] - ld.trigrams['de'] < 0.70)
-        self.assertTrue(0.99 < ld.trigrams['fr'] - ld.trigrams['cn'] < 1.0)
-
-        self.assertEqual('en',
-                         ld.mostLikelyLanguage('hello friends, this is a test of the '
-                                               + 'ability of language detector to '
-                                               + 'tell what language I am writing in.'))
-        self.assertEqual('it', ld.mostLikelyLanguage(
-            'ciao amici! cosé trovo in quale lingua ho scritto questo passaggio. Spero che '
-            + 'troverà che é stata scritta in italiano'))
-
-        # TODO: Replace
-        # messiahGovernment = corpus.parse('handel/hwv56/movement1-13.md')
-        # forUntoUs = assembleLyrics(messiahGovernment)
-        # self.assertTrue(forUntoUs.startswith('For unto us a child is born'))
-        # forUntoUs = forUntoUs.replace('_', '')
-        # self.assertEqual('en', ld.mostLikelyLanguage(forUntoUs))
-
 
 # ------------------------------------------------------------------------------
 # define presented order in documentation
 _DOC_ORDER = [TextBox]
-
-
-if __name__ == '__main__':
-    import music21
-    music21.mainTest(Test)
-

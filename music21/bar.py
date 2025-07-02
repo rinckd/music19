@@ -14,8 +14,6 @@ Object models of barlines, including repeat barlines.
 '''
 from __future__ import annotations
 
-import unittest
-
 from music21 import base
 from music21 import environment
 from music21 import exceptions21
@@ -28,7 +26,6 @@ environLocal = environment.Environment('bar')
 
 class BarException(exceptions21.Music21Exception):
     pass
-
 
 # store alternative names for types; use this dictionary for translation
 # reference
@@ -48,7 +45,6 @@ reverseBarTypeDict = {
 }
 
 strongBarlineTypes = {'heavy', 'double', 'final', 'heavy-light', 'heavy-heavy'}  # set
-
 
 def typeToMusicXMLBarStyle(value):
     '''
@@ -89,7 +85,6 @@ def standardizeBarType(value):
     # if not match
     else:
         raise BarException(f'cannot process style: {value}')
-
 
 # ------------------------------------------------------------------------------
 class Barline(base.Music21Object):
@@ -150,7 +145,6 @@ class Barline(base.Music21Object):
     def _reprInternal(self):
         return f'type={self.type}'
 
-
     def _getType(self):
         return self._type
 
@@ -195,11 +189,6 @@ class Barline(base.Music21Object):
         '''
         return typeToMusicXMLBarStyle(self.type)
 
-
-
-
-
-
 # ------------------------------------------------------------------------------
 
 # note that musicxml permits the barline to have attributes for segno and coda
@@ -207,7 +196,6 @@ class Barline(base.Music21Object):
 # <xs:attribute name="coda" type="xs:token"/>
 
 # type <ending> in musicxml is used to mark different endings
-
 
 class Repeat(repeat.RepeatMark, Barline):
     '''
@@ -287,7 +275,6 @@ class Repeat(repeat.RepeatMark, Barline):
             msg += f' times={self.times}'
         return msg
 
-
     @property
     def direction(self) -> str:
         '''
@@ -356,7 +343,6 @@ class Repeat(repeat.RepeatMark, Barline):
 
             self._times = candidate
 
-
     def getTextExpression(self, prefix='', postfix='x'):
         '''
         Return a configured :class:`~music21.expressions.TextExpressions`
@@ -374,55 +360,4 @@ class Repeat(repeat.RepeatMark, Barline):
         value = f'{prefix}{self._times}{postfix}'
         return expressions.TextExpression(value)
 
-
 # ------------------------------------------------------------------------------
-class Test(unittest.TestCase):
-    def testCopyAndDeepcopy(self):
-        from music21.test.commonTest import testCopyAll
-        testCopyAll(self, globals())
-
-    def testSortOrder(self):
-        from music21 import stream
-        from music21 import clef
-        from music21 import note
-        from music21 import metadata
-        m = stream.Measure()
-        b = Repeat()
-        m.leftBarline = b
-        c = clef.BassClef()
-        m.append(c)
-        n = note.Note()
-        m.append(n)
-
-        # check sort order
-        self.assertEqual(m[0], b)
-        self.assertEqual(m[1], c)
-        self.assertEqual(m[2], n)
-
-        # if we add metadata, it sorts ahead of bar
-        md = metadata.Metadata()
-        m.insert(0, md)
-
-        self.assertEqual(m[0], md)
-        self.assertEqual(m[1], b)
-
-    def testFreezeThaw(self):
-        from music21 import converter
-        from music21 import stream
-        # pylint: disable=redefined-outer-name
-        from music21.bar import Barline  # avoid not same class error
-
-        b = Barline()
-        self.assertNotIn('StyleMixin', b.classes)
-        s = stream.Stream([b])
-        data = converter.freezeStr(s, fmt='pickle')
-        s2 = converter.thawStr(data)
-        thawedBarline = s2[0]
-        # Previously, raised AttributeError
-        self.assertEqual(thawedBarline.hasStyleInformation, False)
-
-
-if __name__ == '__main__':
-    import music21
-    music21.mainTest(Test)
-

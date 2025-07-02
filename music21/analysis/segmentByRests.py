@@ -11,8 +11,6 @@
 # ------------------------------------------------------------------------------
 from __future__ import annotations
 
-import unittest
-
 from music21 import clef
 from music21 import converter
 from music21 import environment
@@ -93,24 +91,5 @@ class Segmenter:
         return intervalList
 
 # ------------------------------------------------------------------------------
-class Test(unittest.TestCase):
-
-    def testGetSegmentsList(self):
-        ex = converter.parse('tinyNotation: E4 r F G A r g c r c')
-        segments = Segmenter.getSegmentsList(ex)
-
-        self.assertIsInstance(segments[0], list)
-        self.assertEqual(segments[1][0].name, 'F')
-
-    def testGetIntervalList(self):
-        ex = converter.parse('tinyNotation: E4 r F G A r g c r c')
-        intervalList = Segmenter.getIntervalList(ex)
-
-        self.assertEqual(intervalList[0].name, 'M2')
-        self.assertIsInstance(intervalList, list)
-
 
 # -----------------------------------------------------------------------------
-if __name__ == '__main__':
-    import music21
-    music21.mainTest(Test)

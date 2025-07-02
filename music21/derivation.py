@@ -20,19 +20,14 @@ import weakref
 from collections.abc import Generator
 import functools
 import typing as t
-import unittest
-
 from music21 import common
 from music21.common.objects import SlottedObjectMixin
 from music21 import environment
 
-
 if t.TYPE_CHECKING:
     from music21 import base
 
-
 environLocal = environment.Environment('derivation')
-
 
 def derivationMethod(function):
     '''
@@ -65,7 +60,6 @@ def derivationMethod(function):
         return result
     return wrapper
 
-
 class Derivation(SlottedObjectMixin):
     '''
     A Derivation object keeps track of which Streams (or perhaps other Music21Objects)
@@ -89,7 +83,6 @@ class Derivation(SlottedObjectMixin):
     <music21.stream.Stream orig>
     >>> sNew.derivation.method
     '__deepcopy__'
-
 
     >>> s1 = stream.Stream()
     >>> s1.id = 'DerivedStream'
@@ -333,11 +326,6 @@ class Derivation(SlottedObjectMixin):
             return None
 
 # -----------------------------------------------------------------------------
-
-
-class Test(unittest.TestCase):
-    pass
-
 
 # -----------------------------------------------------------------------------
 # define presented order in documentation

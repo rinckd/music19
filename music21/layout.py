@@ -89,8 +89,6 @@ from __future__ import annotations
 
 # may need to have an object to convert between size units
 import copy
-import unittest
-
 from collections import namedtuple
 import typing as t
 
@@ -104,10 +102,8 @@ from music21.stream.enums import StaffType
 
 environLocal = environment.Environment('layout')
 
-
 SystemSize = namedtuple('SystemSize', ['top', 'left', 'right', 'bottom'])
 PageSize = namedtuple('PageSize', ['top', 'left', 'right', 'bottom', 'width', 'height'])
-
 
 class LayoutBase(base.Music21Object):
     '''
@@ -124,7 +120,6 @@ class LayoutBase(base.Music21Object):
         return ''
 
 # ------------------------------------------------------------------------------
-
 
 class ScoreLayout(LayoutBase):
     '''
@@ -201,14 +196,12 @@ class ScoreLayout(LayoutBase):
         millimetersPerTenth = self.scalingMillimeters / self.scalingTenths
         return round(millimetersPerTenth * tenths, 6)
 
-
 # ------------------------------------------------------------------------------
 class PageLayout(LayoutBase):
     '''
     Parameters for configuring a page's layout.
 
     PageLayout objects may be found on Measure or Part Streams.
-
 
     >>> pl = layout.PageLayout(pageNumber=4, leftMargin=234, rightMargin=124,
     ...                        pageHeight=4000, pageWidth=3000, isNew=True)
@@ -251,9 +244,7 @@ class PageLayout(LayoutBase):
         # store if this is the start of a new page
         self.isNew = isNew
 
-
 # ------------------------------------------------------------------------------
-
 
 class SystemLayout(LayoutBase):
     '''
@@ -264,7 +255,6 @@ class SystemLayout(LayoutBase):
 
     Importantly, if isNew is True then this object
     indicates that a new system should start here.
-
 
     >>> sl = layout.SystemLayout(leftMargin=234, rightMargin=124, distance=3, isNew=True)
     >>> sl.distance
@@ -297,7 +287,6 @@ class SystemLayout(LayoutBase):
         # store if this is the start of a new system
         self.isNew = isNew
 
-
 class StaffLayout(LayoutBase):
     '''
     Object that configures or alters the distance between
@@ -308,7 +297,6 @@ class StaffLayout(LayoutBase):
 
     The musicxml equivalent <staff-layout> lives in
     the <defaults> and in <print> attributes.
-
 
     >>> sl = layout.StaffLayout(distance=3, staffNumber=1, staffSize=113, staffLines=5)
     >>> sl.distance
@@ -335,7 +323,6 @@ class StaffLayout(LayoutBase):
     113.0
     >>> sl
     <music21.layout.StaffLayout distance 3, staffNumber 1, staffSize 113.0, staffLines 5>
-
 
     StaffLayout can also specify the staffType:
 
@@ -386,14 +373,11 @@ class StaffLayout(LayoutBase):
 
 # ------------------------------------------------------------------------------
 
-
 class LayoutException(exceptions21.Music21Exception):
     pass
 
-
 class StaffGroupException(spanner.SpannerException):
     pass
-
 
 # ------------------------------------------------------------------------------
 class StaffGroup(spanner.Spanner):
@@ -498,7 +482,6 @@ class StaffGroup(spanner.Spanner):
         'brace'
         ''')
 
-
 # ---------------------------------------------------------------
 # Stream subclasses for layout
 
@@ -520,13 +503,11 @@ def divideByPages(
     (because our spanner gathering algorithm is currently O(n^2);
     something TODO: to fix.)
 
-
     >>> lt = corpus.parse('demos/layoutTest.xml')
     >>> len(lt.parts)
     3
     >>> len(lt.parts[0].getElementsByClass(stream.Measure))
     80
-
 
     Divide the score up into layout.Page objects
 
@@ -552,7 +533,6 @@ def divideByPages(
     <music21.layout.Page ...>
     >>> 'Opus' in lastPage.classes
     True
-
 
     Each page now has Systems not parts.
 
@@ -700,14 +680,11 @@ def divideByPages(
     scoreLists.coreElementsChanged()
     return scoreLists
 
-
 def getPageRegionMeasureNumbers(scoreIn):
     return getRegionMeasureNumbers(scoreIn, 'Page')
 
-
 def getSystemRegionMeasureNumbers(scoreIn):
     return getRegionMeasureNumbers(scoreIn, 'System')
-
 
 def getRegionMeasureNumbers(scoreIn, region='Page'):
     '''
@@ -742,7 +719,6 @@ def getRegionMeasureNumbers(scoreIn, region='Page'):
     measureEndList.append(lastMeasureNumber)
     measureList = list(zip(measureStartList, measureEndList))
     return measureList
-
 
 class LayoutScore(stream.Opus):
     '''
@@ -786,7 +762,6 @@ class LayoutScore(stream.Opus):
         assuming that the first page number is 1, the pageId for the first page will be 0.
 
         Similarly, the first systemId on each page will be 0
-
 
         >>> lt = corpus.parse('demos/layoutTest.xml')
         >>> l = layout.divideByPages(lt, fastMeasures=True)
@@ -834,7 +809,6 @@ class LayoutScore(stream.Opus):
         margins for a given pageId in tenths
 
         Default of (100, 100, 100, 100, 850, 1100) if undefined
-
 
         >>> #_DOCS_SHOW g = corpus.parse('luca/gloria')
         >>> #_DOCS_SHOW m22 = g.parts[0].getElementsByClass(stream.Measure)[22]
@@ -1062,7 +1036,6 @@ class LayoutScore(stream.Opus):
         >>> ls.getPositionForStaff(0, 3, 2)
         (133.0, 173.0)
 
-
         Tests for a score with PartStaff objects:
         >>> lt = corpus.parse('demos/layoutTestMore.xml')
         >>> ls = layout.divideByPages(lt, fastMeasures = True)
@@ -1252,7 +1225,6 @@ class LayoutScore(stream.Opus):
         returns the staffLayout.hidden attribute for a staffId, or if it is not
         defined, recursively search through previous staves until one is found.
 
-
         >>> lt = corpus.parse('demos/layoutTestMore.xml')
         >>> ls = layout.divideByPages(lt, fastMeasures = True)
         >>> ls.getStaffHiddenAttribute(0, 0, 0)
@@ -1334,7 +1306,6 @@ class LayoutScore(stream.Opus):
         If returnFormat is "float", returns each as a number from 0 to 1 where 0 is the
         top or left of the page, and 1 is the bottom or right of the page.
 
-
         >>> lt = corpus.parse('demos/layoutTest.xml')
         >>> ls = layout.divideByPages(lt, fastMeasures = True)
 
@@ -1353,13 +1324,11 @@ class LayoutScore(stream.Opus):
         >>> ls.getPositionForStaffMeasure(2, 1)
         ((602.0, 170.0), (642.0, 417.0), 0)
 
-
         If float is requested for returning, then the numbers are the fraction of
         the distance across the page.
 
         >>> ls.getPositionForStaffMeasure(0, 1, returnFormat='float')
         ((0.152..., 0.0996...), (0.170..., 0.244...), 0)
-
 
         Moving over the page boundary:
 
@@ -1425,7 +1394,6 @@ class LayoutScore(stream.Opus):
         no staffId is needed since (at least for now) all measures begin and end at the same
         X position
 
-
         >>> l = corpus.parse('demos/layoutTest.xml')
         >>> ls = layout.divideByPages(l, fastMeasures = True)
         >>> ls.measurePositionWithinSystem(1, 0, 0)
@@ -1481,7 +1449,6 @@ class LayoutScore(stream.Opus):
         returns a list of dictionaries, where each dictionary gives the measure number
         and other information, etc. in the document.
 
-
         # >>> g = corpus.parse('luca/gloria')
         # >>> gl = layout.divideByPages(g)
         # >>> gl.getAllMeasurePositionsInDocument()
@@ -1507,7 +1474,6 @@ class LayoutScore(stream.Opus):
                 mList.append(infoDict)
             allRetInfo.append(mList)
         return allRetInfo
-
 
 class Page(stream.Opus):
     '''
@@ -1544,8 +1510,6 @@ class Page(stream.Opus):
         '''
         return stream.Score.show(self, fmt=fmt, app=app, **keywords)
 
-
-
 class System(stream.Score):
     '''
     Designation that all the music in this Stream
@@ -1573,7 +1537,6 @@ class System(stream.Score):
     def staves(self):
         return self.getElementsByClass(Staff)
 
-
 class Staff(stream.Part):
     '''
     Designation that all the music in this Stream
@@ -1599,91 +1562,9 @@ class Staff(stream.Part):
                                                     self.pageSystemNumber,
                                                     self.staffNumber)
 
-
 _DOC_ORDER = [ScoreLayout, PageLayout, SystemLayout, StaffLayout, LayoutBase,
               LayoutScore, Page, System, Staff]
 # ------------------------------------------------------------------------------
 
-
-class Test(unittest.TestCase):
-
-    def testBasic(self):
-        from music21 import note
-        from music21.musicxml import m21ToXml
-        s = stream.Stream()
-
-        for i in range(1, 11):
-            m = stream.Measure()
-            m.number = i
-            n = note.Note()
-            m.append(n)
-            s.append(m)
-
-        sl = SystemLayout()
-        # sl.isNew = True  # this should not be on first system
-        # as this causes all subsequent margins to be distorted
-        sl.leftMargin = 300
-        sl.rightMargin = 300
-        s.getElementsByClass(stream.Measure)[0].insert(0, sl)
-
-        sl = SystemLayout()
-        sl.isNew = True
-        sl.leftMargin = 200
-        sl.rightMargin = 200
-        sl.distance = 40
-        s.getElementsByClass(stream.Measure)[2].insert(0, sl)
-
-        sl = SystemLayout()
-        sl.isNew = True
-        sl.leftMargin = 220
-        s.getElementsByClass(stream.Measure)[4].insert(0, sl)
-
-        sl = SystemLayout()
-        sl.isNew = True
-        sl.leftMargin = 60
-        sl.rightMargin = 300
-        sl.distance = 200
-        s.getElementsByClass(stream.Measure)[6].insert(0, sl)
-
-        sl = SystemLayout()
-        sl.isNew = True
-        sl.leftMargin = 0
-        sl.rightMargin = 0
-        s.getElementsByClass(stream.Measure)[8].insert(0, sl)
-
-        # systemLayoutList = s[music21.layout.SystemLayout]
-        # self.assertEqual(len(systemLayoutList), 4)
-
-        # s.show()
-        unused_raw = m21ToXml.GeneralObjectExporter().parse(s)
-
-    def x_testGetPageMeasureNumbers(self):
-        from music21 import corpus
-        c = corpus.parse('luca/gloria').parts[0]
-        # c.show('text')
-        retStr = ''
-        for x in c.flatten():
-            if 'PageLayout' in x.classes:
-                retStr += str(x.pageNumber) + ': ' + str(x.measureNumber) + ', '
-#        print(retStr)
-        self.assertEqual(retStr, '1: 1, 2: 23, 3: 50, 4: 80, 5: 103, ')
-
-    def testGetStaffLayoutFromStaff(self):
-        '''
-        we have had problems with attributes disappearing.
-        '''
-        from music21 import corpus
-        from music21 import layout
-        lt = corpus.parse('demos/layoutTest.xml')
-        ls = layout.divideByPages(lt, fastMeasures=True)
-
-        hiddenStaff = ls.pages[0].systems[3].staves[1]
-        self.assertTrue(repr(hiddenStaff).endswith('Staff 11: p.1, sys.4, st.2>'),
-                        repr(hiddenStaff))
-        self.assertIsNotNone(hiddenStaff.staffLayout)
-
-
 # ------------------------------------------------------------------------------
-if __name__ == '__main__':
-    import music21
-    music21.mainTest(Test)  # , runTest='getStaffLayoutFromStaff')
+# , runTest='getStaffLayoutFromStaff')

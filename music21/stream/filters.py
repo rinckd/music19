@@ -20,13 +20,10 @@ from __future__ import annotations
 
 from math import inf
 import typing as t
-import unittest
-
 from music21 import common
 from music21.common.numberTools import opFrac
 from music21.exceptions21 import Music21Exception
 from music21 import prebase
-
 
 StreamIteratorType = t.TypeVar('StreamIteratorType', bound='music21.stream.iterator.StreamIterator')
 
@@ -96,7 +93,6 @@ class IsFilter(StreamFilter):
 
     `.numToFind` is used so that once all elements are found, the iterator can short circuit.
 
-
     >>> for el in s.iter().addFilter(isFilter):
     ...     print(el is n)
     True
@@ -164,7 +160,6 @@ class IsNotFilter(IsFilter):
     <music21.key.KeySignature of 3 flats>
     <music21.note.Rest quarter>
 
-
     Using multiple filters:
 
     >>> s = stream.Stream()
@@ -188,7 +183,6 @@ class IsNotFilter(IsFilter):
 
     def __call__(self, item, iterator=None):
         return not super().__call__(item, iterator)
-
 
 class IdFilter(StreamFilter):
     '''
@@ -272,7 +266,6 @@ class ClassFilter(StreamFilter):
         else:
             return str(self.classList)
 
-
 class ClassNotFilter(ClassFilter):
     '''
     Returns elements not of the class.
@@ -295,7 +288,6 @@ class ClassNotFilter(ClassFilter):
 
     def __call__(self, item, iterator=None):
         return item.classSet.isdisjoint(self.classList)
-
 
 class GroupFilter(StreamFilter):
     '''
@@ -386,7 +378,6 @@ class OffsetFilter(StreamFilter):
         else:
             return str(self.offsetStart) + '-' + str(self.offsetEnd)
 
-
     def __call__(self, e, iterator=None):
         if iterator is None:
             offset = e.offset
@@ -439,7 +430,6 @@ class OffsetFilter(StreamFilter):
             # zero Length Searches -- include all zeroLengthElements
             return True
 
-
         if self.mustFinishInSpan is True:
             if elementEnd > self.offsetEnd:
                 # environLocal.warn([elementEnd, offsetEnd, e])
@@ -468,7 +458,6 @@ class OffsetFilter(StreamFilter):
 
         return True
 
-
 class OffsetHierarchyFilter(OffsetFilter):
     '''
     see :meth:`~music21.stream.iterator.RecursiveIterator.getElementsByOffsetInHierarchy`
@@ -492,12 +481,3 @@ class OffsetHierarchyFilter(OffsetFilter):
 
         offset = opFrac(s.elementOffset(e) + iterator.iteratorStartOffsetInHierarchy)
         return self.isElementOffsetInRange(e, offset, stopAfterEnd=False)
-
-
-class Test(unittest.TestCase):
-    pass
-
-
-if __name__ == '__main__':
-    import music21
-    music21.mainTest(Test)

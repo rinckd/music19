@@ -14,20 +14,15 @@ Tools for performing voice-leading analysis with trees.
 from __future__ import annotations
 
 import collections.abc
-import unittest
-
 from music21 import environment
 from music21 import exceptions21
 
 environLocal = environment.Environment('tree.analysis')
 
-
 class HorizontalityException(exceptions21.TreeException):
     pass
 
-
 # -----------------------------------------------------------------------------
-
 
 class Horizontality(collections.abc.Sequence):
     r'''
@@ -128,23 +123,10 @@ class Horizontality(collections.abc.Sequence):
             return True
         return False
 
-
 # -----------------------------------------------------------------------------
 
-
-class Test(unittest.TestCase):
-    pass
-
-
 # -----------------------------------------------------------------------------
-
 
 _DOC_ORDER = ()
 
-
 # -----------------------------------------------------------------------------
-
-
-if __name__ == '__main__':
-    import music21
-    music21.mainTest(Test)

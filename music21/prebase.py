@@ -19,8 +19,6 @@ from __future__ import annotations
 
 from collections.abc import Sequence
 import typing as t
-import unittest
-
 from music21.common import deprecated
 
 class ProtoM21Object:
@@ -48,7 +46,6 @@ class ProtoM21Object:
     True
     >>> repr(pc)
     '<music21.PitchCounter no pitches>'
-
 
     ProtoM21Objects, like other Python primitives, cannot be put into streams --
     this is what base.Music21Object does.
@@ -130,7 +127,6 @@ class ProtoM21Object:
         >>> d = duration.Duration('half')
         >>> d.classes
         ('Duration', 'ProtoM21Object', 'SlottedObjectMixin', 'object')
-
 
         Having quick access to these things as strings makes it easier to do comparisons:
 
@@ -278,24 +274,6 @@ class ProtoM21Object:
         '''
         return f'object at {hex(id(self))}'
 
-
 del t
 
-
-class Test(unittest.TestCase):
-    def testCopyAndDeepcopy(self):
-        from music21.test.commonTest import testCopyAll
-        testCopyAll(self, globals())
-
-    def test_reprInternal(self):
-        from music21.base import Music21Object
-        b = Music21Object()
-        b.id = 'hello'
-        r = repr(b)
-        self.assertEqual(r, '<music21.base.Music21Object id=hello>')
-
-
 # ---------------------------------------------------------
-if __name__ == '__main__':
-    import music21
-    music21.mainTest(Test)

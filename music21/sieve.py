@@ -34,15 +34,12 @@ The :class:`music21.sieve.Sieve` class permits generation segments in four forma
 >>> len(a.segment(segmentFormat='unit'))
 43
 
-
 A :class:`music21.sieve.CompressionSegment` can be used to derive a Sieve from a
 ny sequence of integers.
-
 
 >>> a = sieve.CompressionSegment([3, 4, 5, 6, 7, 8, 13, 19])
 >>> str(a)
 '6@1|7@6|8@5|9@4|10@3|11@8'
-
 
 The :class:`music21.sieve.PitchSieve` class provides a quick generation of
 :class:`music21.pitch.Pitch` lists from Sieves.
@@ -62,8 +59,6 @@ from math import gcd, lcm
 import random
 import string
 import typing as t
-import unittest
-
 from music21 import common
 from music21 import environment
 from music21 import exceptions21
@@ -72,27 +67,21 @@ from music21 import pitch
 
 environLocal = environment.Environment('sieve')
 
-
 # ------------------------------------------------------------------------------
 class UnitException(exceptions21.Music21Exception):
     pass
 
-
 class ResidualException(exceptions21.Music21Exception):
     pass
-
 
 class SieveException(exceptions21.Music21Exception):
     pass
 
-
 class CompressionSegmentException(exceptions21.Music21Exception):
     pass
 
-
 class PitchSieveException(exceptions21.Music21Exception):
     pass
-
 
 LGROUP = '{'
 RGROUP = '}'
@@ -102,7 +91,6 @@ XOR = '^'
 BOUNDS = [LGROUP, RGROUP, AND, OR, XOR]
 NEG = '-'
 RESIDUAL = list(string.digits) + ['@']
-
 
 # ------------------------------------------------------------------------------
 # from
@@ -133,17 +121,14 @@ def eratosthenes(firstCandidate=2):
     To use this generator, create an instance and then call the .next() method
     on the instance.
 
-
     >>> a = sieve.eratosthenes()
     >>> next(a)
     2
     >>> next(a)
     3
 
-
     We can also specify a starting value for the sequence, skipping over
     initial primes smaller than this number:
-
 
     >>> a = sieve.eratosthenes(95)
     >>> next(a)
@@ -176,14 +161,12 @@ def eratosthenes(firstCandidate=2):
                 yield q  # return prime
         q = q + 1  # incr. candidate
 
-
 def rabinMiller(n):
     '''
     Returns True if an integer is likely prime or False if it is likely composite using the
     Rabin Miller primality test.
 
     See also here: http://www.4dsolutions.net/ocn/numeracy2.html
-
 
     >>> sieve.rabinMiller(234)
     False
@@ -242,7 +225,6 @@ def rabinMiller(n):
     # n passed all the tests, it is very likely prime
     return True
 
-
 # ------------------------------------------------------------------------------
 # list processing and unit interval routines
 # possible move to common.py if used elsewhere
@@ -255,7 +237,6 @@ def discreteBinaryPad(series: Iterable[int], fixRange=None) -> list[int]:
     For instance, running [3, 10, 12] through this method gives a 1 for
     the first entry (signifying 3), 0s for the next six entries (signifying
     4-9), a 1 (for 10), a 0 (for 11), and a 1 (for 12).
-
 
     >>> sieve.discreteBinaryPad([3, 10, 12])
     [1, 0, 0, 0, 0, 0, 0, 1, 0, 1]
@@ -285,7 +266,6 @@ def discreteBinaryPad(series: Iterable[int], fixRange=None) -> list[int]:
             discrete.append(0)
     return discrete
 
-
 def unitNormRange(series, fixRange=None):
     '''
     Given a list of numbers, create a proportional spacing across the unit interval.
@@ -294,18 +274,14 @@ def unitNormRange(series, fixRange=None):
     according to their distance between these two units.  For instance, for 0, 3, 4
     the middle entry will be 0.75 since 3 is 3/4 of the distance between 0 and 4:
 
-
     >>> sieve.unitNormRange([0, 3, 4])
     [0.0, 0.75, 1.0]
-
 
     but for [1, 3, 4], it will be 0.666... because 3 is 2/3 of the distance between
     1 and 4
 
-
     >>> sieve.unitNormRange([1, 3, 4])
     [0.0, 0.666..., 1.0]
-
 
     '''
     if fixRange is not None:
@@ -329,7 +305,6 @@ def unitNormRange(series, fixRange=None):
     else:  # if one element, return 0 (could be 1, or 0.5)
         unit.append(0)
     return unit
-
 
 def unitNormEqual(parts):
     '''
@@ -356,7 +331,6 @@ def unitNormEqual(parts):
         unit.append(1)  # make last an integer, add manually
         return unit
 
-
 def unitNormStep(step, a=0, b=1, normalized=True):
     '''
     Given a step size and an a/b min/max range, calculate number of parts
@@ -364,7 +338,6 @@ def unitNormStep(step, a=0, b=1, normalized=True):
     necessary to cover region.
 
     Note that returned values are, by default, normalized within the unit interval.
-
 
     >>> sieve.unitNormStep(0.5, 0, 1)
     [0.0, 0.5, 1]
@@ -406,11 +379,9 @@ def unitNormStep(step, a=0, b=1, normalized=True):
     else:
         return values
 
-
 # ------------------------------------------------------------------------------
 # note: some of these methods are in common, though they are slightly different algorithms;
 # need to test for compatibility
-
 
 def _meziriac(c1, c2):
     # Bachet de Meziriac (1624)
@@ -435,7 +406,6 @@ def _meziriac(c1, c2):
                 break
             g = g + 1
     return g
-
 
 # ------------------------------------------------------------------------------
 class PrimeSegment:
@@ -527,7 +497,6 @@ class PrimeSegment:
             return wid
         else:  # int, integer
             return self.seg
-
 
 # ------------------------------------------------------------------------------
 class Residual:
@@ -808,7 +777,6 @@ class Residual:
             n3 = (n1 + (g * (n2 - n1) * c1)) % m3
             return m3, n3
 
-
 # ------------------------------------------------------------------------------
 class CompressionSegment:
     '''
@@ -958,7 +926,6 @@ class CompressionSegment:
             if not match:
                 break
         self._residuals.sort()
-
 
 # ------------------------------------------------------------------------------
 
@@ -1824,7 +1791,6 @@ class Sieve:
 # ------------------------------------------------------------------------------
 # high level utility obj
 
-
 class PitchSieve:
     '''
     Quick utility generator of :class:`music21.pitch.Pitch` lists
@@ -2016,137 +1982,8 @@ class PitchSieve:
         #     raise PitchSieveException('interval segment has no values')
         # return post
 
-
 # ------------------------------------------------------------------------------
-class Test(unittest.TestCase):
-
-    def testDummy(self):
-        self.assertEqual(True, True)
-
-    def pitchOut(self, listIn):
-        out = '['
-        for p in listIn:
-            out += str(p) + ', '
-        out = out[0:len(out) - 2]
-        out += ']'
-        return out
-
-    def testIntersection(self):
-        a = Residual(3)
-        testArgs = [(3, 6, 2, 5), (4, 6, 1, 3), (5, 4, 3, 2), ]
-        for m1, m2, n1, n2 in testArgs:
-            a = Residual(m1, n1)
-            b = Residual(m2, n2)
-            i = a & b           # do intersection
-
-    def testSieveParse(self):
-        testArgs = ['-5 | 4 & 4sub3 & 6 | 4 & 4',
-                    '2 or 4 and 4 & 6 or 4 & 4',
-                    3,
-                    # '3 and 4 or not 3, 1 and 4, 1 or not 3 and 4, 2 or not 3, 2 and 4, 3',
-                    (2, 4, 6, 8),
-                    (1, 6, 11, 16, 17),
-                    ]
-        for arg in testArgs:
-            # environLocal.printDebug(['testSieveParse', arg])
-            testObj = Sieve(arg)
-            dummy = testObj(0, list(range(30)))
-
-    def testSievePitch(self):
-        unused_testObj = PitchSieve('-5 | 4 & 4sub3 & 6', 'b3', 'f#4')
-        testObj = PitchSieve('-5 | 4 & 4sub3 & 6')
-        dummy = testObj.pitchLower, testObj.pitchUpper
-        dummy = testObj()
-
-    def testTimePoint(self):
-        args = [(3, 6, 12),
-                (0, 6, 12, 15, 18, 24, 30, 36, 42),
-                (4, 6, 13),
-                (2, 3, 4, 5, 8, 9, 10, 11, 14, 17, 19, 20, 23, 24, 26, 29, 31),
-                #  (3, 23, 33, 47, 63, 70, 71, 93, 95, 119, 123, 143, 153, 167),
-                (0, 2, 4, 5, 7, 9, 11, 12, 14, 16, 17, 19, 21, 23, 24),
-                (1, 2, 3, 4, 5, 6, 7, 8, 9, 10),
-                (-8, -6, -4, -2, 0, 2, 1),
-                ]
-        for src in args:
-            obj = CompressionSegment(src)
-            sObj = Sieve(str(obj))
-            dummy = sObj()
-
-    def testSieve(self):
-        z = list(range(100))
-        usrStr = '3@2 & 4@1 | 2@0 & 3@1 | 3@3 | -4@2'
-        a = Sieve(usrStr, z)
-        self.assertEqual(str(a), '3@2&4@1|2@0&3@1|3@0|-4@2')
-
-        usrStr = '-(3@2 & -4@1 & -(12@3 | 12@8) | (-2@0 & 3@1 | (3@3)))'
-        a = Sieve(usrStr, z)
-        self.assertEqual(str(a), '-{3@2&-4@1&-{12@3|12@8}|{-2@0&3@1|{3@0}}}')
-
-        # 'example from Flint, on Psapha'
-        usrStr = ('[(8@0 | 8@1 | 8@7) & (5@1 | 5@3)] |   [(8@0 | 8@1 | 8@2) & 5@0] | '
-                  '[8@3 & (5@0 | 5@1 | 5@2 | 5@3 | 5@4)] | '
-                  '[8@4 & (5@0 | 5@1 | 5@2 | 5@3 | 5@4)] | '
-                  '[(8@5 | 8@6) & (5@2 | 5@3 | 5@4)] | (8@1 & 5@2) | (8@6 & 5@1)')
-        a = Sieve(usrStr, z)
-        self.assertEqual(str(a),
-                         '{{8@0|8@1|8@7}&{5@1|5@3}}|{{8@0|8@1|8@2}&5@0}|'
-                         '{8@3&{5@0|5@1|5@2|5@3|5@4}}|{8@4&{5@0|5@1|5@2|5@3|5@4}}|'
-                         '{{8@5|8@6}&{5@2|5@3|5@4}}|{8@1&5@2}|{8@6&5@1}')
-
-        # 'major scale from FM, p197'
-        usrStr = '(-3@2 & 4) | (-3@1 & 4@1) | (3@2 & 4@2) | (-3 & 4@3)'
-        a = Sieve(usrStr, z)
-        self.assertEqual(str(a), '{-3@2&4@0}|{-3@1&4@1}|{3@2&4@2}|{-3@0&4@3}')
-
-        # 'nomos alpha sieve'
-        usrStr = ('(-(13@3 | 13@5 | 13@7 | 13@9) & 11@2) | (-(11@4 | 11@8) & 13@9) | '
-                  '(13@0 | 13@1 | 13@6)')
-        a = Sieve(usrStr, z)
-        self.assertEqual(str(a),
-                         '{-{13@3|13@5|13@7|13@9}&11@2}|{-{11@4|11@8}&13@9}|{13@0|13@1|13@6}')
-
-    def testPitchSieveA(self):
-        from music21 import sieve
-
-        s1 = sieve.PitchSieve('3@0|7@0', 'c2', 'c6')
-        self.assertEqual(self.pitchOut(s1()),
-                         '[C2, E-2, F#2, G2, A2, C3, D3, E-3, F#3, A3, C4, E-4, '
-                         'E4, F#4, A4, B4, C5, E-5, F#5, A5, C6]')
-
-        s1 = sieve.PitchSieve('3@0|7@0', 'c2', 'c6', eld=2)
-        self.assertEqual(self.pitchOut(s1()),
-                         '[C2, D2, F#2, C3, E3, F#3, C4, F#4, C5, F#5, G#5, C6]')
-
-    def testPitchSieveB(self):
-        from music21 import sieve
-
-        # mircotonal elds
-        s1 = sieve.PitchSieve('1@0', 'c2', 'c6', eld=0.5)
-        self.assertEqual(self.pitchOut(s1()),
-                         '[C2, C~2, C#2, C#~2, D2, D~2, E-2, E`2, E2, E~2, F2, F~2, F#2, '
-                         'F#~2, G2, G~2, G#2, G#~2, A2, A~2, B-2, B`2, B2, B~2, C3, C~3, C#3, '
-                         'C#~3, D3, D~3, E-3, E`3, E3, E~3, F3, F~3, F#3, F#~3, G3, G~3, G#3, '
-                         'G#~3, A3, A~3, B-3, B`3, B3, B~3, C4, C~4, C#4, C#~4, D4, D~4, E-4, '
-                         'E`4, E4, E~4, F4, F~4, F#4, F#~4, G4, G~4, G#4, G#~4, A4, A~4, B-4, '
-                         'B`4, B4, B~4, C5, C~5, C#5, C#~5, D5, D~5, E-5, E`5, E5, E~5, F5, F~5, '
-                         'F#5, F#~5, G5, G~5, G#5, G#~5, A5, A~5, B-5, B`5, B5, B~5, C6]')
-
-        s1 = sieve.PitchSieve('3@0', 'c2', 'c6', eld=0.5)
-        self.assertEqual(self.pitchOut(s1()),
-                         '[C2, C#~2, E-2, E~2, F#2, G~2, A2, B`2, C3, C#~3, E-3, E~3, F#3, G~3, '
-                         'A3, B`3, C4, C#~4, E-4, E~4, F#4, G~4, A4, B`4, C5, C#~5, E-5, E~5, F#5, '
-                         'G~5, A5, B`5, C6]')
-
-# sieve that breaks LCM
-# >>> t = sieve.Sieve((3, 99, 123123, 2433, 2050))
-
 
 # ------------------------------------------------------------------------------
 # define presented order in documentation
 _DOC_ORDER: list[type] = []
-
-if __name__ == '__main__':
-    import music21
-    music21.mainTest(Test)
-

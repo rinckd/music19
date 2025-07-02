@@ -14,17 +14,14 @@ Simple storage for data defaults used throughout music21.
 '''
 from __future__ import annotations
 
-import unittest
 import typing as t
 from music21 import _version
 
 # note: this module should not import any higher level modules
 StepName = t.Literal['C', 'D', 'E', 'F', 'G', 'A', 'B']  # restating so as not to import.
 
-
 # TODO: defaults should check the environment object to see
 #     if there are any preferences set for values used here
-
 
 # ------------------------------------------------------------------------------
 title = 'Music21 Fragment'
@@ -40,7 +37,6 @@ limitOffsetDenominator = 65535  # > CD track level precision.
 # allows for tuples up to n:x within m:y within l:z within k:w where x,y,z <=100 and w<=44
 # not allowing more can be construed as a feature.
 
-
 pitchStep: StepName = 'C'
 pitchOctave = 4
 
@@ -54,7 +50,6 @@ partName: str = ''
 
 keyFifths = 0
 keyMode = 'major'
-
 
 clefSign = 'G'
 clefLine = 2
@@ -90,15 +85,12 @@ ticksAtStart = ticksPerQuarter
 
 quantizationQuarterLengthDivisors = (4, 3)
 
-
 # scaling -- the size of notes in musicxml -- 40 tenths = a 5-line staff
 # so how many millimeters = a staff?
 scalingMillimeters = 7
 scalingTenths = 40
 
-
 jupyterImageDpi = 200  # retina quality (can go higher soon?)
-
 
 # multi-measure rests
 multiMeasureRestUseSymbols = True
@@ -108,22 +100,7 @@ multiMeasureRestMaxSymbols = 11
 # and rewritten on thaw, etc.
 minIdNumberToConsiderMemoryLocation = 100_000_001
 
-
 # abc files without any version information parse as this version
 abcVersionDefault = (1, 3, 0)
 
 # ----------------------------------------------------------------||||||||||||--
-
-
-class Test(unittest.TestCase):
-    '''
-    Unit tests
-    '''
-    def testTest(self):
-        self.assertEqual(1, 1)
-
-
-# ----------------------------------------------------------------||||||||||||--
-if __name__ == '__main__':
-    import music21
-    music21.mainTest(Test)

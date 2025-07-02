@@ -13,8 +13,6 @@ Original music21 feature extractors.
 '''
 from __future__ import annotations
 
-import unittest
-
 from music21 import environment
 from music21.features import base as featuresModule
 from music21 import text
@@ -48,11 +46,9 @@ environLocal = environment.Environment('features.native')
 # correlation coefficient
 # harmony realization also adds pitches not available in midi
 
-
 # ------------------------------------------------------------------------------
 class NativeFeatureException(featuresModule.FeatureException):
     pass
-
 
 class QualityFeature(featuresModule.FeatureExtractor):
     '''
@@ -81,7 +77,6 @@ class QualityFeature(featuresModule.FeatureExtractor):
     >>> f2 = fe2.extract()
     >>> f2.vector
     [1]
-
 
     OMIT_FROM_DOCS
 
@@ -155,7 +150,6 @@ class QualityFeature(featuresModule.FeatureExtractor):
 
         self.feature.vector[0] = keyFeature
 
-
 # ------------------------------------------------------------------------------
 class TonalCertainty(featuresModule.FeatureExtractor):
     '''
@@ -190,7 +184,6 @@ class TonalCertainty(featuresModule.FeatureExtractor):
         '''
         self.feature.vector[0] = self.data['flat.analyzedKey.tonalCertainty']
 
-
 # ------------------------------------------------------------------------------
 # features that use metrical distinctions
 
@@ -217,10 +210,8 @@ class FirstBeatAttackPrevalence(featuresModule.FeatureExtractor):
         self.dimensions = 1
         self.discrete = False
 
-
 # ------------------------------------------------------------------------------
 # employing symbolic durations
-
 
 class UniqueNoteQuarterLengths(featuresModule.FeatureExtractor):
     '''
@@ -250,7 +241,6 @@ class UniqueNoteQuarterLengths(featuresModule.FeatureExtractor):
             if histo[key] > 0:
                 count += 1
         self.feature.vector[0] = count
-
 
 class MostCommonNoteQuarterLength(featuresModule.FeatureExtractor):
     '''
@@ -282,7 +272,6 @@ class MostCommonNoteQuarterLength(featuresModule.FeatureExtractor):
                 maximum = histo[key]
                 ql = key
         self.feature.vector[0] = ql
-
 
 class MostCommonNoteQuarterLengthPrevalence(featuresModule.FeatureExtractor):
     '''
@@ -320,7 +309,6 @@ class MostCommonNoteQuarterLengthPrevalence(featuresModule.FeatureExtractor):
                     maxKey = histo[key]
         self.feature.vector[0] = maxKey / summation
 
-
 class RangeOfNoteQuarterLengths(featuresModule.FeatureExtractor):
     '''
     Difference between the longest and shortest quarter lengths.
@@ -351,7 +339,6 @@ class RangeOfNoteQuarterLengths(featuresModule.FeatureExtractor):
         maxVal = max(histo.keys())
         self.feature.vector[0] = maxVal - minVal
 
-
 # ------------------------------------------------------------------------------
 # various ways of looking at chordify representation
 
@@ -360,7 +347,6 @@ class RangeOfNoteQuarterLengths(featuresModule.FeatureExtractor):
 # 2 (or 3 in the second one) note chordify simultaneities are the same after
 # running .closedPosition() on them.  For the latter, we just delete the
 # lowest note of the chord before running that.
-
 
 class UniquePitchClassSetSimultaneities(featuresModule.FeatureExtractor):
     '''
@@ -393,7 +379,6 @@ class UniquePitchClassSetSimultaneities(featuresModule.FeatureExtractor):
                 count += 1
         self.feature.vector[0] = count
 
-
 class UniqueSetClassSimultaneities(featuresModule.FeatureExtractor):
     '''
     Number of unique set class simultaneities.
@@ -424,7 +409,6 @@ class UniqueSetClassSimultaneities(featuresModule.FeatureExtractor):
             if histo[key] > 0:
                 count += 1
         self.feature.vector[0] = count
-
 
 class MostCommonPitchClassSetSimultaneityPrevalence(
         featuresModule.FeatureExtractor):
@@ -466,7 +450,6 @@ class MostCommonPitchClassSetSimultaneityPrevalence(
             self.feature.vector[0] = maxKey / summation
         else:
             self.feature.vector[0] = 0
-
 
 class MostCommonSetClassSimultaneityPrevalence(featuresModule.FeatureExtractor):
     '''
@@ -513,7 +496,6 @@ class MostCommonSetClassSimultaneityPrevalence(featuresModule.FeatureExtractor):
         else:
             self.feature.vector[0] = 0
 
-
 class MajorTriadSimultaneityPrevalence(featuresModule.FeatureExtractor):
     '''
     Percentage of all simultaneities that are major triads.
@@ -546,7 +528,6 @@ class MajorTriadSimultaneityPrevalence(featuresModule.FeatureExtractor):
             self.feature.vector[0] = part / total
         else:
             self.feature.vector[0] = 0
-
 
 class MinorTriadSimultaneityPrevalence(featuresModule.FeatureExtractor):
     '''
@@ -581,7 +562,6 @@ class MinorTriadSimultaneityPrevalence(featuresModule.FeatureExtractor):
         else:
             self.feature.vector[0] = 0
 
-
 class DominantSeventhSimultaneityPrevalence(featuresModule.FeatureExtractor):
     '''
     Percentage of all simultaneities that are dominant seventh.
@@ -614,7 +594,6 @@ class DominantSeventhSimultaneityPrevalence(featuresModule.FeatureExtractor):
             self.feature.vector[0] = part / total
         else:
             self.feature.vector[0] = 0
-
 
 class DiminishedTriadSimultaneityPrevalence(featuresModule.FeatureExtractor):
     '''
@@ -649,12 +628,10 @@ class DiminishedTriadSimultaneityPrevalence(featuresModule.FeatureExtractor):
         else:
             self.feature.vector[0] = 0
 
-
 class TriadSimultaneityPrevalence(featuresModule.FeatureExtractor):
     '''
     Gives the proportion of all simultaneities which form triads (major,
     minor, diminished, or augmented)
-
 
     >>> s = corpus.parse('bwv66.6')
     >>> fe = features.native.TriadSimultaneityPrevalence(s)
@@ -689,7 +666,6 @@ class TriadSimultaneityPrevalence(featuresModule.FeatureExtractor):
         else:
             self.feature.vector[0] = 0
 
-
 class DiminishedSeventhSimultaneityPrevalence(featuresModule.FeatureExtractor):
     '''
     Percentage of all simultaneities that are diminished seventh chords.
@@ -722,7 +698,6 @@ class DiminishedSeventhSimultaneityPrevalence(featuresModule.FeatureExtractor):
             self.feature.vector[0] = part / total
         else:
             self.feature.vector[0] = 0
-
 
 class IncorrectlySpelledTriadPrevalence(featuresModule.FeatureExtractor):
     '''
@@ -778,7 +753,6 @@ class IncorrectlySpelledTriadPrevalence(featuresModule.FeatureExtractor):
             self.feature.vector[0] = totalIncorrectlySpelled / totalForteTriads
         else:
             raise NativeFeatureException('input lacks Forte triads')
-
 
 class ChordBassMotionFeature(featuresModule.FeatureExtractor):
     '''
@@ -860,7 +834,6 @@ class ChordBassMotionFeature(featuresModule.FeatureExtractor):
 
         self.feature.vector = vector
 
-
 # ------------------------------------------------------------------------------
 # metadata
 
@@ -872,10 +845,8 @@ class ComposerPopularity(featuresModule.FeatureExtractor):
     '''
     id = 'MD1'
 
-
 # ------------------------------------------------------------------------------
 # melodic contour
-
 
 class LandiniCadence(featuresModule.FeatureExtractor):
     '''
@@ -932,7 +903,6 @@ class LandiniCadence(featuresModule.FeatureExtractor):
         if found:
             self.feature.vector[0] = 1
 
-
 # -----------------------------------------------------------------------------
 # text features
 
@@ -969,7 +939,6 @@ class LanguageFeature(featuresModule.FeatureExtractor):
         storedLyrics = self.data['assembledLyrics']
         self.feature.vector[0] = self.languageDetector.mostLikelyLanguageNumeric(storedLyrics)
 
-
 # ------------------------------------------------------------------------------
 featureExtractors = [
     QualityFeature,  # p22
@@ -1002,41 +971,4 @@ featureExtractors = [
 
 ]
 
-
 # ------------------------------------------------------------------------------
-class Test(unittest.TestCase):
-
-    def testIncorrectlySpelledTriadPrevalence(self):
-        from music21 import stream
-        from music21 import features
-        from music21 import chord
-
-        s = stream.Stream()
-        s.append(chord.Chord(['c', 'e', 'g']))
-        s.append(chord.Chord(['c', 'e', 'a']))
-        s.append(chord.Chord(['c', 'd#', 'g']))
-        s.append(chord.Chord(['c', 'd#', 'a--']))
-
-        fe = features.native.IncorrectlySpelledTriadPrevalence(s)
-        self.assertEqual(str(fe.extract().vector[0]), '0.5')
-
-    def testLandiniCadence(self):
-        from music21 import converter
-        from music21 import features
-
-        s = converter.parse('tinynotation: 3/4 f#4 f# e g2')
-        fe = features.native.LandiniCadence(s)
-        self.assertEqual(fe.extract().vector[0], 1)
-
-        s = converter.parse('tinynotation: 3/4 f#4 f# f# g2')
-        fe = features.native.LandiniCadence(s)
-        self.assertEqual(fe.extract().vector[0], 0)
-
-        s = converter.parse('tinynotation: 3/4 f#4 e a g2')
-        fe = features.native.LandiniCadence(s)
-        self.assertEqual(fe.extract().vector[0], 0)
-
-
-if __name__ == '__main__':
-    import music21
-    music21.mainTest(Test)

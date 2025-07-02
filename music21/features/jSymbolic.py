@@ -20,8 +20,6 @@ import math
 from math import isclose
 import statistics
 from textwrap import dedent
-import unittest
-
 from music21 import base
 from music21 import environment
 from music21 import exceptions21
@@ -30,10 +28,8 @@ from music21.instrument import Instrument
 
 environLocal = environment.Environment('features.jSymbolic')
 
-
 # ------------------------------------------------------------------------------
 # 112 feature extractors
-
 
 # ------------------------------------------------------------------------------
 # melody
@@ -69,7 +65,6 @@ class MelodicIntervalHistogramFeature(featuresModule.FeatureExtractor):
         for i, value in enumerate(self.data['midiIntervalHistogram']):
             self.feature.vector[i] = value
 
-
 class AverageMelodicIntervalFeature(featuresModule.FeatureExtractor):
     '''
     Average melodic interval (in semitones).
@@ -104,7 +99,6 @@ class AverageMelodicIntervalFeature(featuresModule.FeatureExtractor):
             raise JSymbolicFeatureException('input lacks notes')
         self.feature.vector[0] = sum(values) / len(values)
 
-
 class MostCommonMelodicIntervalFeature(featuresModule.FeatureExtractor):
     '''
 
@@ -133,7 +127,6 @@ class MostCommonMelodicIntervalFeature(featuresModule.FeatureExtractor):
         maxValue = max(histo)
         maxIndex = histo.index(maxValue)
         self.feature.vector[0] = maxIndex
-
 
 class DistanceBetweenMostCommonMelodicIntervalsFeature(
         featuresModule.FeatureExtractor):
@@ -171,7 +164,6 @@ class DistanceBetweenMostCommonMelodicIntervalsFeature(
 
         self.feature.vector[0] = abs(maxIndex - secondIndex)
 
-
 class MostCommonMelodicIntervalPrevalenceFeature(
         featuresModule.FeatureExtractor):
     '''
@@ -204,7 +196,6 @@ class MostCommonMelodicIntervalPrevalenceFeature(
         if not count:
             raise JSymbolicFeatureException('input lacks notes')
         self.feature.vector[0] = maxValue / count
-
 
 class RelativeStrengthOfMostCommonIntervalsFeature(
         featuresModule.FeatureExtractor):
@@ -244,7 +235,6 @@ class RelativeStrengthOfMostCommonIntervalsFeature(
             raise JSymbolicFeatureException('input lacks notes')
         self.feature.vector[0] = (secondValue / count) / (maxValue / count)
 
-
 class NumberOfCommonMelodicIntervalsFeature(featuresModule.FeatureExtractor):
     '''
     Number of melodic intervals that represent at least 9% of all melodic intervals.
@@ -279,7 +269,6 @@ class NumberOfCommonMelodicIntervalsFeature(featuresModule.FeatureExtractor):
             if count / total >= 0.09:
                 post += 1
         self.feature.vector[0] = post
-
 
 class AmountOfArpeggiationFeature(featuresModule.FeatureExtractor):
     '''
@@ -324,7 +313,6 @@ class AmountOfArpeggiationFeature(featuresModule.FeatureExtractor):
             raise JSymbolicFeatureException('input lacks notes')
         self.feature.vector[0] = count / total
 
-
 class RepeatedNotesFeature(featuresModule.FeatureExtractor):
     '''
     Fraction of notes that are repeated melodically
@@ -363,7 +351,6 @@ class RepeatedNotesFeature(featuresModule.FeatureExtractor):
             count += histo[t]
         self.feature.vector[0] = count / total
 
-
 class ChromaticMotionFeature(featuresModule.FeatureExtractor):
     '''
     Fraction of melodic intervals corresponding to a semitone.
@@ -398,7 +385,6 @@ class ChromaticMotionFeature(featuresModule.FeatureExtractor):
         for t in targets:
             count += histo[t]
         self.feature.vector[0] = count / total
-
 
 class StepwiseMotionFeature(featuresModule.FeatureExtractor):
     '''
@@ -436,7 +422,6 @@ class StepwiseMotionFeature(featuresModule.FeatureExtractor):
             count += histo[t]
         self.feature.vector[0] = count / total
 
-
 class MelodicThirdsFeature(featuresModule.FeatureExtractor):
     '''
     Fraction of melodic intervals that are major or minor thirds
@@ -471,7 +456,6 @@ class MelodicThirdsFeature(featuresModule.FeatureExtractor):
         for t in targets:
             count += histo[t]
         self.feature.vector[0] = count / total
-
 
 class MelodicFifthsFeature(featuresModule.FeatureExtractor):
     '''
@@ -508,7 +492,6 @@ class MelodicFifthsFeature(featuresModule.FeatureExtractor):
             count += histo[t]
         self.feature.vector[0] = count / total
 
-
 class MelodicTritonesFeature(featuresModule.FeatureExtractor):
     '''
     Fraction of melodic intervals that are tritones
@@ -544,7 +527,6 @@ class MelodicTritonesFeature(featuresModule.FeatureExtractor):
             count += histo[t]
         self.feature.vector[0] = count / total
 
-
 class MelodicOctavesFeature(featuresModule.FeatureExtractor):
     '''
     Fraction of melodic intervals that are octaves
@@ -579,7 +561,6 @@ class MelodicOctavesFeature(featuresModule.FeatureExtractor):
         for t in targets:
             count += histo[t]
         self.feature.vector[0] = count / total
-
 
 class DirectionOfMotionFeature(featuresModule.FeatureExtractor):
     '''
@@ -626,7 +607,6 @@ class DirectionOfMotionFeature(featuresModule.FeatureExtractor):
         if not (falling or rising):
             raise JSymbolicFeatureException('input lacks notes')
         self.feature.vector[0] = rising / (falling + rising)
-
 
 class DurationOfMelodicArcsFeature(featuresModule.FeatureExtractor):
     '''
@@ -712,7 +692,6 @@ class DurationOfMelodicArcsFeature(featuresModule.FeatureExtractor):
         else:
             duration_of_melodic_arcs = nonUnison_intervals / direction_changes
         self.feature.vector[0] = duration_of_melodic_arcs
-
 
 class SizeOfMelodicArcsFeature(featuresModule.FeatureExtractor):
     '''
@@ -821,10 +800,8 @@ class SizeOfMelodicArcsFeature(featuresModule.FeatureExtractor):
             size_of_melodic_arcs = sum_of_intervals / direction_changes
         self.feature.vector[0] = size_of_melodic_arcs
 
-
 # ------------------------------------------------------------------------------
 # pitch
-
 
 class MostCommonPitchPrevalenceFeature(featuresModule.FeatureExtractor):
     '''
@@ -860,7 +837,6 @@ class MostCommonPitchPrevalenceFeature(featuresModule.FeatureExtractor):
         # the number of the max divided by total for all
         self.feature.vector[0] = pcMax / pcCount
 
-
 class MostCommonPitchClassPrevalenceFeature(featuresModule.FeatureExtractor):
     '''
     Fraction of Notes corresponding to the most common pitch class.
@@ -894,7 +870,6 @@ class MostCommonPitchClassPrevalenceFeature(featuresModule.FeatureExtractor):
             raise JSymbolicFeatureException('input lacks notes')
         # the number of the max divided by total for all
         self.feature.vector[0] = histo[pc] / pcCount
-
 
 class RelativeStrengthOfTopPitchesFeature(featuresModule.FeatureExtractor):
     '''
@@ -931,7 +906,6 @@ class RelativeStrengthOfTopPitchesFeature(featuresModule.FeatureExtractor):
             raise JSymbolicFeatureException('input lacks notes')
         except (IndexError, ValueError):
             self.feature.vector[0] = 0.0
-
 
 class RelativeStrengthOfTopPitchClassesFeature(featuresModule.FeatureExtractor):
     '''
@@ -972,7 +946,6 @@ class RelativeStrengthOfTopPitchClassesFeature(featuresModule.FeatureExtractor):
         # the number of the max divided by total for all
         self.feature.vector[0] = pCountSecond / pCountMax
 
-
 class IntervalBetweenStrongestPitchesFeature(featuresModule.FeatureExtractor):
     '''
     Absolute value of the difference between the pitches of the two most common MIDI pitches.
@@ -1006,7 +979,6 @@ class IntervalBetweenStrongestPitchesFeature(featuresModule.FeatureExtractor):
 
         except (IndexError, ValueError):
             self.feature.vector[0] = 0.0
-
 
 class IntervalBetweenStrongestPitchClassesFeature(
         featuresModule.FeatureExtractor):
@@ -1043,7 +1015,6 @@ class IntervalBetweenStrongestPitchClassesFeature(
         # the number of the max divided by total for all
         self.feature.vector[0] = abs(pIndexMax - pIndexSecond)
 
-
 class NumberOfCommonPitchesFeature(featuresModule.FeatureExtractor):
     '''
     Number of pitches that account individually for at least 9% of all notes.
@@ -1076,7 +1047,6 @@ class NumberOfCommonPitchesFeature(featuresModule.FeatureExtractor):
                 post += 1
         self.feature.vector[0] = post
 
-
 class PitchVarietyFeature(featuresModule.FeatureExtractor):
     '''
     Number of pitches used at least once.
@@ -1107,7 +1077,6 @@ class PitchVarietyFeature(featuresModule.FeatureExtractor):
                 post += 1
         self.feature.vector[0] = post
 
-
 class PitchClassVarietyFeature(featuresModule.FeatureExtractor):
     '''
     Number of pitch classes used at least once.
@@ -1137,7 +1106,6 @@ class PitchClassVarietyFeature(featuresModule.FeatureExtractor):
             if count >= 1:
                 post += 1
         self.feature.vector[0] = post
-
 
 class RangeFeature(featuresModule.FeatureExtractor):
     '''
@@ -1170,7 +1138,6 @@ class RangeFeature(featuresModule.FeatureExtractor):
 
         self.feature.vector[0] = maxIndex - minIndex
 
-
 class MostCommonPitchFeature(featuresModule.FeatureExtractor):
     '''
     Bin label of the most common pitch.
@@ -1202,7 +1169,6 @@ class MostCommonPitchFeature(featuresModule.FeatureExtractor):
         except IndexError:
             self.feature.vector[0] = 0.0
 
-
 class PrimaryRegisterFeature(featuresModule.FeatureExtractor):
     '''
     Average MIDI pitch.
@@ -1231,7 +1197,6 @@ class PrimaryRegisterFeature(featuresModule.FeatureExtractor):
         if not histo:
             raise JSymbolicFeatureException('input lacks notes')
         self.feature.vector[0] = statistics.mean([p.ps for p in histo])
-
 
 class ImportanceOfBassRegisterFeature(featuresModule.FeatureExtractor):
     '''
@@ -1269,7 +1234,6 @@ class ImportanceOfBassRegisterFeature(featuresModule.FeatureExtractor):
         # divide number found by total
         self.feature.vector[0] = matchedSum / sum(histo.values())
 
-
 class ImportanceOfMiddleRegisterFeature(featuresModule.FeatureExtractor):
     '''
     Fraction of Notes between MIDI pitches 55 and 72
@@ -1305,7 +1269,6 @@ class ImportanceOfMiddleRegisterFeature(featuresModule.FeatureExtractor):
         matchedSum = sum(matches)
         # divide number found by total
         self.feature.vector[0] = matchedSum / sum(histo.values())
-
 
 class ImportanceOfHighRegisterFeature(featuresModule.FeatureExtractor):
     '''
@@ -1343,7 +1306,6 @@ class ImportanceOfHighRegisterFeature(featuresModule.FeatureExtractor):
         # divide number found by total
         self.feature.vector[0] = matchedSum / sum(histo.values())
 
-
 class MostCommonPitchClassFeature(featuresModule.FeatureExtractor):
     '''
     Bin label of the most common pitch class.
@@ -1371,7 +1333,6 @@ class MostCommonPitchClassFeature(featuresModule.FeatureExtractor):
         pIndexMax = histo.index(max(histo))
         self.feature.vector[0] = pIndexMax
 
-
 class DominantSpreadFeature(featuresModule.FeatureExtractor):
     '''
     Not implemented
@@ -1394,7 +1355,6 @@ class DominantSpreadFeature(featuresModule.FeatureExtractor):
         raise JSymbolicFeatureException('not yet implemented')
         # TODO: implement
 
-
 class StrongTonalCentresFeature(featuresModule.FeatureExtractor):
     '''
     Not implemented
@@ -1416,7 +1376,6 @@ class StrongTonalCentresFeature(featuresModule.FeatureExtractor):
     def process(self):
         raise JSymbolicFeatureException('not yet implemented')
         # TODO: implement
-
 
 class BasicPitchHistogramFeature(featuresModule.FeatureExtractor):
     '''
@@ -1458,7 +1417,6 @@ class BasicPitchHistogramFeature(featuresModule.FeatureExtractor):
         '''
         for i, count in self.data['pitches.midiPitchHistogram'].items():
             self.feature.vector[i] = count
-
 
 class PitchClassDistributionFeature(featuresModule.FeatureExtractor):
     '''
@@ -1504,7 +1462,6 @@ class PitchClassDistributionFeature(featuresModule.FeatureExtractor):
         for i, val in enumerate(temp):
             self.feature.vector[(i - m) % self.dimensions] = val
 
-
 class FifthsPitchHistogramFeature(featuresModule.FeatureExtractor):
     '''
     A feature array with bins corresponding to the values of the 5ths pitch class
@@ -1544,7 +1501,6 @@ class FifthsPitchHistogramFeature(featuresModule.FeatureExtractor):
         '''
         for i, count in enumerate(self.data['pitches.pitchClassHistogram']):
             self.feature.vector[self._mapping[i]] = count
-
 
 class QualityFeature(featuresModule.FeatureExtractor):
     '''
@@ -1600,7 +1556,6 @@ class QualityFeature(featuresModule.FeatureExtractor):
 
         self.feature.vector[0] = keyFeature
 
-
 class GlissandoPrevalenceFeature(featuresModule.FeatureExtractor):
     '''
     Not yet implemented in music21
@@ -1622,7 +1577,6 @@ class GlissandoPrevalenceFeature(featuresModule.FeatureExtractor):
     def process(self):
         raise JSymbolicFeatureException('not yet implemented')
         # TODO: implement
-
 
 class AverageRangeOfGlissandosFeature(featuresModule.FeatureExtractor):
     '''
@@ -1651,7 +1605,6 @@ class AverageRangeOfGlissandosFeature(featuresModule.FeatureExtractor):
         raise JSymbolicFeatureException('not yet implemented')
         # TODO: implement
 
-
 class VibratoPrevalenceFeature(featuresModule.FeatureExtractor):
     '''
     Not yet implemented in music21
@@ -1676,7 +1629,6 @@ class VibratoPrevalenceFeature(featuresModule.FeatureExtractor):
         raise JSymbolicFeatureException('not yet implemented')
         # TODO: implement
 
-
 class PrevalenceOfMicrotonesFeature(featuresModule.FeatureExtractor):
     '''
     not yet implemented
@@ -1700,7 +1652,6 @@ class PrevalenceOfMicrotonesFeature(featuresModule.FeatureExtractor):
     def process(self):
         raise JSymbolicFeatureException('not yet implemented')
         # TODO: implement
-
 
 # ------------------------------------------------------------------------------
 # rhythm
@@ -1738,7 +1689,6 @@ class StrongestRhythmicPulseFeature(featuresModule.FeatureExtractor):
         beatHisto = self.data['flat.secondsMap.beatHistogram']
         self.feature.vector[0] = beatHisto.index(max(beatHisto))
 
-
 class SecondStrongestRhythmicPulseFeature(featuresModule.FeatureExtractor):
     '''
     Bin label of the beat bin of the peak with the second-highest frequency.
@@ -1775,7 +1725,6 @@ class SecondStrongestRhythmicPulseFeature(featuresModule.FeatureExtractor):
         beatHisto[highestIndex] = 0
 
         self.feature.vector[0] = beatHisto.index(max(beatHisto))
-
 
 class HarmonicityOfTwoStrongestRhythmicPulsesFeature(
         featuresModule.FeatureExtractor):
@@ -1818,7 +1767,6 @@ class HarmonicityOfTwoStrongestRhythmicPulsesFeature(
         secondHighest = beatHisto.index(max(beatHisto))
         self.feature.vector[0] = float(highestIndex / secondHighest)
 
-
 class StrengthOfStrongestRhythmicPulseFeature(featuresModule.FeatureExtractor):
     '''
     Frequency of the beat bin with the highest frequency.
@@ -1843,7 +1791,6 @@ class StrengthOfStrongestRhythmicPulseFeature(featuresModule.FeatureExtractor):
     def process(self):
         beatHisto = self.data['flat.secondsMap.beatHistogram']
         self.feature.vector[0] = max(beatHisto) / sum(beatHisto)
-
 
 class StrengthOfSecondStrongestRhythmicPulseFeature(
         featuresModule.FeatureExtractor):
@@ -1878,13 +1825,11 @@ class StrengthOfSecondStrongestRhythmicPulseFeature(
         secondHighest = max(beatHisto)
         self.feature.vector[0] = secondHighest / sumHisto
 
-
 class StrengthRatioOfTwoStrongestRhythmicPulsesFeature(
         featuresModule.FeatureExtractor):
     '''
     The frequency of the higher (in terms of frequency) of the two beat bins
     corresponding to the peaks with the highest frequency divided by the frequency of the lower.
-
 
     >>> sch = corpus.parse('schoenberg/opus19', 2)
     >>> for p in sch.parts:
@@ -1915,7 +1860,6 @@ class StrengthRatioOfTwoStrongestRhythmicPulsesFeature(
 
         secondHighest = max(beatHisto)
         self.feature.vector[0] = theHighest / secondHighest
-
 
 class CombinedStrengthOfTwoStrongestRhythmicPulsesFeature(
         featuresModule.FeatureExtractor):
@@ -1951,7 +1895,6 @@ class CombinedStrengthOfTwoStrongestRhythmicPulsesFeature(
         secondHighest = max(beatHisto)
         self.feature.vector[0] = (theHighest + secondHighest) / sumHisto
 
-
 class NumberOfStrongPulsesFeature(featuresModule.FeatureExtractor):
     '''
     Not yet implemented
@@ -1973,7 +1916,6 @@ class NumberOfStrongPulsesFeature(featuresModule.FeatureExtractor):
         raise JSymbolicFeatureException('not yet implemented')
         # TODO: implement
 
-
 class NumberOfModeratePulsesFeature(featuresModule.FeatureExtractor):
     '''
     Not yet implemented
@@ -1994,7 +1936,6 @@ class NumberOfModeratePulsesFeature(featuresModule.FeatureExtractor):
         raise JSymbolicFeatureException('not yet implemented')
         # TODO: implement
 
-
 class NumberOfRelativelyStrongPulsesFeature(featuresModule.FeatureExtractor):
     '''
     not yet implemented
@@ -2012,7 +1953,6 @@ class NumberOfRelativelyStrongPulsesFeature(featuresModule.FeatureExtractor):
                             'the frequency of the bin with the highest frequency.')
         self.isSequential = True
         self.dimensions = 1
-
 
 class RhythmicLoosenessFeature(featuresModule.FeatureExtractor):
     '''
@@ -2040,7 +1980,6 @@ class RhythmicLoosenessFeature(featuresModule.FeatureExtractor):
     def process(self):
         raise JSymbolicFeatureException('not yet implemented')
         # TODO: implement
-
 
 class PolyrhythmsFeature(featuresModule.FeatureExtractor):
     '''
@@ -2075,7 +2014,6 @@ class PolyrhythmsFeature(featuresModule.FeatureExtractor):
         raise JSymbolicFeatureException('not yet implemented')
         # TODO: implement
 
-
 class RhythmicVariabilityFeature(featuresModule.FeatureExtractor):
     '''
     Not yet implemented
@@ -2096,14 +2034,12 @@ class RhythmicVariabilityFeature(featuresModule.FeatureExtractor):
         raise JSymbolicFeatureException('not yet implemented')
         # TODO: implement
 
-
 class BeatHistogramFeature(featuresModule.FeatureExtractor):
     '''
     Not yet implemented
 
     A feature extractor that finds a feature array with entries corresponding to the frequency
     values of each of the bins of the beat histogram (except the first 40 empty ones).
-
 
     '''
     id = 'R14'
@@ -2122,7 +2058,6 @@ class BeatHistogramFeature(featuresModule.FeatureExtractor):
     def process(self):
         raise JSymbolicFeatureException('not yet implemented')
         # TODO: implement
-
 
 class NoteDensityFeature(featuresModule.FeatureExtractor):
     '''
@@ -2161,7 +2096,6 @@ class NoteDensityFeature(featuresModule.FeatureExtractor):
         else:
             self.feature.vector[0] = float(len(end_times)) / end_times[-1]
 
-
 class AverageNoteDurationFeature(featuresModule.FeatureExtractor):
     '''
     Average duration of notes in seconds.
@@ -2197,7 +2131,6 @@ class AverageNoteDurationFeature(featuresModule.FeatureExtractor):
         for bundle in secondsMap:
             total += bundle['durationSeconds']
         self.feature.vector[0] = total / len(secondsMap)
-
 
 class VariabilityOfNoteDurationFeature(featuresModule.FeatureExtractor):
     '''
@@ -2238,7 +2171,6 @@ class VariabilityOfNoteDurationFeature(featuresModule.FeatureExtractor):
             note_durations.append(bundle['durationSeconds'])
         self.feature.vector[0] = statistics.pstdev(note_durations)
 
-
 class MaximumNoteDurationFeature(featuresModule.FeatureExtractor):
     '''
     Duration of the longest note (in seconds).
@@ -2270,7 +2202,6 @@ class MaximumNoteDurationFeature(featuresModule.FeatureExtractor):
                 maxSeconds = bundle['durationSeconds']
         self.feature.vector[0] = maxSeconds
 
-
 class MinimumNoteDurationFeature(featuresModule.FeatureExtractor):
     '''
     Duration of the shortest note (in seconds).
@@ -2301,7 +2232,6 @@ class MinimumNoteDurationFeature(featuresModule.FeatureExtractor):
             if bundle['durationSeconds'] < minSeconds:
                 minSeconds = bundle['durationSeconds']
         self.feature.vector[0] = minSeconds
-
 
 class StaccatoIncidenceFeature(featuresModule.FeatureExtractor):
     '''
@@ -2335,7 +2265,6 @@ class StaccatoIncidenceFeature(featuresModule.FeatureExtractor):
             if bundle['durationSeconds'] < 0.10:
                 count += 1
         self.feature.vector[0] = count / len(secondsMap)
-
 
 class AverageTimeBetweenAttacksFeature(featuresModule.FeatureExtractor):
     '''
@@ -2379,7 +2308,6 @@ class AverageTimeBetweenAttacksFeature(featuresModule.FeatureExtractor):
                 differences.append(dif)
         self.feature.vector[0] = sum(differences) / len(differences)
 
-
 class VariabilityOfTimeBetweenAttacksFeature(featuresModule.FeatureExtractor):
     '''
     Standard deviation of the times, in seconds, between Note On events (regardless of channel).
@@ -2419,7 +2347,6 @@ class VariabilityOfTimeBetweenAttacksFeature(featuresModule.FeatureExtractor):
             if not isclose(dif, 0.0, abs_tol=1e-7):
                 differences.append(dif)
         self.feature.vector[0] = statistics.pstdev(differences)
-
 
 class AverageTimeBetweenAttacksForEachVoiceFeature(
         featuresModule.FeatureExtractor):
@@ -2476,7 +2403,6 @@ class AverageTimeBetweenAttacksForEachVoiceFeature(
             avgByPart.append(sum(differences) / len(differences))
 
         self.feature.vector[0] = sum(avgByPart) / len(avgByPart)
-
 
 class AverageVariabilityOfTimeBetweenAttacksForEachVoiceFeature(
         featuresModule.FeatureExtractor):
@@ -2536,7 +2462,6 @@ class AverageVariabilityOfTimeBetweenAttacksForEachVoiceFeature(
             stdDeviationByPart.append(statistics.pstdev(differences))
         self.feature.vector[0] = (sum(stdDeviationByPart)
                                   / len(stdDeviationByPart))
-
 
 # class IncidenceOfCompleteRestsFeature(featuresModule.FeatureExtractor):
 #    '''
@@ -2600,7 +2525,6 @@ class AverageVariabilityOfTimeBetweenAttacksForEachVoiceFeature(
 #        self.isSequential = True
 #        self.dimensions = 1
 
-
 class InitialTempoFeature(featuresModule.FeatureExtractor):
     '''
     Tempo in beats per minute at the start of the recording.
@@ -2628,7 +2552,6 @@ class InitialTempoFeature(featuresModule.FeatureExtractor):
         mm = triples[0][2]
         # assume we want quarter bpm, not bpm in other division
         self.feature.vector[0] = mm.getQuarterBPM()
-
 
 class InitialTimeSignatureFeature(featuresModule.FeatureExtractor):
     '''
@@ -2670,7 +2593,6 @@ class InitialTimeSignatureFeature(featuresModule.FeatureExtractor):
         environLocal.printDebug(['found ts', ts])
         self.feature.vector[0] = elements[0].numerator
         self.feature.vector[1] = elements[0].denominator
-
 
 class CompoundOrSimpleMeterFeature(featuresModule.FeatureExtractor):
     '''
@@ -2721,7 +2643,6 @@ class CompoundOrSimpleMeterFeature(featuresModule.FeatureExtractor):
             if countName == 'Compound':
                 self.feature.vector[0] = 1
 
-
 class TripleMeterFeature(featuresModule.FeatureExtractor):
     '''
     Set to 1 if numerator of initial time signature is 3, set to 0 otherwise.
@@ -2762,7 +2683,6 @@ class TripleMeterFeature(featuresModule.FeatureExtractor):
         if elements and elements[0].numerator == 3:
             self.feature.vector[0] = 1
 
-
 class QuintupleMeterFeature(featuresModule.FeatureExtractor):
     '''
     Set to 1 if numerator of initial time signature is 5, set to 0 otherwise.
@@ -2801,7 +2721,6 @@ class QuintupleMeterFeature(featuresModule.FeatureExtractor):
         elements = self.data['flat.getElementsByClass(TimeSignature)']
         if elements and elements[0].numerator == 5:
             self.feature.vector[0] = 1
-
 
 class ChangesOfMeterFeature(featuresModule.FeatureExtractor):
     '''
@@ -2848,7 +2767,6 @@ class ChangesOfMeterFeature(featuresModule.FeatureExtractor):
                 self.feature.vector[0] = 1
                 return
 
-
 class DurationFeature(featuresModule.FeatureExtractor):
     '''
     A feature extractor that extracts the duration of the piece in seconds.
@@ -2882,10 +2800,8 @@ class DurationFeature(featuresModule.FeatureExtractor):
         end_times.sort()  # may already be sorted?
         self.feature.vector[0] = end_times[-1]
 
-
 # ------------------------------------------------------------------------------
 # dynamics
-
 
 class OverallDynamicRangeFeature(featuresModule.FeatureExtractor):
     '''
@@ -2905,13 +2821,11 @@ class OverallDynamicRangeFeature(featuresModule.FeatureExtractor):
         self.isSequential = True
         self.dimensions = 1
 
-
 class VariationOfDynamicsFeature(featuresModule.FeatureExtractor):
     '''
     Not implemented
 
     Standard deviation of loudness levels of all notes.
-
 
     TODO: implement
 
@@ -2925,7 +2839,6 @@ class VariationOfDynamicsFeature(featuresModule.FeatureExtractor):
         self.description = 'Standard deviation of loudness levels of all notes.'
         self.isSequential = True
         self.dimensions = 1
-
 
 class VariationOfDynamicsInEachVoiceFeature(featuresModule.FeatureExtractor):
     '''
@@ -2948,14 +2861,12 @@ class VariationOfDynamicsInEachVoiceFeature(featuresModule.FeatureExtractor):
         self.isSequential = True
         self.dimensions = 1
 
-
 class AverageNoteToNoteDynamicsChangeFeature(featuresModule.FeatureExtractor):
     '''
     Not implemented
 
     Average change of loudness from one note to the next note in the
     same channel (in MIDI velocity units).
-
 
     TODO: implement
 
@@ -2972,10 +2883,8 @@ class AverageNoteToNoteDynamicsChangeFeature(featuresModule.FeatureExtractor):
         self.isSequential = True
         self.dimensions = 1
 
-
 # ------------------------------------------------------------------------------
 # texture based
-
 
 class MaximumNumberOfIndependentVoicesFeature(featuresModule.FeatureExtractor):
     '''
@@ -3018,7 +2927,6 @@ class MaximumNumberOfIndependentVoicesFeature(featuresModule.FeatureExtractor):
                     g.append(gSub)  # add to temporary group; will act as a set
             found = max(found, len(g))
         self.feature.vector[0] = found
-
 
 class AverageNumberOfIndependentVoicesFeature(featuresModule.FeatureExtractor):
     '''
@@ -3064,13 +2972,11 @@ class AverageNumberOfIndependentVoicesFeature(featuresModule.FeatureExtractor):
             raise JSymbolicFeatureException('input lacks notes')
         self.feature.vector[0] = sum(found) / len(found)
 
-
 class VariabilityOfNumberOfIndependentVoicesFeature(
         featuresModule.FeatureExtractor):
     '''
     Standard deviation of number of different channels in which notes have sounded simultaneously.
     Rests are not included in this calculation.
-
 
     >>> s = corpus.parse('bwv66.6')
     >>> fe = features.jSymbolic.VariabilityOfNumberOfIndependentVoicesFeature(s)
@@ -3106,12 +3012,9 @@ class VariabilityOfNumberOfIndependentVoicesFeature(
         else:
             raise JSymbolicFeatureException('input lacks notes')
 
-
 class VoiceEqualityNumberOfNotesFeature(featuresModule.FeatureExtractor):
     '''
     Not implemented
-
-
 
     TODO: implement
 
@@ -3129,12 +3032,9 @@ class VoiceEqualityNumberOfNotesFeature(featuresModule.FeatureExtractor):
         self.isSequential = True
         self.dimensions = 1
 
-
 class VoiceEqualityNoteDurationFeature(featuresModule.FeatureExtractor):
     '''
     Not implemented
-
-
 
     TODO: implement
 
@@ -3150,12 +3050,9 @@ class VoiceEqualityNoteDurationFeature(featuresModule.FeatureExtractor):
         self.isSequential = True
         self.dimensions = 1
 
-
 class VoiceEqualityDynamicsFeature(featuresModule.FeatureExtractor):
     '''
     Not implemented
-
-
 
     TODO: implement
 
@@ -3171,12 +3068,9 @@ class VoiceEqualityDynamicsFeature(featuresModule.FeatureExtractor):
         self.isSequential = True
         self.dimensions = 1
 
-
 class VoiceEqualityMelodicLeapsFeature(featuresModule.FeatureExtractor):
     '''
     Not implemented
-
-
 
     TODO: implement
 
@@ -3193,7 +3087,6 @@ class VoiceEqualityMelodicLeapsFeature(featuresModule.FeatureExtractor):
             for each channel that contains at least one note.''')
         self.isSequential = True
         self.dimensions = 1
-
 
 class VoiceEqualityRangeFeature(featuresModule.FeatureExtractor):
     '''
@@ -3214,7 +3107,6 @@ class VoiceEqualityRangeFeature(featuresModule.FeatureExtractor):
         self.isSequential = True
         self.dimensions = 1
 
-
 class ImportanceOfLoudestVoiceFeature(featuresModule.FeatureExtractor):
     '''
     Not implemented
@@ -3233,7 +3125,6 @@ class ImportanceOfLoudestVoiceFeature(featuresModule.FeatureExtractor):
             that contain at least one note.''')
         self.isSequential = True
         self.dimensions = 1
-
 
 class RelativeRangeOfLoudestVoiceFeature(featuresModule.FeatureExtractor):
     '''
@@ -3254,7 +3145,6 @@ class RelativeRangeOfLoudestVoiceFeature(featuresModule.FeatureExtractor):
         self.isSequential = True
         self.dimensions = 1
 
-
 class RangeOfHighestLineFeature(featuresModule.FeatureExtractor):
     '''
     Not implemented
@@ -3274,12 +3164,9 @@ class RangeOfHighestLineFeature(featuresModule.FeatureExtractor):
         self.isSequential = True
         self.dimensions = 1
 
-
 class RelativeNoteDensityOfHighestLineFeature(featuresModule.FeatureExtractor):
     '''
     Not implemented
-
-
 
     TODO: implement
 
@@ -3296,7 +3183,6 @@ class RelativeNoteDensityOfHighestLineFeature(featuresModule.FeatureExtractor):
             least one note.''')
         self.isSequential = True
         self.dimensions = 1
-
 
 class MelodicIntervalsInLowestLineFeature(featuresModule.FeatureExtractor):
     '''
@@ -3316,7 +3202,6 @@ class MelodicIntervalsInLowestLineFeature(featuresModule.FeatureExtractor):
             channels that contain at least two notes.''')
         self.isSequential = True
         self.dimensions = 1
-
 
 class VoiceSeparationFeature(featuresModule.FeatureExtractor):
     '''
@@ -3338,10 +3223,8 @@ class VoiceSeparationFeature(featuresModule.FeatureExtractor):
         self.isSequential = True
         self.dimensions = 1
 
-
 # ------------------------------------------------------------------------------
 # instrumentation
-
 
 class PitchedInstrumentsPresentFeature(featuresModule.FeatureExtractor):
     '''
@@ -3409,7 +3292,6 @@ class PitchedInstrumentsPresentFeature(featuresModule.FeatureExtractor):
                     raise JSymbolicFeatureException(f'{iStr} lacks a midiProgram')
                 self.feature.vector[i.midiProgram] = 1
 
-
 class UnpitchedInstrumentsPresentFeature(featuresModule.FeatureExtractor):
     '''
     Not yet implemented
@@ -3442,7 +3324,6 @@ class UnpitchedInstrumentsPresentFeature(featuresModule.FeatureExtractor):
     def process(self):
         raise JSymbolicFeatureException('not yet implemented')
         # TODO: implement
-
 
 class NotePrevalenceOfPitchedInstrumentsFeature(
         featuresModule.FeatureExtractor):
@@ -3505,13 +3386,10 @@ class NotePrevalenceOfPitchedInstrumentsFeature(
                     raise JSymbolicFeatureException(f'{iStr} lacks a midiProgram')
                 self.feature.vector[i.midiProgram] = len(pNotes) / total
 
-
 class NotePrevalenceOfUnpitchedInstrumentsFeature(
         featuresModule.FeatureExtractor):
     '''
     Not implemented
-
-
 
     TODO: implement
 
@@ -3533,7 +3411,6 @@ class NotePrevalenceOfUnpitchedInstrumentsFeature(
         self.dimensions = 47
 
     # TODO: need to find events in channel 10.
-
 
 class TimePrevalenceOfPitchedInstrumentsFeature(
         featuresModule.FeatureExtractor):
@@ -3564,7 +3441,6 @@ class TimePrevalenceOfPitchedInstrumentsFeature(
         self.isSequential = True
         self.dimensions = 128
     # TODO: this can be done by symbolic duration in native.py
-
 
 class VariabilityOfNotePrevalenceOfPitchedInstrumentsFeature(
         featuresModule.FeatureExtractor):
@@ -3617,7 +3493,6 @@ class VariabilityOfNotePrevalenceOfPitchedInstrumentsFeature(
         partial = [pow(n - mean, 2) for n in coll]
         self.feature.vector[0] = math.sqrt(sum(partial) / len(partial))
 
-
 class VariabilityOfNotePrevalenceOfUnpitchedInstrumentsFeature(
         featuresModule.FeatureExtractor):
     '''
@@ -3627,7 +3502,6 @@ class VariabilityOfNotePrevalenceOfUnpitchedInstrumentsFeature(
     Map instrument that is used to play at least one note. It should be noted that only
     instruments 35 to 81 are included here, as they are the ones that are included in the
     official standard.
-
 
     TODO: implement
 
@@ -3645,7 +3519,6 @@ class VariabilityOfNotePrevalenceOfUnpitchedInstrumentsFeature(
             'as they are the ones that are included in the official standard.')
         self.isSequential = True
         self.dimensions = 1
-
 
 class NumberOfPitchedInstrumentsFeature(featuresModule.FeatureExtractor):
     '''
@@ -3686,7 +3559,6 @@ class NumberOfPitchedInstrumentsFeature(featuresModule.FeatureExtractor):
                 count += 1
         self.feature.vector[0] = count
 
-
 class NumberOfUnpitchedInstrumentsFeature(featuresModule.FeatureExtractor):
     '''
     Not implemented
@@ -3711,7 +3583,6 @@ class NumberOfUnpitchedInstrumentsFeature(featuresModule.FeatureExtractor):
         self.isSequential = True
         self.dimensions = 1
 
-
 class PercussionPrevalenceFeature(featuresModule.FeatureExtractor):
     '''
     Not implemented
@@ -3730,7 +3601,6 @@ class PercussionPrevalenceFeature(featuresModule.FeatureExtractor):
                             'instruments divided by total number of Note Ons in the recording.')
         self.isSequential = True
         self.dimensions = 1
-
 
 class InstrumentFractionFeature(featuresModule.FeatureExtractor):
     '''
@@ -3763,7 +3633,6 @@ class InstrumentFractionFeature(featuresModule.FeatureExtractor):
                 count += len(p.recurse().notes)
         self.feature.vector[0] = count / total
 
-
 class StringKeyboardFractionFeature(InstrumentFractionFeature):
     '''
     Fraction of all Note Ons belonging to string keyboard patches
@@ -3791,7 +3660,6 @@ class StringKeyboardFractionFeature(InstrumentFractionFeature):
         self.dimensions = 1
 
         self._targetPrograms = range(8)
-
 
 class AcousticGuitarFractionFeature(InstrumentFractionFeature):
     '''
@@ -3821,7 +3689,6 @@ class AcousticGuitarFractionFeature(InstrumentFractionFeature):
 
         self._targetPrograms = [24, 25]
 
-
 class ElectricGuitarFractionFeature(InstrumentFractionFeature):
     '''
     >>> s1 = stream.Stream()
@@ -3846,7 +3713,6 @@ class ElectricGuitarFractionFeature(InstrumentFractionFeature):
         self.dimensions = 1
 
         self._targetPrograms = list(range(26, 32))
-
 
 class ViolinFractionFeature(InstrumentFractionFeature):
     '''
@@ -3876,7 +3742,6 @@ class ViolinFractionFeature(InstrumentFractionFeature):
 
         self._targetPrograms = [40, 110]
 
-
 class SaxophoneFractionFeature(InstrumentFractionFeature):
     '''
     Fraction of all Note Ons belonging to saxophone patches (General MIDI
@@ -3904,7 +3769,6 @@ class SaxophoneFractionFeature(InstrumentFractionFeature):
         self.dimensions = 1
 
         self._targetPrograms = [64, 65, 66, 67]
-
 
 class BrassFractionFeature(InstrumentFractionFeature):
     '''
@@ -3936,7 +3800,6 @@ class BrassFractionFeature(InstrumentFractionFeature):
 
         self._targetPrograms = list(range(56, 62))
 
-
 class WoodwindsFractionFeature(InstrumentFractionFeature):
     '''
     Fraction of all Note Ons belonging to woodwind patches
@@ -3967,7 +3830,6 @@ class WoodwindsFractionFeature(InstrumentFractionFeature):
 
         self._targetPrograms = list(range(68, 80))  # include ocarina!
 
-
 class OrchestralStringsFractionFeature(InstrumentFractionFeature):
     '''
     Fraction of all Note Ons belonging to orchestral strings patches
@@ -3996,7 +3858,6 @@ class OrchestralStringsFractionFeature(InstrumentFractionFeature):
 
         self._targetPrograms = list(range(41, 46))
 
-
 class StringEnsembleFractionFeature(InstrumentFractionFeature):
     '''
     Not implemented
@@ -4018,7 +3879,6 @@ class StringEnsembleFractionFeature(InstrumentFractionFeature):
         self.dimensions = 1
 
         self._targetPrograms = [48, 49, 50, 51]
-
 
 class ElectricInstrumentFractionFeature(InstrumentFractionFeature):
     '''
@@ -4048,11 +3908,9 @@ class ElectricInstrumentFractionFeature(InstrumentFractionFeature):
         self._targetPrograms = [4, 5, 16, 18, 26, 27, 28, 29,
                                 30, 31, 33, 34, 35, 36, 37, 38, 39]  # accept synth bass
 
-
 # -----------------------------------------------------------------------------
 class JSymbolicFeatureException(featuresModule.FeatureException):
     pass
-
 
 extractorsById = OrderedDict([
     ('D', [
@@ -4233,7 +4091,6 @@ extractorsById = OrderedDict([
 
 ])
 
-
 def getExtractorByTypeAndNumber(extractorType, number):
     '''
     Typical usage:
@@ -4393,7 +4250,6 @@ def getExtractorByTypeAndNumber(extractorType, number):
         raise JSymbolicFeatureException(
             f'jSymbolic features of type {extractorType} do not have number {number}')
 
-
 featureExtractors = [
 
     MelodicIntervalHistogramFeature,  # m1
@@ -4483,7 +4339,6 @@ featureExtractors = [
     # c types are not in jSymbolic
 ]
 
-
 def getCompletionStats():
     '''
     >>> features.jSymbolic.getCompletionStats()
@@ -4501,406 +4356,4 @@ def getCompletionStats():
                     countComplete += 1
     print(f'completion stats: {countComplete}/{countTotal} ({countComplete / countTotal})')
 
-
 # ------------------------------------------------------------------------------
-class Test(unittest.TestCase):
-
-    def testAverageMelodicIntervalFeature(self):
-        from music21 import stream
-        from music21 import pitch
-        from music21 import note
-        from music21 import features
-        s = stream.Stream()
-        p = pitch.Pitch('c2')
-        s.append(note.Note(copy.deepcopy(p)))
-
-        for i in ['p5', 'p5', 'p5', 'p4', 'p4', 'p4']:
-            p = p.transpose(i)
-            s.append(note.Note(copy.deepcopy(p)))
-
-        fe = features.jSymbolic.AverageMelodicIntervalFeature(s)
-        f = fe.extract()
-        # average of 3 p5 and 3 p4 is the tritone
-        self.assertEqual(f.vector, [6.0])
-
-    def testMostCommonMelodicIntervalFeature(self):
-        from music21 import stream
-        from music21 import pitch
-        from music21 import note
-        from music21 import features
-        s = stream.Stream()
-        p = pitch.Pitch('c2')
-        s.append(note.Note(copy.deepcopy(p)))
-
-        for i in ['p5', 'p5', 'p5', 'p4', 'p4', 'p4', 'p4']:
-            p = p.transpose(i)
-            s.append(note.Note(copy.deepcopy(p)))
-
-        fe = features.jSymbolic.MostCommonMelodicIntervalFeature(s)
-        f = fe.extract()
-        # average of 3 p5 and 3 p4 is the tritone
-        self.assertEqual(f.vector, [5])
-
-    def testDistanceBetweenMostCommonMelodicIntervalsFeature(self):
-        from music21 import stream
-        from music21 import pitch
-        from music21 import note
-        from music21 import features
-        s = stream.Stream()
-        p = pitch.Pitch('c2')
-        s.append(note.Note(copy.deepcopy(p)))
-
-        for i in ['p5', 'p5', 'p5', 'p4', 'p4', 'p4', 'p4', 'm2', 'm3']:
-            p = p.transpose(i)
-            s.append(note.Note(copy.deepcopy(p)))
-
-        fe = features.jSymbolic.DistanceBetweenMostCommonMelodicIntervalsFeature(s)
-        f = fe.extract()
-        self.assertEqual(f.vector, [2])
-
-    def testMostCommonMelodicIntervalPrevalenceFeature(self):
-        from music21 import stream
-        from music21 import pitch
-        from music21 import note
-        from music21 import features
-        s = stream.Stream()
-        p = pitch.Pitch('c2')
-        s.append(note.Note(copy.deepcopy(p)))
-
-        for i in ['p5', 'p5', 'p4', 'p4', 'p4', 'p4', 'm2', 'm3']:
-            p = p.transpose(i)
-            s.append(note.Note(copy.deepcopy(p)))
-
-        fe = features.jSymbolic.MostCommonMelodicIntervalPrevalenceFeature(s)
-        f = fe.extract()
-        self.assertEqual(f.vector, [0.5])
-
-    def testRelativeStrengthOfMostCommonIntervalsFeature(self):
-        from music21 import stream
-        from music21 import pitch
-        from music21 import note
-        from music21 import features
-        s = stream.Stream()
-        p = pitch.Pitch('c2')
-        s.append(note.Note(copy.deepcopy(p)))
-
-        for i in ['p5', 'p5', 'p5', 'p4', 'p4', 'p4', 'p4', 'm2', 'm3']:
-            p = p.transpose(i)
-            s.append(note.Note(copy.deepcopy(p)))
-
-        fe = features.jSymbolic.RelativeStrengthOfMostCommonIntervalsFeature(s)
-        f = fe.extract()
-        self.assertEqual(f.vector, [0.75])
-
-    def testNumberOfCommonMelodicIntervalsFeature(self):
-        from music21 import stream
-        from music21 import pitch
-        from music21 import note
-        from music21 import features
-        s = stream.Stream()
-        p = pitch.Pitch('c2')
-        s.append(note.Note(copy.deepcopy(p)))
-
-        for i in ['p5', 'p4', 'p4', 'p4', 'p4', 'p4', 'p4', 'p4', 'p4', 'p4', 'p4', 'm2', 'm3']:
-            p = p.transpose(i)
-            s.append(note.Note(copy.deepcopy(p)))
-
-        fe = features.jSymbolic.NumberOfCommonMelodicIntervalsFeature(s)
-        f = fe.extract()
-        self.assertEqual(f.vector, [1])
-
-    def testAmountOfArpeggiationFeature(self):
-        from music21 import stream
-        from music21 import pitch
-        from music21 import note
-        from music21 import features
-        s = stream.Stream()
-        p = pitch.Pitch('c2')
-        s.append(note.Note(copy.deepcopy(p)))
-
-        for i in ['m2', 'm2', 'M2', 'M3', 'p5', 'p8']:
-            p = p.transpose(i)
-            s.append(note.Note(copy.deepcopy(p)))
-
-        fe = features.jSymbolic.AmountOfArpeggiationFeature(s)
-        f = fe.extract()
-        self.assertEqual(f.vector, [0.5])
-
-    def testRepeatedNotesFeature(self):
-        from music21 import stream
-        from music21 import pitch
-        from music21 import note
-        from music21 import features
-        s = stream.Stream()
-        p = pitch.Pitch('c2')
-        s.append(note.Note(copy.deepcopy(p)))
-
-        for i in ['p1', 'p1', 'p1', 'M2', 'M3', 'p5']:
-            p = p.transpose(i)
-            s.append(note.Note(copy.deepcopy(p)))
-
-        fe = features.jSymbolic.RepeatedNotesFeature(s)
-        f = fe.extract()
-        self.assertEqual(f.vector, [0.5])
-
-    def testChromaticMotionFeature(self):
-        from music21 import stream
-        from music21 import pitch
-        from music21 import note
-        from music21 import features
-        s = stream.Stream()
-        p = pitch.Pitch('c2')
-        s.append(note.Note(copy.deepcopy(p)))
-
-        for i in ['m2', 'm2', 'm2', 'M2', 'M3', 'p5']:
-            p = p.transpose(i)
-            s.append(note.Note(copy.deepcopy(p)))
-
-        fe = features.jSymbolic.ChromaticMotionFeature(s)
-        f = fe.extract()
-        self.assertEqual(f.vector, [0.5])
-
-    def testStepwiseMotionFeature(self):
-        from music21 import stream
-        from music21 import pitch
-        from music21 import note
-        from music21 import features
-        s = stream.Stream()
-        p = pitch.Pitch('c2')
-        s.append(note.Note(copy.deepcopy(p)))
-
-        for i in ['m2', 'm2', 'm2', 'M2', 'M3', 'p5']:
-            p = p.transpose(i)
-            s.append(note.Note(copy.deepcopy(p)))
-
-        fe = features.jSymbolic.StepwiseMotionFeature(s)
-        f = fe.extract()
-        self.assertEqual(f.vector, [2 / 3])
-
-    def testMelodicThirdsFeature(self):
-        from music21 import stream
-        from music21 import pitch
-        from music21 import note
-        from music21 import features
-        s = stream.Stream()
-        p = pitch.Pitch('c2')
-        s.append(note.Note(copy.deepcopy(p)))
-
-        for i in ['m2', 'm2', 'm2', 'M2', 'M3', 'p5']:
-            p = p.transpose(i)
-            s.append(note.Note(copy.deepcopy(p)))
-
-        fe = features.jSymbolic.MelodicThirdsFeature(s)
-        f = fe.extract()
-        self.assertEqual(f.vector, [1 / 6])
-
-    def testMelodicFifthsFeature(self):
-        from music21 import stream
-        from music21 import pitch
-        from music21 import note
-        from music21 import features
-        s = stream.Stream()
-        p = pitch.Pitch('c2')
-        s.append(note.Note(copy.deepcopy(p)))
-
-        for i in ['m2', 'm2', 'm2', 'M2', 'p5', 'p5']:
-            p = p.transpose(i)
-            s.append(note.Note(copy.deepcopy(p)))
-
-        fe = features.jSymbolic.MelodicFifthsFeature(s)
-        f = fe.extract()
-        self.assertEqual(f.vector, [2 / 6])
-
-    def testMelodicTritonesFeature(self):
-        from music21 import stream
-        from music21 import pitch
-        from music21 import note
-        from music21 import features
-        s = stream.Stream()
-        p = pitch.Pitch('c2')
-        s.append(note.Note(copy.deepcopy(p)))
-
-        for i in ['m2', 'm2', 'm2', 'M2', 'p5', 'd5']:
-            p = p.transpose(i)
-            s.append(note.Note(copy.deepcopy(p)))
-
-        fe = features.jSymbolic.MelodicTritonesFeature(s)
-        f = fe.extract()
-        self.assertEqual(f.vector, [1 / 6])
-
-    def testMelodicOctavesFeature(self):
-        from music21 import stream
-        from music21 import pitch
-        from music21 import note
-        from music21 import features
-        s = stream.Stream()
-        p = pitch.Pitch('c2')
-        s.append(note.Note(copy.deepcopy(p)))
-
-        for i in ['m2', 'm2', 'm2', 'M2', 'p5', 'p8']:
-            p = p.transpose(i)
-            s.append(note.Note(copy.deepcopy(p)))
-
-        fe = features.jSymbolic.MelodicOctavesFeature(s)
-        f = fe.extract()
-        self.assertEqual(f.vector, [1 / 6])
-
-    def testDirectionOfMotionFeature(self):
-        from music21 import stream
-        from music21 import pitch
-        from music21 import note
-        from music21 import features
-        # all up
-        s = stream.Stream()
-        p = pitch.Pitch('c2')
-        s.append(note.Note(copy.deepcopy(p)))
-        for i in ['m2', 'm2', 'm2', 'M2', 'p5', 'p8']:
-            p = p.transpose(i)
-            s.append(note.Note(copy.deepcopy(p)))
-        fe = features.jSymbolic.DirectionOfMotionFeature(s)
-        f = fe.extract()
-        self.assertEqual(f.vector, [1.0])
-
-        # half down, half up
-        s = stream.Stream()
-        p = pitch.Pitch('c2')
-        s.append(note.Note(copy.deepcopy(p)))
-        for i in ['m2', 'm2', '-m2', '-M2', '-p5', 'p8']:
-            p = p.transpose(i)
-            s.append(note.Note(copy.deepcopy(p)))
-        fe = features.jSymbolic.DirectionOfMotionFeature(s)
-        f = fe.extract()
-        self.assertEqual(f.vector, [0.5])
-
-        # downward only
-        s = stream.Stream()
-        p = pitch.Pitch('c2')
-        s.append(note.Note(copy.deepcopy(p)))
-        for i in ['-m2', '-m2', '-m2', '-M2', '-p5', '-p8']:
-            p = p.transpose(i)
-            s.append(note.Note(copy.deepcopy(p)))
-        fe = features.jSymbolic.DirectionOfMotionFeature(s)
-        f = fe.extract()
-        self.assertEqual(f.vector, [0.0])
-
-    def testDurationOfMelodicArcsFeature(self):
-        from music21 import stream
-        from music21 import pitch
-        from music21 import note
-        from music21 import features
-        # all up
-        # in jSymbolic implementation, all up means there
-        # is no melodic arc and thus the average duration
-        # of melodic arc is set to 0.
-        s = stream.Stream()
-        p = pitch.Pitch('c2')
-        s.append(note.Note(copy.deepcopy(p)))
-        for i in ['m2', 'm2', 'm2', 'M2', 'p5', 'p8']:
-            p = p.transpose(i)
-            s.append(note.Note(copy.deepcopy(p)))
-        fe = features.jSymbolic.DurationOfMelodicArcsFeature(s)
-        f = fe.extract()
-        self.assertEqual(f.vector, [0])
-
-        s = stream.Stream()
-        p = pitch.Pitch('c2')
-        s.append(note.Note(copy.deepcopy(p)))
-        for i in ['m2', 'm2', '-p8', 'M2', 'p5', '-p8', 'p8', '-p8']:
-            p = p.transpose(i)
-            s.append(note.Note(copy.deepcopy(p)))
-        fe = features.jSymbolic.DurationOfMelodicArcsFeature(s)
-        f = fe.extract()
-        self.assertAlmostEqual(f.vector[0], 8 / 5)
-
-    def testSizeOfMelodicArcsFeature(self):
-        from music21 import stream
-        from music21 import pitch
-        from music21 import note
-        from music21 import features
-        # all up
-        s = stream.Stream()
-        p = pitch.Pitch('c2')
-        s.append(note.Note(copy.deepcopy(p)))
-        for i in ['m2', 'm2', 'm2', 'M2', 'p5', 'p8']:
-            p = p.transpose(i)
-            s.append(note.Note(copy.deepcopy(p)))
-        fe = features.jSymbolic.SizeOfMelodicArcsFeature(s)
-        unused_f = fe.extract()
-        # self.assertEqual(f.vector, [5])
-
-        s = stream.Stream()
-        p = pitch.Pitch('c2')
-        s.append(note.Note(copy.deepcopy(p)))
-        for i in ['m2', 'm2', '-p8', 'M2', 'p5', '-p8', 'p8', '-p8']:
-            p = p.transpose(i)
-            s.append(note.Note(copy.deepcopy(p)))
-        fe = features.jSymbolic.SizeOfMelodicArcsFeature(s)
-        unused_f = fe.extract()
-        # self.assertAlmostEqual(f.vector[0], 1 + 2/3)
-
-    def testNoteDensityFeatureA(self):
-        from music21 import stream
-        from music21 import note
-        from music21 import tempo
-        from music21 import features
-        s = stream.Stream()
-        s.insert(0, tempo.MetronomeMark(number=60))
-        s.insert(0, note.Note(quarterLength=8))
-        s.insert(1, note.Note(quarterLength=7))
-        s.insert(2, note.Note(quarterLength=6))
-        s.insert(3, note.Note(quarterLength=5))
-        s.insert(4, note.Note(quarterLength=4))
-        s.insert(5, note.Note(quarterLength=3))
-        s.insert(6, note.Note(quarterLength=2))
-        s.insert(7, note.Note(quarterLength=1))
-
-        fe = features.jSymbolic.NoteDensityFeature(s)
-        f = fe.extract()
-        # 8 notes in the span of 8 seconds
-        self.assertAlmostEqual(f.vector[0], 1.0)
-
-        s = stream.Stream()
-        s.insert(0, tempo.MetronomeMark(number=240))
-        s.insert(0, note.Note(quarterLength=8))
-        s.insert(1, note.Note(quarterLength=7))
-        s.insert(2, note.Note(quarterLength=6))
-        s.insert(3, note.Note(quarterLength=5))
-        s.insert(4, note.Note(quarterLength=4))
-        s.insert(5, note.Note(quarterLength=3))
-        s.insert(6, note.Note(quarterLength=2))
-        s.insert(7, note.Note(quarterLength=1))
-
-        # 8 notes in the span of 2 seconds
-        fe = features.jSymbolic.NoteDensityFeature(s)
-        f = fe.extract()
-        self.assertAlmostEqual(f.vector[0], 4.0)
-
-    def testFeatureCount(self):
-        from music21 import features
-        fs = features.jSymbolic.extractorsById
-        feTotal = 0
-        feImplemented = 0
-        for k in fs:
-            for i in range(len(fs[k])):
-                if fs[k][i] is not None:
-                    feTotal += 1
-                    if fs[k][i] in features.jSymbolic.featureExtractors:
-                        feImplemented += 1
-        environLocal.printDebug(['fe total:', feTotal, 'fe implemented',
-                                 feImplemented, 'percent', feImplemented / feTotal])
-
-    def testBeatHistogram(self):
-        from music21 import corpus
-        from music21 import tempo
-        sch = corpus.parse('schoenberg/opus19', 2)
-        for p in sch.parts:
-            p.insert(0, tempo.MetronomeMark('Langsam', 70))
-        fe = StrongestRhythmicPulseFeature(sch)
-        f = fe.extract()
-        self.assertEqual(140.0, f.vector[0])
-
-
-if __name__ == '__main__':
-    import music21
-    music21.mainTest(Test)
-

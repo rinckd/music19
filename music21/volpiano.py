@@ -20,8 +20,6 @@ This module will move to a medren package hopefully by v7
 from __future__ import annotations
 
 import enum
-import unittest
-
 from music21 import bar
 from music21 import base
 from music21 import clef
@@ -35,21 +33,17 @@ from music21 import stream
 
 environLocal = environment.Environment('volpiano.py')
 
-
 class VolpianoException(exceptions21.Music21Exception):
     pass
-
 
 # JetBrains does not understand this form of Enum
 # noinspection PyArgumentList
 ErrorLevel = enum.Enum('ErrorLevel', 'WARN LOG')
 
-
 class Neume(spanner.Spanner):
     '''
     A spanner that represents a Neume.  No name of the neume, just that it is a Neume.
     '''
-
 
 class LineBreak(base.Music21Object):
     '''
@@ -59,7 +53,6 @@ class LineBreak(base.Music21Object):
     '''
     pass
 
-
 class PageBreak(base.Music21Object):
     '''
     Indicates that the page breaks at this point in the manuscript
@@ -68,7 +61,6 @@ class PageBreak(base.Music21Object):
     '''
     pass
 
-
 class ColumnBreak(base.Music21Object):
     '''
     Indicates that the page breaks at this point in the manuscript
@@ -76,7 +68,6 @@ class ColumnBreak(base.Music21Object):
     Denoted by three 7s.
     '''
     pass
-
 
 classByNumBreakTokens = [None, LineBreak, PageBreak, ColumnBreak]
 classByNumBreakTokensLayout = [None, layout.SystemLayout, layout.PageLayout, ColumnBreak]
@@ -89,7 +80,6 @@ bflatTokens = 'iyz'
 flatTokens = eflatTokens + bflatTokens
 naturalTokens = flatTokens.upper()
 accidentalTokens = flatTokens + naturalTokens
-
 
 def toPart(volpianoText, *, breaksToLayout=False):
     # noinspection PyShadowingNames
@@ -159,7 +149,6 @@ def toPart(volpianoText, *, breaksToLayout=False):
         {0.0} <music21.note.Note E>
         {1.0} <music21.bar.Barline type=double>
 
-
     As layout objects using breaksToLayout=True
 
     >>> breakTest = volpiano.toPart('1---e-7-e-77-e-777-e-3-e-4', breaksToLayout=True)
@@ -177,7 +166,6 @@ def toPart(volpianoText, *, breaksToLayout=False):
     {4.0} <music21.stream.Measure 0 offset=4.0>
         {0.0} <music21.note.Note E>
         {1.0} <music21.bar.Barline type=double>
-
 
     Liquescence test:
 
@@ -201,7 +189,6 @@ def toPart(volpianoText, *, breaksToLayout=False):
     noteThatWouldGoInSpanner = None
     lastClef = clef.TrebleClef()
     continuousNumberOfBreakTokens = 0
-
 
     bIsFlat = False
     eIsFlat = False
@@ -295,7 +282,6 @@ def toPart(volpianoText, *, breaksToLayout=False):
                 raise VolpianoException(
                     'Unknown accidental: ' + token + ': Should not happen')
 
-
     if continuousNumberOfBreakTokens > 0:
         breakClass = classByNumBreakTokens[continuousNumberOfBreakTokens]
         breakToken = breakClass()
@@ -305,8 +291,6 @@ def toPart(volpianoText, *, breaksToLayout=False):
         p.append(m)
 
     return p
-
-
 
 def fromStream(s, *, layoutToBreaks=False):
     '''
@@ -344,7 +328,6 @@ def fromStream(s, *, layoutToBreaks=False):
     def popHyphens():
         while volpianoTokens and volpianoTokens[-1] == '-':
             volpianoTokens.pop()
-
 
     distToAccidental = {
         -3: 'y',
@@ -458,16 +441,3 @@ def fromStream(s, *, layoutToBreaks=False):
             error(el, ErrorLevel.LOG)
 
     return ''.join(volpianoTokens)
-
-
-
-class Test(unittest.TestCase):
-    pass
-
-    def testNoteNames(self):
-        pass
-
-
-if __name__ == '__main__':
-    import music21
-    music21.mainTest(Test, 'importPlusRelative')

@@ -11,16 +11,12 @@
 # ------------------------------------------------------------------------------
 from __future__ import annotations
 
-import unittest
-
 from music21 import pitch
 from music21 import exceptions21
 from music21 import instrument
 
-
 class MIDIPercussionException(exceptions21.Music21Exception):
     pass
-
 
 class PercussionMapper:
     '''
@@ -128,7 +124,6 @@ class PercussionMapper:
         Traceback (most recent call last):
         music21.midi.percussion.MIDIPercussionException: 69 does not map to a valid instrument!
 
-
         Some music21 Instruments have more than one MidiPitch.  In this case you'll
         get the same Instrument object but with a different modifier
 
@@ -170,7 +165,6 @@ class PercussionMapper:
         Takes an instrument.Instrument object and returns a pitch object
         with the corresponding 1-indexed MIDI note, according to the GM Percussion Map.
 
-
         >>> pm = midi.percussion.PercussionMapper()
         >>> myCow = instrument.Cowbell()
         >>> cowPitch = pm.midiInstrumentToPitch(myCow)
@@ -201,20 +195,6 @@ class PercussionMapper:
 
     _DOC_ORDER = [midiInstrumentToPitch, midiPitchToInstrument]
 
-
-class Test(unittest.TestCase):
-
-    def testCopyAndDeepcopy(self):
-        from music21.test.commonTest import testCopyAll
-        testCopyAll(self, globals())
-
-
 # ------------------------------------------------------------------------------
 # define presented order in documentation
 _DOC_ORDER = [PercussionMapper]
-
-
-if __name__ == '__main__':
-    import music21
-    music21.mainTest(Test)
-

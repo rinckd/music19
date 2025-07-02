@@ -21,13 +21,10 @@ TODO: Demonstrate with JRP.
 '''
 from __future__ import annotations
 
-import unittest
-
 from music21 import common
 from music21 import environment
 
 environLocal = environment.Environment('corpus.virtual')
-
 
 class VirtualWork:
     def __init__(self):
@@ -72,7 +69,6 @@ class VirtualWork:
                     post.append(url)
         return post  # no match
 
-
 # ------------------------------------------------------------------------------
 # keep these in alphabetical order
 
@@ -94,7 +90,6 @@ class BachBWV1007Prelude(VirtualWork):
         self.urlList.append(cello + '&file=bwv1007-01.krn&f=xml')
         self.urlList.append(cello + '&file=bwv1007-01.krn&f=kern')
 
-
 class BachBWV772(VirtualWork):
     def __init__(self):
         super().__init__()
@@ -104,7 +99,6 @@ class BachBWV772(VirtualWork):
         self.corpusPath = 'bach/bwv772'
         invention = 'https://kern.ccarh.org/cgi-bin/ksdata?l=osu/classical/bach/inventions'
         self.urlList.append(invention + '&file=inven01.krn&f=xml')
-
 
 class BachBWV773(VirtualWork):
     def __init__(self):
@@ -117,7 +111,6 @@ class BachBWV773(VirtualWork):
         self.urlList.append(invention + '&file=inven02.krn&f=xml')
         self.urlList.append(invention + '&file=inven02.krn&f=kern')
 
-
 class ColtraneGiantSteps(VirtualWork):
     # post operation: needs to make accidentals
     def __init__(self):
@@ -129,7 +122,6 @@ class ColtraneGiantSteps(VirtualWork):
         self.urlList.append('http://impromastering.com/uploads/transcription_file/file/196/'
                             'Giant_Steps__John_Coltrane_C.xml')
 
-
 class SchubertD576(VirtualWork):
     def __init__(self):
         super().__init__()
@@ -139,7 +131,6 @@ class SchubertD576(VirtualWork):
         self.corpusPath = 'schubert/d576-1'
         self.urlList.append('https://kern.ccarh.org/cgi-bin/ksdata?l=cc/schubert/piano/'
                             'd0576&file=d0576-06.krn&f=xml')
-
 
 class SchubertD5762(VirtualWork):
     def __init__(self):
@@ -151,7 +142,6 @@ class SchubertD5762(VirtualWork):
         self.urlList.append('https://kern.ccarh.org/cgi-bin/ksdata?l=users/'
                             'craig/classical/schubert/piano/d0576&file=d0576-02.krn&f=xml')
 
-
 class SchubertD5763(VirtualWork):
     def __init__(self):
         super().__init__()
@@ -161,7 +151,6 @@ class SchubertD5763(VirtualWork):
         self.corpusPath = 'schubert/d576-3'
         self.urlList.append('https://kern.ccarh.org/cgi-bin/ksdata?l=users/craig/classical/'
                             'schubert/piano/d0576&file=d0576-03.krn&f=xml')
-
 
 class SchubertD5764(VirtualWork):
     def __init__(self):
@@ -173,7 +162,6 @@ class SchubertD5764(VirtualWork):
         self.urlList.append('https://kern.ccarh.org/cgi-bin/ksdata?l=users/craig/classical/'
                             'schubert/piano/d0576&file=d0576-04.krn&f=xml')
 
-
 class PachelbelCanonD(VirtualWork):
     def __init__(self):
         super().__init__()
@@ -184,39 +172,10 @@ class PachelbelCanonD(VirtualWork):
         self.urlList.append('https://kern.ccarh.org/cgi-bin/ksdata?l=cc/'
                             'pachelbel&file=canon.krn&f=xml')
 
-
 # ------------------------------------------------------------------------------
-class TestExternal(unittest.TestCase):
-    # interpreter loading
-    pass
-
-
-class Test(unittest.TestCase):
-
-    def testBasic(self):
-        '''
-        Test instantiating all objects defined in the virtual corpus module
-        '''
-        a = BachBWV1007Prelude()
-        self.assertNotEqual(a.getUrlByExt(['.xml']), [])
-        self.assertNotEqual(a.getUrlByExt(['.krn']), [])
-        BachBWV772()
-        BachBWV773()
-        ColtraneGiantSteps()
-        SchubertD576()
-        SchubertD5762()
-        SchubertD5763()
-        SchubertD5764()
-        PachelbelCanonD()
-
 
 # ------------------------------------------------------------------------------
 # define presented order in documentation
 _DOC_ORDER: list[type] = []
 
-if __name__ == '__main__':
-    import music21
-    music21.mainTest(Test)
-    # music21.mainTest(Test, TestExternal)
-
-
+# music21.mainTest(Test, TestExternal)

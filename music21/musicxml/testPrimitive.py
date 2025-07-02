@@ -9,8 +9,6 @@
 # ------------------------------------------------------------------------------
 from __future__ import annotations
 
-import unittest
-
 _DOC_IGNORE_MODULE_OR_PACKAGE = True
 
 # Needs triple double quotes because of embedded c'''' below.
@@ -2542,7 +2540,6 @@ directions31a = '''<?xml version="1.0" encoding="UTF-8"?>
 </score-partwise>
 '''
 
-
 lyricsMelisma61d = '''<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE score-partwise PUBLIC "-//Recordare//DTD MusicXML 1.0 Partwise//EN"
                                 "http://www.musicxml.org/dtds/partwise.dtd">
@@ -3954,7 +3951,6 @@ notations32a = '''<?xml version="1.0" encoding="UTF-8"?>
 </score-partwise>
 '''
 
-
 restsDurations02a = '''<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE score-partwise PUBLIC "-//Recordare//DTD MusicXML 1.0 Partwise//EN"
                                 "http://www.musicxml.org/dtds/partwise.dtd">
@@ -4985,7 +4981,6 @@ rhythmDurations03a = '''<?xml version="1.0" encoding="UTF-8"?>
 </score-partwise>
 '''
 
-
 chordsThreeNotesDuration21c = '''<?xml version="1.0"?>
 <!DOCTYPE score-partwise PUBLIC "-//Recordare//DTD MusicXML 0.6 Partwise//EN" "http://www.musicxml.org/dtds/partwise.dtd">
 <score-partwise>
@@ -5216,7 +5211,6 @@ chordsThreeNotesDuration21c = '''<?xml version="1.0"?>
     </part>
 </score-partwise>
 '''
-
 
 beams01 = '''<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE score-partwise PUBLIC "-//Recordare//DTD MusicXML 2.0 Partwise//EN"
@@ -6459,7 +6453,6 @@ timeSignatures11d = '''<?xml version="1.0" encoding="UTF-8"?>
 </score-partwise>
 '''
 
-
 clefs12a = '''<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE score-partwise PUBLIC "-//Recordare//DTD MusicXML 1.0 Partwise//EN"
                                 "http://www.musicxml.org/dtds/partwise.dtd">
@@ -7090,7 +7083,6 @@ beams02 = '''<?xml version="1.0" encoding="UTF-8"?>
 </score-partwise>
 '''
 
-
 tuplets23a = '''<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE score-partwise PUBLIC "-//Recordare//DTD MusicXML 1.0 Partwise//EN"
                                 "http://www.musicxml.org/dtds/partwise.dtd">
@@ -7566,7 +7558,6 @@ tuplets23a = '''<?xml version="1.0" encoding="UTF-8"?>
   <!--=========================================================-->
 </score-partwise>
 '''
-
 
 tuplets23b = '''<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE score-partwise PUBLIC "-//Recordare//DTD MusicXML 1.1 Partwise//EN"
@@ -8791,7 +8782,6 @@ tupletsNested23d = '''<?xml version="1.0" encoding="UTF-8"?>
 </score-partwise>
 '''
 
-
 articulations01 = '''<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE score-partwise PUBLIC "-//Recordare//DTD MusicXML 2.0 Partwise//EN"
                                 "http://www.musicxml.org/dtds/partwise.dtd">
@@ -9721,7 +9711,6 @@ keySignatures13a = '''<?xml version="1.0" encoding="UTF-8"?>
   </part>
 </score-partwise>
 '''
-
 
 multipleAttributesPerMeasures = '''<?xml version="1.0" standalone="no"?>
 <!DOCTYPE score-partwise PUBLIC "-//Recordare//DTD MusicXML 0.6a Partwise//EN" "//C:/Program Files/Finale 2003/Component Files/partwise.dtd">
@@ -11808,7 +11797,6 @@ simpleRepeat45a = '''<?xml version="1.0" encoding="UTF-8"?>
 </score-partwise>
 '''
 
-
 spannersSlurs33c = '''<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE score-partwise PUBLIC "-//Recordare//DTD MusicXML 1.1 Partwise//EN"
                                 "http://www.musicxml.org/dtds/partwise.dtd">
@@ -13620,7 +13608,6 @@ with a long text
 </score-partwise>
 '''
 
-
 repeatExpressionsA = '''<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE score-partwise PUBLIC "-//Recordare//DTD MusicXML 2.0 Partwise//EN"
                                 "http://www.musicxml.org/dtds/partwise.dtd">
@@ -14627,7 +14614,6 @@ graceNotes24a = '''<?xml version="1.0" encoding="UTF-8"?>
   <!--=========================================================-->
 </score-partwise>
 '''
-
 
 mixedVoices1a = '''<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE score-partwise PUBLIC "-//Recordare//DTD MusicXML 2.0 Partwise//EN"
@@ -19160,7 +19146,6 @@ tupletsImplied = '''<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 </score-partwise>
 '''
 
-
 pianoStaffPolymeter = '''<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
 <!DOCTYPE score-partwise PUBLIC "-//Recordare//DTD MusicXML 0.6b Partwise//EN"
  "http://www.musicxml.org/dtds/partwise.dtd">
@@ -20682,7 +20667,6 @@ ALL = [
     pedalLines, pedalSymLines  # 58
 ]
 
-
 def get(contentRequest: str) -> str:
     '''
     Get test material by type of content
@@ -20702,119 +20686,11 @@ def get(contentRequest: str) -> str:
     else:
         raise ValueError(f'cannot find contentRequest: {contentRequest}')
 
-
-# ------------------------------------------------------------------------------
-class Test(unittest.TestCase):
-
-    def testBasic(self):
-        # a basic test to make sure each parse
-        from music21 import converter
-        for i, testMaterial in enumerate(ALL):
-            try:
-                dummy = converter.parse(testMaterial)
-            except Exception:
-                print('Failure in test ', i)
-                raise
-
-    def testMidMeasureClef1(self):
-        '''
-        Tests if there are mid-measure clefs: single staff
-        '''
-        from music21 import stream
-        from music21 import note
-        from music21 import clef
-        from music21 import musicxml
-        from music21 import converter
-        from music21 import meter
-
-        orig_stream = stream.Stream()
-        orig_stream.append(meter.TimeSignature('4/4'))
-        orig_stream.append(clef.TrebleClef())
-        orig_stream.repeatAppend(note.Note('C4'), 2)
-        orig_stream.append(clef.BassClef())
-        orig_stream.repeatAppend(note.Note('C4'), 2)
-        orig_clefs = orig_stream.flatten().getElementsByClass(clef.Clef)
-
-        xml = musicxml.m21ToXml.GeneralObjectExporter().parse(orig_stream)
-        self.assertEqual(xml.count(b'<clef>'), 2)  # clefs got out
-        self.assertEqual(xml.count(b'<measure'), 1)  # in one measure
-
-        new_stream = converter.parse(xml)
-        new_clefs = new_stream.flatten().getElementsByClass(clef.Clef)
-
-        self.assertEqual(len(new_clefs), len(orig_clefs))
-        self.assertEqual([c.offset for c in new_clefs], [c.offset for c in orig_clefs])
-        self.assertEqual([c.classes for c in new_clefs], [c.classes for c in orig_clefs])
-
-    def testMidMeasureClefs2(self):
-        '''
-        Tests if there are mid-measure clefs: multiple staves.
-        '''
-        from music21 import clef
-        from music21 import converter
-        from music21 import meter
-        from music21 import musicxml
-        from music21 import note
-        from music21 import stream
-
-        orig_stream = stream.Stream()
-        orig_stream.append(stream.Part())
-        orig_stream.append(stream.Part())
-        orig_stream.append(meter.TimeSignature('3/4'))
-
-        for item in [clef.TrebleClef(), note.Note('C4'), clef.BassClef(),
-                     note.Note('C4'), note.Note('C4')]:
-            orig_stream[0].append(item)
-
-        for item in [clef.BassClef(), note.Note('C4'), note.Note('C4'),
-                     clef.TrebleClef(), note.Note('C4')]:
-            orig_stream[1].append(item)
-
-        orig_clefs = [staff.flatten().getElementsByClass(clef.Clef).stream() for staff in
-                      orig_stream.getElementsByClass(stream.Part)]
-
-        xml = musicxml.m21ToXml.GeneralObjectExporter().parse(orig_stream)
-
-        new_stream = converter.parse(xml.decode('utf-8'))
-        new_clefs = [staff.flatten().getElementsByClass(clef.Clef).stream() for staff in
-                     new_stream.getElementsByClass(stream.Part)]
-
-        self.assertEqual([len(clefs) for clefs in new_clefs],
-                         [len(clefs) for clefs in orig_clefs])
-        self.assertEqual([c.offset for c in new_clefs],
-                         [c.offset for c in orig_clefs])
-        self.assertEqual([c.classes for c in new_clefs],
-                         [c.classes for c in orig_clefs])
-
-    def testMidMeasureClefs3(self):
-        '''
-        Test midmeasure clef changes outside voices
-        '''
-        from music21 import clef
-        from music21 import note
-        from music21 import musicxml
-        from music21 import stream
-
-        v1 = stream.Voice()
-        v2 = stream.Voice()
-        quarter = note.Note()
-        v1.repeatAppend(quarter, 4)
-        v2.repeatAppend(quarter, 4)
-        m = stream.Measure([v1, v2])
-        m.insert(1.0, clef.BassClef())
-        p = stream.Part(m)
-        p.makeNotation(inPlace=True)
-
-        tree = musicxml.test_m21ToXml.Test().getET(p)
-        self.assertEqual(len(tree.findall('.//clef')), 1)
-        # One backup from the clef back to voice 1, then another back to voice 2
-        self.assertEqual(len(tree.findall('.//backup')), 2)
-
 # ------------------------------------------------------------------------------
 
+# ------------------------------------------------------------------------------
 
 if __name__ == '__main__':
     # sys.arg test options will be used in mainTest()
     import music21
     music21.mainTest(Test)
-

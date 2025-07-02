@@ -15,20 +15,15 @@ etc. such that precise positioning information, layout, size, etc. can be specif
 from __future__ import annotations
 
 import typing as t
-import unittest
-
 from music21 import common
 from music21 import exceptions21
 from music21.prebase import ProtoM21Object
 
-
 if t.TYPE_CHECKING:
     from music21 import editorial
 
-
 class TextFormatException(exceptions21.Music21Exception):
     pass
-
 
 class Enclosure(common.StrEnum):
     RECTANGLE = 'rectangle'
@@ -46,7 +41,6 @@ class Enclosure(common.StrEnum):
     DECAGON = 'decagon'
     INVERTED_BRACKET = 'inverted-bracket'
     NO_ENCLOSURE = 'none'
-
 
 class Style(ProtoM21Object):
     '''
@@ -103,7 +97,6 @@ class Style(ProtoM21Object):
         self.dashLength: float|int|None = None
         self.spaceLength: float|int|None = None
 
-
     @property
     def enclosure(self) -> Enclosure|None:
         '''
@@ -145,7 +138,6 @@ class Style(ProtoM21Object):
         Traceback (most recent call last):
         music21.style.TextFormatException:
             Not a supported enclosure: 'parabola'
-
 
         OMIT_FROM_DOCS
 
@@ -226,7 +218,6 @@ class Style(ProtoM21Object):
             Not a supported absoluteY position: 'hello'
         ''')
 
-
 class NoteStyle(Style):
     '''
     A Style object that also includes stem and accidental style information.
@@ -279,7 +270,6 @@ class NoteStyle(Style):
         self.stemStyle: Style|None = None
         self.accidentalStyle: Style|None = None
         self.noteSize: str|None = None  # can be 'cue' etc.
-
 
 class TextStyle(Style):
     '''
@@ -365,7 +355,6 @@ class TextStyle(Style):
         music21.style.TextFormatException:
             Invalid horizontal align: 'hello'
         ''')
-
 
     @property
     def justify(self) -> str|None:
@@ -533,7 +522,6 @@ class TextStyle(Style):
         else:
             self._fontFamily = [f.strip() for f in newFamily.split(',')]
 
-
 class TextStylePlacement(TextStyle):
     '''
     TextStyle plus a placement attribute
@@ -542,7 +530,6 @@ class TextStylePlacement(TextStyle):
     def __init__(self):
         super().__init__()
         self.placement = None
-
 
 class BezierStyle(Style):
     '''
@@ -559,7 +546,6 @@ class BezierStyle(Style):
         self.bezierY = None
         self.bezierX2 = None
         self.bezierY2 = None
-
 
 class LineStyle(Style):
     '''
@@ -578,7 +564,6 @@ class LineStyle(Style):
         self.lineType = None
         self.dashLength = None
         self.spaceLength = None
-
 
 class StreamStyle(Style):
     '''
@@ -605,7 +590,6 @@ class StreamStyle(Style):
         self.measureNumbering = None
         self.measureNumberStyle = None
 
-
 class BeamStyle(Style):
     '''
     Style for beams
@@ -614,7 +598,6 @@ class BeamStyle(Style):
     def __init__(self):
         super().__init__()
         self.fan = None
-
 
 class StyleMixin(common.SlottedObjectMixin):
     '''
@@ -742,12 +725,4 @@ class StyleMixin(common.SlottedObjectMixin):
     def editorial(self, ed: editorial.Editorial):
         self._editorial = ed
 
-
-class Test(unittest.TestCase):
-    pass
-
-
-if __name__ == '__main__':
-    import music21
-    music21.mainTest(Test)  # , runTest='')
-
+# , runTest='')

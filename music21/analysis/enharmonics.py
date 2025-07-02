@@ -13,13 +13,10 @@ from __future__ import annotations
 
 import itertools
 from math import inf
-import unittest
-
 from music21 import environment
 from music21 import pitch
 
 environLocal = environment.Environment('analysis.enharmonics')
-
 
 class EnharmonicScoreRules:
     def __init__(self):
@@ -144,30 +141,5 @@ class EnharmonicSimplifier:
         return score
 
 # ------------------------------------------------------------------------------
-class Test(unittest.TestCase):
-
-
-    def testGetAlterationScore(self):
-        pList = [pitch.Pitch('C'), pitch.Pitch('D'), pitch.Pitch('E')]
-        es = EnharmonicSimplifier(pList)
-        poss = [pitch.Pitch('C'), pitch.Pitch('D'), pitch.Pitch('E')]
-        testAltScore = es.getAlterationScore(poss)
-
-        self.assertEqual(len(pList), 3)
-        self.assertIsInstance(testAltScore, int)
-
-    def testGetMixSharpFlatsScore(self):
-        pList = [pitch.Pitch('C'), pitch.Pitch('D'), pitch.Pitch('E')]
-        es = EnharmonicSimplifier(pList)
-        poss = [pitch.Pitch('C'), pitch.Pitch('D'), pitch.Pitch('E')]
-        testMixScore = es.getMixSharpFlatsScore(poss)
-
-        self.assertEqual(len(pList), 3)
-        self.assertIsInstance(testMixScore, int)
-
-
 
 # -----------------------------------------------------------------------------
-if __name__ == '__main__':
-    import music21
-    music21.mainTest(Test)

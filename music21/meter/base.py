@@ -21,8 +21,6 @@ import copy
 import fractions
 from math import gcd
 import typing as t
-import unittest
-
 from music21 import base
 from music21 import beam
 from music21 import common
@@ -255,7 +253,6 @@ def bestTimeSignature(meas: stream.Stream) -> 'music21.meter.TimeSignature':
         ts.load(f'{numerator}/{denominator}')
         return ts
 
-
 # -----------------------------------------------------------------------------
 class TimeSignatureBase(base.Music21Object):
     '''
@@ -411,11 +408,9 @@ class TimeSignature(TimeSignatureBase):
     >>> sixEight.symbol
     ''
 
-
     For complete details on using this object, see
     :ref:`User's Guide Chapter 14: Time Signatures <usersGuide_14_timeSignatures>` and
     :ref:`User's Guide Chapter 55: Advanced Meter <usersGuide_55_advancedMeter>` and
-
 
     That's it for the simple aspects of `TimeSignature` objects.  You know
     enough to get started now!
@@ -695,14 +690,12 @@ class TimeSignature(TimeSignatureBase):
         (for complex TimeSignatures, note that this comes from the .beamSequence
         of the TimeSignature)
 
-
         >>> ts = meter.TimeSignature('3/4')
         >>> ts.numerator
         3
         >>> ts.numerator = 5
         >>> ts
         <music21.meter.TimeSignature 5/4>
-
 
         In this case, the TimeSignature is silently being converted to 9/8
         to get a single digit numerator:
@@ -726,7 +719,6 @@ class TimeSignature(TimeSignatureBase):
         newRatioString = str(value) + '/' + str(denominator)
         self.resetValues(newRatioString)
 
-
     @property
     def denominator(self):
         '''
@@ -741,7 +733,6 @@ class TimeSignature(TimeSignatureBase):
         >>> ts.denominator = 8
         >>> ts.ratioString
         '3/8'
-
 
         In this following case, the TimeSignature is silently being converted to 9/8
         to get a single digit denominator:
@@ -1697,7 +1688,6 @@ class TimeSignature(TimeSignatureBase):
         returns a float of the average beat strength of all objects (or if notesOnly is True
         [default] only the notes) in the `Stream` specified as streamIn.
 
-
         >>> s = converter.parse('C4 D4 E8 F8', format='tinyNotation').flatten().notes.stream()
         >>> sixEight = meter.TimeSignature('6/8')
         >>> sixEight.averageBeatStrength(s)
@@ -1888,10 +1878,8 @@ class TimeSignature(TimeSignatureBase):
         it will work for asymmetrical meters, as the second
         example shows.
 
-
         Ex. 1: beat duration for 3/4 is always 1.0
         no matter where in the meter you query.
-
 
         >>> ts1 = meter.TimeSignature('3/4')
         >>> ts1.getBeatDuration(0.5)
@@ -1899,19 +1887,15 @@ class TimeSignature(TimeSignatureBase):
         >>> ts1.getBeatDuration(2.5)
         <music21.duration.Duration 1.0>
 
-
         Ex. 2: same for 6/8:
-
 
         >>> ts2 = meter.TimeSignature('6/8')
         >>> ts2.getBeatDuration(2.5)
         <music21.duration.Duration 1.5>
 
-
         Ex. 3: but for a compound meter of 3/8 + 2/8,
         where you ask for the beat duration
         will determine the length of the beat:
-
 
         >>> ts3 = meter.TimeSignature('3/8+2/8')  # will partition as 2 beat
         >>> ts3.getBeatDuration(0.5)
@@ -1924,7 +1908,6 @@ class TimeSignature(TimeSignatureBase):
     def getOffsetFromBeat(self, beat):
         '''
         Given a beat value, convert into an offset position.
-
 
         >>> ts1 = meter.TimeSignature('3/4')
         >>> ts1.getOffsetFromBeat(1)
@@ -1975,7 +1958,6 @@ class TimeSignature(TimeSignatureBase):
         >>> ts3.getOffsetFromBeat(2.5)
         2.0
 
-
         Let's try this on a real piece, a 4/4 chorale with a one beat pickup.  Here we get the
         normal offset for beat 4 from the active TimeSignature, but we subtract out
         the pickup length which is in a `Measure`'s :attr:`~music21.stream.Measure.paddingLeft`
@@ -2025,7 +2007,6 @@ class TimeSignature(TimeSignatureBase):
         (2, 0.0)
         >>> a.getBeatProgress(2.5)
         (3, 0.5)
-
 
         Works for specifically partitioned meters too:
 
@@ -2126,7 +2107,6 @@ class TimeSignature(TimeSignatureBase):
         '''
         return self.beatSequence.offsetToDepth(qLenPos, align)
 
-
 # -----------------------------------------------------------------------------
 class SenzaMisuraTimeSignature(TimeSignatureBase):
     '''
@@ -2152,27 +2132,12 @@ class SenzaMisuraTimeSignature(TimeSignatureBase):
         else:
             return str(self.text)
 
-
 # TODO: Implement or delete
 # class NonPowerOfTwoTimeSignature(TimeSignature):
 #     pass
 # class AutoAdjustTimeSignature(TimeSignature):
 #     automatically adjusts to fit its measure context.
 
-class Test(unittest.TestCase):
-    '''
-    All other tests moved to meter.tests
-    '''
-    def testCopyAndDeepcopy(self):
-        from music21.test.commonTest import testCopyAll
-        testCopyAll(self, globals())
-
-
 # -----------------------------------------------------------------------------
 # define presented order in documentation
 _DOC_ORDER = [TimeSignature]
-
-
-if __name__ == '__main__':
-    import music21
-    music21.mainTest()

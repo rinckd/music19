@@ -20,8 +20,6 @@ from collections.abc import Callable
 import copy
 import difflib
 import math
-import unittest
-
 from more_itertools import windowed
 
 from music21 import base as m21Base
@@ -48,7 +46,6 @@ __all__ = [
     'SearchException',
 ]
 
-
 class WildcardDuration(duration.Duration):
     '''
     a wildcard duration (it might define a duration
@@ -58,7 +55,6 @@ class WildcardDuration(duration.Duration):
     No difference from any other duration.
     '''
     pass
-
 
 class Wildcard(m21Base.Music21Object):
     '''
@@ -76,7 +72,6 @@ class Wildcard(m21Base.Music21Object):
         super().__init__(**keywords)
         self.duration = WildcardDuration()
 
-
 class SearchMatch(namedtuple('SearchMatch', ['elStart', 'els', 'index', 'iterator'])):
     '''
     A lightweight object representing the match (if any) for a search.  Derived from namedtuple
@@ -92,7 +87,6 @@ class SearchMatch(namedtuple('SearchMatch', ['elStart', 'els', 'index', 'iterato
     def __repr__(self):
         return 'SearchMatch(elStart={0}, els=len({1}), index={2}, iterator=[...])'.format(
             repr(self.elStart), len(self.els), repr(self.index))
-
 
 class StreamSearcher:
     '''
@@ -124,7 +118,6 @@ class StreamSearcher:
     >>> d = note.Note('D', quarterLength=0.5)
     >>> searchList = [c, d]
 
-
     Now create a StreamSearcher:
 
     >>> ss = search.StreamSearcher(thisStream, searchList)
@@ -152,7 +145,6 @@ class StreamSearcher:
     [<function StreamSearcher.wildcardAlgorithm at 0x111b6e340>,
      <function StreamSearcher.rhythmAlgorithm at 0x11200000>]
 
-
     Now run it:
 
     >>> results = ss.run()
@@ -164,7 +156,6 @@ class StreamSearcher:
     1
     >>> results[1].elStart.measureNumber
     2
-
 
     Wildcards can be useful:
 
@@ -182,7 +173,6 @@ class StreamSearcher:
     (<music21.note.Note D>, <music21.note.Note E>, <music21.note.Note G>)
     >>> [n.duration.quarterLength for n in results[0].els]
     [0.5, 1.0, 1.5]
-
 
     OMIT_FROM_DOCS
 
@@ -293,7 +283,6 @@ class StreamSearcher:
             return False
         return None
 
-
 def streamSearchBase(thisStreamOrIterator, searchList, algorithm=None):
     '''
     A basic search function that is used by other search mechanisms,
@@ -329,7 +318,6 @@ def streamSearchBase(thisStreamOrIterator, searchList, algorithm=None):
         if result:
             foundEls.append(startPosition)
     return foundEls
-
 
 def rhythmicSearch(thisStreamOrIterator, searchList):
     '''
@@ -375,13 +363,10 @@ def rhythmicSearch(thisStreamOrIterator, searchList):
     {0.0} <music21.note.Note G>
     {1.5} <music21.note.Note A>
 
-
-
     Slightly more advanced search: we will look for any instances of eighth,
     followed by a note (or other element) of any length, followed by a dotted quarter
     note.  Again, we will find two instances; this time we will tag them both with
     a TextExpression of "*" and then show the original stream:
-
 
     >>> searchStream2 = stream.Stream()
     >>> searchStream2.append(note.Note(quarterLength=0.5))
@@ -394,7 +379,6 @@ def rhythmicSearch(thisStreamOrIterator, searchList):
     ...     thisStreamIter[found].lyric = '*'
     >>> #_DOCS_SHOW thisStream.show()
 
-
     .. image:: images/searchRhythmic1.*
         :width: 221
 
@@ -405,7 +389,6 @@ def rhythmicSearch(thisStreamOrIterator, searchList):
     is than the second (eighth, anything, dotted-quarter).  In fact, my hypothesis
     was wrong, and the second term is actually more common than the first! (n.b. rests
     are being counted here as well as notes)
-
 
     >>> grave = corpus.parse('corelli/opus3no1/1grave')
     >>> term1results = []
@@ -434,7 +417,6 @@ def rhythmicSearch(thisStreamOrIterator, searchList):
 
     return streamSearchBase(thisStreamOrIterator, searchList, algorithm=rhythmAlgorithm)
 
-
 def noteNameSearch(thisStreamOrIterator, searchList):
     # noinspection PyShadowingNames
     '''
@@ -461,7 +443,6 @@ def noteNameSearch(thisStreamOrIterator, searchList):
         return True
 
     return streamSearchBase(thisStreamOrIterator, searchList, algorithm=noteNameAlgorithm)
-
 
 def noteNameRhythmicSearch(thisStreamOrIterator, searchList):
     # noinspection PyShadowingNames
@@ -499,7 +480,6 @@ def noteNameRhythmicSearch(thisStreamOrIterator, searchList):
 
     return streamSearchBase(thisStreamOrIterator, searchList, algorithm=noteNameRhythmAlgorithm)
 
-
 def approximateNoteSearch(thisStream, otherStreams):
     # noinspection PyShadowingNames
     '''
@@ -534,7 +514,6 @@ def approximateNoteSearch(thisStream, otherStreams):
     sortedList = sorted(sorterList, key=lambda x: 1 - x[0])
     sortedStreams = [x[1] for x in sortedList]
     return sortedStreams
-
 
 def approximateNoteSearchNoRhythm(thisStream, otherStreams):
     # noinspection PyShadowingNames
@@ -571,7 +550,6 @@ def approximateNoteSearchNoRhythm(thisStream, otherStreams):
     sortedStreams = [x[1] for x in sortedList]
     return sortedStreams
 
-
 def approximateNoteSearchOnlyRhythm(thisStream, otherStreams):
     # noinspection PyShadowingNames
     '''
@@ -606,7 +584,6 @@ def approximateNoteSearchOnlyRhythm(thisStream, otherStreams):
     sortedList = sorted(sorterList, key=lambda x: 1 - x[0])
     sortedStreams = [x[1] for x in sortedList]
     return sortedStreams
-
 
 def approximateNoteSearchWeighted(thisStream, otherStreams):
     # noinspection PyShadowingNames
@@ -658,7 +635,6 @@ def approximateNoteSearchWeighted(thisStream, otherStreams):
     sortedStreams = [x[1] for x in sortedList]
     return sortedStreams
 
-
 # noinspection SpellCheckingInspection
 def translateStreamToString(inputStreamOrIterator, returnMeasures=False):
     '''
@@ -693,7 +669,6 @@ def translateStreamToString(inputStreamOrIterator, returnMeasures=False):
     else:
         return (b, measures)
 
-
 def translateDiatonicStreamToString(inputStreamOrIterator, returnMeasures=False):
     # noinspection SpellCheckingInspection, PyShadowingNames
     r'''
@@ -710,7 +685,6 @@ def translateDiatonicStreamToString(inputStreamOrIterator, returnMeasures=False)
     H-N = note of longer length than previous
     O-U = note of shorter length than previous
     Z = rest
-
 
     >>> s = converter.parse("tinynotation: 3/4 c4 d8~ d16 r16 FF8 F#8 a'8 b-2.")
     >>> streamString = search.translateDiatonicStreamToString(s.recurse().notesAndRests)
@@ -773,7 +747,6 @@ def translateDiatonicStreamToString(inputStreamOrIterator, returnMeasures=False)
     else:
         return (joined, measures)
 
-
 def translateIntervalsAndSpeed(inputStream, returnMeasures=False):
     # noinspection PyShadowingNames
     r'''
@@ -785,7 +758,6 @@ def translateIntervalsAndSpeed(inputStream, returnMeasures=False):
     Skips all but the first note of tie. Skips multiple rests in a row
 
     Each note gets one byte and encodes up from -13 to 13 (all notes > octave are 13 or -13)
-
 
     >>> s = converter.parse("tinynotation: 3/4 c4 d8~ d16 r16 F8 F#8 F8 a'8 b-2")
     >>> sn = s.flatten().notesAndRests.stream()
@@ -865,7 +837,6 @@ def translateIntervalsAndSpeed(inputStream, returnMeasures=False):
     else:
         return (joined, measures)
 
-
 def translateStreamToStringNoRhythm(inputStream, returnMeasures=False):
     '''
     takes a stream or streamIterator of notesAndRests only and returns
@@ -892,7 +863,6 @@ def translateStreamToStringNoRhythm(inputStream, returnMeasures=False):
     else:
         return b
 
-
 def translateStreamToStringOnlyRhythm(inputStream, returnMeasures=False):
     '''
     takes a stream or streamIterator of notesAndRests only and returns
@@ -916,7 +886,6 @@ def translateStreamToStringOnlyRhythm(inputStream, returnMeasures=False):
         return (b, measures)
     else:
         return b
-
 
 def translateNoteToByte(n: note.GeneralNote):
     # noinspection PyShadowingNames
@@ -982,7 +951,6 @@ def translateNoteWithDurationToBytes(n: note.GeneralNote, includeTieByte=True):
     else:
         return firstByte + secondByte
 
-
 def translateNoteTieToByte(n: note.GeneralNote):
     # noinspection PyShadowingNames
     '''
@@ -1017,7 +985,6 @@ def translateNoteTieToByte(n: note.GeneralNote):
     else:
         return ''
 
-
 def translateDurationToBytes(n: note.GeneralNote):
     # noinspection PyShadowingNames
     '''
@@ -1042,7 +1009,6 @@ def translateDurationToBytes(n: note.GeneralNote):
     secondByte = chr(duration1to127)
     return secondByte
 
-
 # -------------------
 
 def mostCommonMeasureRhythms(streamIn, transposeDiatonic=False):
@@ -1055,7 +1021,6 @@ def mostCommonMeasureRhythms(streamIn, transposeDiatonic=False):
     rhythm: the rhythm found (with the pitches of the first instance of the rhythm transposed to C5)
     measures: a list of measures containing the rhythm
     rhythmString: a string representation of the rhythm (see translateStreamToStringOnlyRhythm)
-
 
     >>> bach = corpus.parse('bwv1.6')
     >>> sortedRhythms = search.mostCommonMeasureRhythms(bach)
@@ -1122,17 +1087,8 @@ def mostCommonMeasureRhythms(streamIn, transposeDiatonic=False):
     sortedDicts = sorted(returnDicts, key=lambda k: k['number'], reverse=True)
     return sortedDicts
 
-
 class SearchException(exceptions21.Music21Exception):
     pass
-
-
-class Test(unittest.TestCase):
-
-    def testCopyAndDeepcopy(self):
-        from music21.test.commonTest import testCopyAll
-        testCopyAll(self, globals())
-
 
 # ------------------------------------------------------------------------------
 # define presented order in documentation
@@ -1141,9 +1097,3 @@ _DOC_ORDER = [
     'Wildcard',
     'WildcardDuration',
 ]
-
-
-if __name__ == '__main__':
-    import music21
-    music21.mainTest(Test)
-

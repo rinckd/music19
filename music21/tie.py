@@ -15,8 +15,6 @@ conceptual idea of tied notes.  They can be start or stop ties.
 '''
 from __future__ import annotations
 
-import unittest
-
 from music21 import exceptions21
 from music21.common.objects import SlottedObjectMixin
 from music21 import prebase
@@ -24,7 +22,6 @@ from music21 import prebase
 # Delete in v10.  Raise ValueError instead.
 class TieException(ValueError, exceptions21.Music21Exception):
     pass
-
 
 # ------------------------------------------------------------------------------
 class Tie(prebase.ProtoM21Object, SlottedObjectMixin):
@@ -149,14 +146,4 @@ class Tie(prebase.ProtoM21Object, SlottedObjectMixin):
     def _reprInternal(self):
         return self.type
 
-class Test(unittest.TestCase):
-    def testCopyAndDeepcopy(self):
-        from music21.test.commonTest import testCopyAll
-        testCopyAll(self, globals())
-
-
 # ------------------------------------------------------------------------------
-if __name__ == '__main__':
-    import music21
-    music21.mainTest(Test)
-

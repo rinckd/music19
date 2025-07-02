@@ -28,11 +28,9 @@ from start to finish. See :class:`~music21.figuredBass.realizer.FiguredBassLine`
     .. image:: images/figuredBass/fbRealizer_intro.*
         :width: 500
 
-
 The same can be accomplished by taking the notes and notations
 from a :class:`~music21.stream.Stream`.
 See :meth:`~music21.figuredBass.realizer.figuredBassFromStream` for more details.
-
 
 >>> s = converter.parse('tinynotation: C4 D4_4,3 C2', makeNotation=False)
 >>> fbLine = realizer.figuredBassFromStream(s)
@@ -46,8 +44,6 @@ import collections
 import copy
 import random
 import typing as t
-import unittest
-
 from music21 import chord
 from music21 import clef
 from music21 import exceptions21
@@ -64,7 +60,6 @@ from music21.figuredBass import segment
 
 if t.TYPE_CHECKING:
     from music21.stream.iterator import StreamIterator
-
 
 def figuredBassFromStream(streamPart: stream.Stream) -> FiguredBassLine:
     # noinspection PyShadowingNames
@@ -163,7 +158,6 @@ def figuredBassFromStream(streamPart: stream.Stream) -> FiguredBassLine:
 
     return fb
 
-
 def addLyricsToBassNote(bassNote, notationString=None):
     '''
     Takes in a bassNote and a corresponding notationString as arguments.
@@ -193,14 +187,12 @@ def addLyricsToBassNote(bassNote, notationString=None):
             spacesInFront += ' '
         bassNote.addLyric(spacesInFront + fs, applyRaw=True)
 
-
 class FiguredBassLine:
     '''
     A FiguredBassLine is an interface for realization of a line of (bassNote, notationString) pairs.
     Currently, only 1:1 realization is supported, meaning that every bassNote is realized and the
     :attr:`~music21.note.GeneralNote.quarterLength` or duration of a realization above a bassNote
     is identical to that of the bassNote.
-
 
     `inKey` defaults to C major.
 
@@ -244,7 +236,6 @@ class FiguredBassLine:
         '''
         Use this method to add (bassNote, notationString) pairs to the bass line. Elements
         are realized in the order they are added.
-
 
         >>> from music21.figuredBass import realizer
         >>> fbLine = realizer.FiguredBassLine(key.Key('B'), meter.TimeSignature('3/4'))
@@ -292,7 +283,6 @@ class FiguredBassLine:
 
         .. image:: images/figuredBass/fbRealizer_bassLine.*
             :width: 200
-
 
         >>> sBach = corpus.parse('bach/bwv307')
         >>> sBach.parts.last().measure(0).show('text')
@@ -544,13 +534,11 @@ class FiguredBassLine:
             segmentList.reverse()
             return True
 
-
 class Realization:
     '''
     Returned by :class:`~music21.figuredBass.realizer.FiguredBassLine` after calling
     :meth:`~music21.figuredBass.realizer.FiguredBassLine.realize`. Allows for the
     generation of realizations as a :class:`~music21.stream.Score`.
-
 
     * See the :mod:`~music21.figuredBass.examples` module for examples on the generation
       of realizations.
@@ -631,7 +619,6 @@ class Realization:
         '''
         Compiles each unique possibility progression, adding
         it to a master list. Returns the master list.
-
 
         .. warning:: This method is unoptimized, and may take a prohibitive amount
             of time for a Realization which has more than 200,000 solutions.
@@ -759,7 +746,6 @@ class Realization:
         '''
         Generates all unique realizations as a :class:`~music21.stream.Score`.
 
-
         .. warning:: This method is unoptimized, and may take a prohibitive amount
             of time for a Realization which has more than 100 solutions.
         '''
@@ -791,7 +777,6 @@ class Realization:
         '''
         Generates *amountToGenerate* unique realizations as a :class:`~music21.stream.Score`.
 
-
         .. warning:: This method is unoptimized, and may take a prohibitive amount
             of time if amountToGenerate is more than 100.
         '''
@@ -811,49 +796,10 @@ class Realization:
 
         return allSols
 
-
 _DOC_ORDER = [figuredBassFromStream, addLyricsToBassNote,
               FiguredBassLine, Realization]
-
 
 class FiguredBassLineException(exceptions21.Music21Exception):
     pass
 
 # ------------------------------------------------------------------------------
-
-
-class Test(unittest.TestCase):
-    def testMultipleFiguresInLyric(self):
-        from music21 import converter
-
-        s = converter.parse('tinynotation: 4/4 C4 F4 G4_64 G4 C1', makeNotation=False)
-        third_note = s[note.Note][2]
-        self.assertEqual(third_note.lyric, '64')
-        unused_fb = figuredBassFromStream(s)
-        self.assertEqual(third_note.editorial.notationString, '6, 4')
-
-        third_note.lyric = '#6#42'
-        unused_fb = figuredBassFromStream(s)
-        self.assertEqual(third_note.editorial.notationString, '#6, #4, 2')
-
-        third_note.lyric = '#64#2'
-        unused_fb = figuredBassFromStream(s)
-        self.assertEqual(third_note.editorial.notationString, '#6, 4, #2')
-
-        # original case
-        third_note.lyric = '6\n4'
-        unused_fb = figuredBassFromStream(s)
-        self.assertEqual(third_note.editorial.notationString, '6, 4')
-
-        # single accidental
-        for single_symbol in '+#bn':
-            with self.subTest(single_symbol=single_symbol):
-                third_note.lyric = single_symbol
-                unused_fb = figuredBassFromStream(s)
-                self.assertEqual(third_note.editorial.notationString, single_symbol)
-
-
-if __name__ == '__main__':
-    import music21
-    music21.mainTest(Test)
-

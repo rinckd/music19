@@ -25,14 +25,11 @@ arguments, the methods only :meth:`~music21.pitch.Pitch.transpose` each
 from __future__ import annotations
 
 import typing as t
-import unittest
-
 from music21 import exceptions21
 from music21 import chord
 from music21 import note
 from music21 import pitch
 from music21 import stream
-
 
 def augmentedSixthToDominant(
     augSixthPossib,
@@ -78,7 +75,6 @@ def augmentedSixthToDominant(
         .. image:: images/figuredBass/fbResolution_a6toV.*
             :width: 700
 
-
     Above: French, German, and Swiss resolutions, respectively.
     '''
     if augSixthChordInfo is None:
@@ -122,7 +118,6 @@ def augmentedSixthToDominant(
 
     return _resolvePitches(augSixthPossib, howToResolve)
 
-
 def augmentedSixthToMajorTonic(
     augSixthPossib,
     augSixthType: int | None = None,
@@ -131,7 +126,6 @@ def augmentedSixthToMajorTonic(
     '''
     Resolves French (augSixthType = 1), German (augSixthType = 2), and Swiss (augSixthType = 3)
     augmented sixth chords to the major tonic 6,4.
-
 
     Proper Italian augmented sixth resolutions not supported within this method.
 
@@ -161,7 +155,6 @@ def augmentedSixthToMajorTonic(
 
         .. image:: images/figuredBass/fbResolution_a6toI.*
             :width: 700
-
 
     Above: French, German, and Swiss resolutions, respectively.
     '''
@@ -208,7 +201,6 @@ def augmentedSixthToMajorTonic(
 
     return _resolvePitches(augSixthPossib, howToResolve)
 
-
 def augmentedSixthToMinorTonic(
     augSixthPossib,
     augSixthType: int | None = None,
@@ -246,7 +238,6 @@ def augmentedSixthToMinorTonic(
 
         .. image:: images/figuredBass/fbResolution_a6toIm.*
             :width: 700
-
 
     Above: French, German, and Swiss resolutions, respectively.
     '''
@@ -292,12 +283,10 @@ def augmentedSixthToMinorTonic(
 
     return _resolvePitches(augSixthPossib, howToResolve)
 
-
 def dominantSeventhToMajorTonic(domPossib, resolveV43toI6=False, domChordInfo=None):
     '''
     Resolves a dominant seventh chord in root position or any of its
     inversions to the major tonic, in root position or first inversion.
-
 
     The second inversion (4,3) dominant seventh chord can resolve to
     the tonic in either inversion. This is controlled by
@@ -366,13 +355,11 @@ def dominantSeventhToMajorTonic(domPossib, resolveV43toI6=False, domChordInfo=No
 
     return _resolvePitches(domPossib, howToResolve)
 
-
 def dominantSeventhToMinorTonic(domPossib, resolveV43toi6=False, domChordInfo=None):
     '''
     Resolves a dominant seventh chord in root position or any of its
     inversions to the minor tonic, in root position or first inversion,
     accordingly.
-
 
     The second inversion (4,3) dominant seventh chord can resolve to
     the tonic in either inversion. This is controlled by
@@ -440,7 +427,6 @@ def dominantSeventhToMinorTonic(domPossib, resolveV43toi6=False, domChordInfo=No
 
     return _resolvePitches(domPossib, howToResolve)
 
-
 def dominantSeventhToMajorSubmediant(domPossib, domChordInfo=None):
     '''
     Resolves a dominant seventh chord in root position to the
@@ -475,7 +461,6 @@ def dominantSeventhToMajorSubmediant(domPossib, domChordInfo=None):
                     (lambda p: p.name == seventh.name, '-M2')]
 
     return _resolvePitches(domPossib, howToResolve)
-
 
 def dominantSeventhToMinorSubmediant(domPossib, domChordInfo=None):
     '''
@@ -512,7 +497,6 @@ def dominantSeventhToMinorSubmediant(domPossib, domChordInfo=None):
 
     return _resolvePitches(domPossib, howToResolve)
 
-
 def dominantSeventhToMajorSubdominant(domPossib, domChordInfo=None):
     '''
     Resolves a dominant seventh chord in root position
@@ -546,7 +530,6 @@ def dominantSeventhToMajorSubdominant(domPossib, domChordInfo=None):
                     (lambda p: p.name == fifth.name, '-M2')]
 
     return _resolvePitches(domPossib, howToResolve)
-
 
 def dominantSeventhToMinorSubdominant(domPossib, domChordInfo=None):
     '''
@@ -582,12 +565,10 @@ def dominantSeventhToMinorSubdominant(domPossib, domChordInfo=None):
 
     return _resolvePitches(domPossib, howToResolve)
 
-
 def diminishedSeventhToMajorTonic(dimPossib, doubledRoot=False, dimChordInfo=None):
     '''
     Resolves a fully diminished seventh chord to the major tonic,
     in root position or either inversion.
-
 
     The resolution of the diminished seventh chord can have a
     doubled third (standard resolution) or a doubled root
@@ -628,12 +609,10 @@ def diminishedSeventhToMajorTonic(dimPossib, doubledRoot=False, dimChordInfo=Non
 
     return _resolvePitches(dimPossib, howToResolve)
 
-
 def diminishedSeventhToMinorTonic(dimPossib, doubledRoot=False, dimChordInfo=None):
     '''
     Resolves a fully diminished seventh chord to the minor tonic,
     in root position or either inversion.
-
 
     The resolution of the diminished seventh chord can have a
     doubled third (standard resolution) or a doubled root
@@ -674,7 +653,6 @@ def diminishedSeventhToMinorTonic(dimPossib, doubledRoot=False, dimChordInfo=Non
 
     return _resolvePitches(dimPossib, howToResolve)
 
-
 def diminishedSeventhToMajorSubdominant(dimPossib, dimChordInfo=None):
     '''
     Resolves a fully diminished seventh chord to the
@@ -707,7 +685,6 @@ def diminishedSeventhToMajorSubdominant(dimPossib, dimChordInfo=None):
 
     return _resolvePitches(dimPossib, howToResolve)
 
-
 def diminishedSeventhToMinorSubdominant(dimPossib, dimChordInfo=None):
     '''
     Resolves a fully diminished seventh chord to the
@@ -739,7 +716,6 @@ def diminishedSeventhToMinorSubdominant(dimPossib, dimChordInfo=None):
 
     return _resolvePitches(dimPossib, howToResolve)
 
-
 def showResolutions(*allPossib):
     '''
     Takes in possibilities as arguments and adds them in order
@@ -763,10 +739,8 @@ def showResolutions(*allPossib):
 # ---------------------------------------------
 # INTERNAL METHODS
 
-
 def _transpose(samplePitch, intervalString):
     return samplePitch.transpose(intervalString)
-
 
 def _resolvePitches(possibToResolve, howToResolve) -> tuple[pitch.Pitch, ...]:
     '''
@@ -784,7 +758,6 @@ def _resolvePitches(possibToResolve, howToResolve) -> tuple[pitch.Pitch, ...]:
 
     return tuple(resPitches)
 
-
 def _unpackSeventhChord(
     seventhChord: chord.Chord
 ) -> list[pitch.Pitch|None]:
@@ -800,7 +773,6 @@ def _unpackSeventhChord(
     seventhChordInfo = [bass, root, third, fifth, seventh]
     return seventhChordInfo
 
-
 _DOC_ORDER = [augmentedSixthToDominant,
               augmentedSixthToMajorTonic, augmentedSixthToMinorTonic,
               dominantSeventhToMajorTonic, dominantSeventhToMinorTonic,
@@ -811,18 +783,7 @@ _DOC_ORDER = [augmentedSixthToDominant,
 
 # ------------------------------------------------------------------------------
 
-
 class ResolutionException(exceptions21.Music21Exception):
     pass
 
 # ------------------------------------------------------------------------------
-
-
-class Test(unittest.TestCase):
-    pass
-
-
-if __name__ == '__main__':
-    import music21
-    music21.mainTest(Test)
-

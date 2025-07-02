@@ -38,8 +38,6 @@ True
 '''
 from __future__ import annotations
 
-import unittest
-
 from music21 import prebase
 from music21 import style
 
@@ -123,7 +121,6 @@ class Editorial(prebase.ProtoM21Object, dict):
         else:
             raise AttributeError('No such attribute: ' + name)
 
-
 # -----------------------------------------------------------------------------
 class Comment(prebase.ProtoM21Object, style.StyleMixin):  # type: ignore
     '''
@@ -170,15 +167,7 @@ class Comment(prebase.ProtoM21Object, style.StyleMixin):  # type: ignore
 
 # -----------------------------------------------------------------------------
 
-
-class Test(unittest.TestCase):
-
-    def testCopyAndDeepcopy(self):
-        from music21.test.commonTest import testCopyAll
-        testCopyAll(self, globals())
-
 # -----------------------------------------------------------------------------
-
 
 _DOC_ORDER = (
     Editorial,

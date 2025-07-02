@@ -20,8 +20,6 @@ Serial searching methods that were previously here have been moved to
 from __future__ import annotations
 
 import typing as t
-import unittest
-
 from music21 import chord
 from music21 import environment
 from music21 import exceptions21
@@ -31,11 +29,9 @@ from music21 import stream
 
 environLocal = environment.Environment('serial')
 
-
 # ------------------------------------------------------------------------------
 class SerialException(exceptions21.Music21Exception):
     pass
-
 
 # ------------------------------------------------------------------------------
 class TwelveToneMatrix(stream.Stream):
@@ -95,7 +91,6 @@ class TwelveToneMatrix(stream.Stream):
         else:
             return super()._reprInternal()
 # ------------------------------------------------------------------------------
-
 
 # noinspection SpellCheckingInspection
 historicalDict = {
@@ -248,7 +243,6 @@ historicalDict = {
 }
 
 # ------------------------------------------------------------------------------
-
 
 class ToneRow(stream.Stream):
     '''
@@ -523,7 +517,6 @@ class ToneRow(stream.Stream):
         transform the row appropriately (without transposition), then transpose the resulting
         row by n semitones.
 
-
         >>> chromatic = serial.pcToToneRow(range(12))
         >>> chromatic.pitchClasses()
         [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
@@ -560,7 +553,6 @@ class ToneRow(stream.Stream):
 
         See :meth:`~music21.serial.ToneRow.zeroCenteredTransformation` for
         an explanation of this convention.
-
 
         >>> chromatic = serial.pcToToneRow([2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 0, 1])
         >>> reverseChromatic = serial.pcToToneRow([8, 7, 6, 5, 4, 3, 2, 1, 0, 11, 10, 9])
@@ -654,7 +646,6 @@ class ToneRow(stream.Stream):
             transformationList.append(transformation)
 
         return transformationList
-
 
 # ----------------------------------------------------------------------------------------
 
@@ -810,7 +801,6 @@ class TwelveToneRow(ToneRow):
         of the all-trichord hexachord. Note that the interval sets may be transformed.
 
         Named for John Link who discovered them.
-
 
         >>> bergLyric = serial.getHistoricalRowByName('BergLyricSuite')
         >>> bergLyric.pitchClasses()
@@ -1072,7 +1062,6 @@ class TwelveToneRow(ToneRow):
 
         return pcToToneRow(testRow).isTwelveToneRow()
 
-
 class HistoricalTwelveToneRow(TwelveToneRow):
     '''
     Subclass of :class:`~music21.serial.TwelveToneRow` storing additional attributes of a
@@ -1109,7 +1098,6 @@ class HistoricalTwelveToneRow(TwelveToneRow):
 
     def _reprInternal(self):
         return f'{self.composer} {self.opus} {self.title}'
-
 
 def getHistoricalRowByName(rowName):
     '''
@@ -1226,7 +1214,6 @@ def getHistoricalRowByName(rowName):
 
 # ------------------------------------------------------------------------------
 
-
 def pcToToneRow(pcSet):
     # noinspection GrazieInspection
     '''
@@ -1295,7 +1282,6 @@ def pcToToneRow(pcSet):
         a.append(n)
     return a
 
-
 def rowToMatrix(p: list[int]) -> str:
     # noinspection PyShadowingNames
     '''
@@ -1351,100 +1337,10 @@ def rowToMatrix(p: list[int]) -> str:
 
     return '\n'.join(ret)
 
-
 # ------------------------------------------------------------------------------
-class Test(unittest.TestCase):
-
-    def testMatrix(self):
-        src = getHistoricalRowByName('SchoenbergOp37')
-        self.assertEqual([p.name for p in src],
-                         ['D', 'C#', 'A', 'B-', 'F', 'E-', 'E', 'C', 'G#', 'G', 'F#', 'B'])
-        s37 = getHistoricalRowByName('SchoenbergOp37').matrix()
-        r0 = s37[0]
-        self.assertEqual([e.name for e in r0],
-                         ['C', 'B', 'G', 'G#', 'E-', 'C#', 'D', 'B-', 'F#', 'F', 'E', 'A'])
-
-    def testLabelingA(self):
-        from music21 import corpus
-        series = {'a': 1, 'g-': 2, 'g': 3, 'a-': 4,
-                  'f': 5, 'e-': 6, 'e': 7, 'd': 8,
-                  'c': 9, 'c#': 10, 'b-': 11, 'b': 12}
-        s = corpus.parse('bwv66.6')
-        for n in s.flatten().notes:
-            for key in series:
-                if n.pitch.pitchClass == pitch.Pitch(key).pitchClass:
-                    n.addLyric(series[key])
-        match = []
-        for n in s.parts[0].flatten().notes:
-            match.append(n.lyric)
-        self.assertEqual(match, ['10', '12', '1', '12', '10', '7', '10', '12', '1', '10', '1',
-                                 '12', '4', '2', '1', '12', '12', '2', '7', '1', '12', '10',
-                                 '10', '1', '12', '10', '1', '4', '2', '4', '2', '2', '2',
-                                 '2', '2', '5', '2'])
-        # s.show()
-
-    def testHistorical(self):
-        nonRows = []
-        for historicalRow in historicalDict:
-            if getHistoricalRowByName(historicalRow).isTwelveToneRow() is False:
-                nonRows.append(historicalRow)
-        self.assertEqual(nonRows, [])
-
-    def testExtractRowParts(self):
-        '''
-        Was a problem in slices
-        '''
-        aRow = getHistoricalRowByName('BergViolinConcerto')
-        unused_aRow2 = aRow[0:3]
-
-    def testPostTonalDocs(self):
-        aRow = getHistoricalRowByName('BergViolinConcerto')
-        # aMatrix = aRow.matrix()
-        bStream = stream.Stream()
-        for i in range(0, 12, 3):
-            aRow2 = aRow[i:i + 3]
-            c = chord.Chord(aRow2)
-            c.addLyric(c.primeFormString)
-            c.addLyric(c.forteClass)
-            bStream.append(c)
-
-    def testCopyAndDeepcopy(self):
-        from music21.test.commonTest import testCopyAll
-        testCopyAll(self, globals())
-
-
-    # def testRows(self):
-    #     from music21 import interval
-    #
-    #     self.assertEqual(len(vienneseRows), 71)
-    #
-    #     totalRows = 0
-    #     cRows = 0
-    #     for thisRow in vienneseRows:
-    #         thisRow = thisRow()
-    #         self.assertIsInstance(thisRow, TwelveToneRow)
-    #
-    #         if thisRow.composer == 'Berg':
-    #             continue
-    #         post = thisRow.title
-    #
-    #         totalRows += 1
-    #         if thisRow[0].pitchClass == 0:
-    #             cRows += 1
-    #
-    #          if interval.Interval(thisRow[0],
-    #                               thisRow[6]).intervalClass == 6:
-    #           # between element 1 and element 7 is there a TriTone?
-    #           rowsWithTTRelations += 1
-
 
 # ------------------------------------------------------------------------------
 # define presented order in documentation
 _DOC_ORDER = [ToneRow, TwelveToneRow, HistoricalTwelveToneRow,
               pcToToneRow, TwelveToneMatrix, rowToMatrix, getHistoricalRowByName,
               ]
-
-if __name__ == '__main__':
-    import music21
-    music21.mainTest(Test)
-

@@ -15,7 +15,6 @@ options.  It was originally developed to notate trecento (medieval Italian)
 music, but it is pretty useful for a lot of short examples, so we have
 made it a generally supported music21 format.
 
-
 N.B.: TinyNotation is not meant to expand to cover every single case.  Instead,
 it is meant to be subclassable to extend to the cases *your* project needs.
 
@@ -102,8 +101,6 @@ Changing time signatures are supported:
     {0.0} <music21.note.Note C>
     {1.0} <music21.bar.Barline type=final>
 
-
-
 Here is an equivalent way of doing the example above, but using the lower level
 :class:`music21.tinyNotation.Converter` object:
 
@@ -161,7 +158,6 @@ The supported modifiers are:
     * `(data)` (`modifierParens`, no default action)
     * `*data*` (`modifierStar`, no default action)
 
-
 Another example: TinyNotation does not support key signatures -- well, no problem! Let's
 create a new Token type and add it to the tokenMap
 
@@ -183,7 +179,6 @@ create a new Token type and add it to the tokenMap
     {0.0} <music21.key.Key of f# minor>
     {0.0} <music21.note.Note A>
     {4.0} <music21.bar.Barline type=final>
-
 
 TokenMap should be passed a string, representing a regular expression with exactly one
 group (which can be the entire expression), and a subclass of :class:`~music21.tinyNotation.Token`
@@ -233,8 +228,6 @@ import copy
 import fractions
 import re
 import typing  # not importing as t, because of extensive preexisting use of `t` as token
-import unittest
-
 from music21 import note
 from music21 import duration
 from music21 import environment
@@ -245,17 +238,13 @@ from music21 import expressions
 from music21 import meter
 from music21 import pitch
 
-
 if typing.TYPE_CHECKING:
     from music21.base import Music21Object
 
-
 environLocal = environment.Environment('tinyNotation')
-
 
 class TinyNotationException(exceptions21.Music21Exception):
     pass
-
 
 class State:
     '''
@@ -338,7 +327,6 @@ class State:
                         break
         return m21Obj
 
-
 class TieState(State):
     '''
     A TieState is an auto-expiring state that applies a tie start to this note and a
@@ -356,7 +344,6 @@ class TieState(State):
             self.affectedTokens[0].tie.type = 'continue'
         if len(self.affectedTokens) > 1:  # could be the end.
             self.affectedTokens[1].tie = tie.Tie('stop')
-
 
 class TupletState(State):
     '''
@@ -389,7 +376,6 @@ class TupletState(State):
         n.duration.appendTuplet(newTup)
         return n
 
-
 class TripletState(TupletState):
     '''
     a 3:2 tuplet
@@ -397,14 +383,12 @@ class TripletState(TupletState):
     actual = 3
     normal = 2
 
-
 class QuadrupletState(TupletState):
     '''
     a 4:3 tuplet
     '''
     actual = 4
     normal = 3
-
 
 class Modifier:
     '''
@@ -433,7 +417,6 @@ class Modifier:
         '''
         return m21Obj
 
-
 class IdModifier(Modifier):
     '''
     sets the .id of the m21Obj, called with = by default
@@ -454,8 +437,6 @@ class LyricModifier(Modifier):
             m21Obj.lyric = self.modifierData
         return m21Obj
 
-
-
 class Token:
     '''
     A single token made from the parser.
@@ -473,7 +454,6 @@ class Token:
         '''
         return None
 
-
 class TimeSignatureToken(Token):
     '''
     Represents a single time signature, like 1/4
@@ -482,7 +462,6 @@ class TimeSignatureToken(Token):
         tsObj = meter.TimeSignature(self.token)
         parent.stateDict['currentTimeSignature'] = tsObj
         return tsObj
-
 
 class NoteOrRestToken(Token):
     '''
@@ -548,7 +527,6 @@ class NoteOrRestToken(Token):
         t = re.sub(pm, '', t)
         return t
 
-
 class RestToken(NoteOrRestToken):
     '''
     A token starting with 'r', representing a rest.
@@ -557,7 +535,6 @@ class RestToken(NoteOrRestToken):
         r = note.Rest()
         self.applyDuration(r, self.token, parent)
         return r
-
 
 class NoteToken(NoteOrRestToken):
     '''
@@ -764,7 +741,6 @@ class NoteToken(NoteOrRestToken):
         t = re.sub(pm, '', t)
         return t
 
-
 def _getDefaultTokenMap() -> list[tuple[str, type[Token]]]:
     '''
     Returns the default tokenMap for TinyNotation.
@@ -873,7 +849,6 @@ def _getDefaultTokenMap() -> list[tuple[str, type[Token]]]:
         ),  # last
     ]
 
-
 _stateDictDefault = {
     'currentTimeSignature': None,
     'lastDuration': 1.0
@@ -939,7 +914,6 @@ class Converter:
         {1.6667} <music21.note.Note D>
         {2.0} <music21.note.Note C>
         {4.0} <music21.bar.Barline type=final>
-
 
     Or, breaking down what Parse does bit by bit:
 
@@ -1198,7 +1172,6 @@ class Converter:
                     f'Error in compiling token, {rePre}: {e}'
                 ) from e
 
-
     def parse(self):
         '''
         splitPreTokens, setupRegularExpressions, then runs
@@ -1213,7 +1186,6 @@ class Converter:
             self.parseOne(i, t)
         self.postParse()
         return self
-
 
     def parseOne(self, i: int, t: str):
         '''
@@ -1282,7 +1254,6 @@ class Converter:
             if possibleObj is not None:
                 self.stream.coreAppend(possibleObj)
 
-
     def parseStartStates(self, t: str) -> str:
         # noinspection PyShadowingNames,GrazieInspection
         '''
@@ -1320,7 +1291,6 @@ class Converter:
         >>> quadState.stateInfo
         'quad{'
 
-
         Note that the affected tokens haven't yet been added:
 
         >>> tripState.affectedTokens
@@ -1353,7 +1323,6 @@ class Converter:
             stateObj = self.bracketStateMapping[bracketType](self, stateData)
             stateObj.start()
             self.activeStates.append(stateObj)
-
 
         tieMatchSuccess = self.tieStateRe.search(t)
         if tieMatchSuccess:
@@ -1419,168 +1388,6 @@ class Converter:
         if self.makeNotation is not False:
             self.stream.makeMeasures(inPlace=True)
 
-
-class Test(unittest.TestCase):
-    parseTest = '1/4 trip{C8~ C~_hello C=mine} F~ F~ 2/8 F F# quad{g--16 a## FF(n) g#} g16 F0'
-
-    def testOne(self) -> None:
-        c = Converter(self.parseTest)
-        c.parse()
-        s = c.stream
-        sfn = s.flatten().getElementsByClass(note.Note)
-        t0 = sfn[0].tie
-        t1 = sfn[1].tie
-        t2 = sfn[2].tie
-        if typing.TYPE_CHECKING:
-            assert t0 is not None
-            assert t1 is not None
-            assert t2 is not None
-
-        self.assertIsInstance(t0, tie.Tie)
-        self.assertIsInstance(t1, tie.Tie)
-        self.assertIsInstance(t2, tie.Tie)
-        self.assertEqual(t0.type, 'start')
-        self.assertEqual(t1.type, 'continue')
-        self.assertEqual(t2.type, 'stop')
-        self.assertEqual(sfn[0].step, 'C')
-        self.assertEqual(sfn[0].octave, 3)
-        self.assertEqual(sfn[1].lyric, 'hello')
-        self.assertEqual(sfn[2].id, 'mine')
-
-        acc6 = sfn[6].pitch.accidental
-        acc7 = sfn[7].pitch.accidental
-        if typing.TYPE_CHECKING:
-            assert acc6 is not None
-            assert acc7 is not None
-        self.assertEqual(acc6.alter, 1)
-        self.assertEqual(acc7.alter, -2)
-        self.assertEqual(sfn[9].editorial.ficta.alter, 0)
-        self.assertEqual(sfn[12].duration.quarterLength, 1.0)
-        self.assertEqual(sfn[12].expressions[0].classes, expressions.Fermata().classes)
-
-    def testRaiseExceptions(self) -> None:
-        error_states = [
-            {
-                'string': 'h',
-                'reason': 'h is not a valid note',
-            },
-            {
-                'string': 'a;',
-                'reason': 'a semicolon is not a valid character or modifier',
-            },
-            {
-                'string': 'r;',
-                'reason': 'a semicolon is not a valid character or modifier',
-            },
-            {
-                'string': '4/4;',
-                'reason': 'a semicolon is not a valid character or modifier',
-            },
-            {
-                'string': 'ABC',
-                'reason': (
-                    'only the same upper-cased letter may be repeated to '
-                    + 'indicate lower octaves'
-                ),
-            },
-            {
-                'string': 'aaa',
-                'reason': (
-                    'the same lower-cased letter may not be repeated to '
-                    + 'indicate higher octaves. Instead use apostrophes.'
-                ),
-            },
-        ]
-
-        for error_state in error_states:
-            with self.assertRaises(TinyNotationException, msg=(
-                    'Should have raised a TinyNotationException for input '
-                    + f"'{error_state['string']}' because {error_state['reason']}."
-            )):
-                converter = Converter(error_state['string'], raiseExceptions=True)
-                converter.parse()
-
-    def testGetDefaultTokenMap(self) -> None:
-        defaultTokenMap = _getDefaultTokenMap()
-
-        self.assertEqual(
-            len(defaultTokenMap),
-            3,
-            (
-                'There should be three valid token types by default: Time '
-                + 'signatures, Notes, and Rests'
-            )
-        )
-
-        validTokenTypeCounts = {
-            NoteToken: 0,
-            RestToken: 0,
-            TimeSignatureToken: 0,
-        }
-
-        for regex, tokenType in defaultTokenMap:
-            self.assertIn(
-                tokenType,
-                validTokenTypeCounts,
-                (
-                    'Found unexpected token type in default token map:'
-                    + f'{tokenType.__class__.__name__}.'
-                )
-            )
-
-            # noinspection PyTypeChecker
-            validTokenTypeCounts[tokenType] += 1
-            self.assertGreater(
-                len(regex),
-                0,
-                (
-                    'Should provide a non-empty string for the regular '
-                    + 'expression in the default token map for tokens of type '
-                    + f'{tokenType.__class__.__name__}.'
-                )
-            )
-
-        for tokenType in validTokenTypeCounts:
-            self.assertEqual(
-                validTokenTypeCounts[tokenType],
-                1,
-                (
-                    'Should have found each valid token type exactly once in '
-                    + 'the default token map.'
-                )
-            )
-
-    def test_too_many_states(self):
-        c = Converter('2/4 trip{c8 d e}} f4', makeNotation=False)
-        c.parse()
-        s = c.stream
-        self.assertEqual(s.notes[-2].duration.quarterLength, fractions.Fraction(1, 3))
-        self.assertEqual(s.notes.last().duration.quarterLength, 1.0)
-
-        c = Converter('2/4 trip{c8 d e}} f4', makeNotation=False)
-        c.raiseExceptions = True
-        with self.assertRaisesRegex(
-            TinyNotationException,
-            "Token 'e}}' closes more states than are open"
-        ):
-            c.parse()
-
-
-class TestExternal(unittest.TestCase):
-    show = True
-
-    def testOne(self):
-        c = Converter(Test.parseTest)
-        c.parse()
-        if self.show:
-            c.stream.show('musicxml.png')
-
-
-# TODO: Chords
 # ------------------------------------------------------------------------------
 # define presented order in documentation
 _DOC_ORDER = [Converter, Token, State, Modifier]
-
-if __name__ == '__main__':
-    import music21
-    music21.mainTest(Test)

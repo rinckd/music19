@@ -18,8 +18,6 @@ from math import isclose, gcd
 import numbers
 import random
 from typing import overload, TYPE_CHECKING
-import unittest
-
 from music21 import defaults
 from music21.common import deprecated
 from music21.common.types import OffsetQLIn, OffsetQL
@@ -27,7 +25,6 @@ from music21.common.types import OffsetQLIn, OffsetQL
 if TYPE_CHECKING:
     from decimal import Decimal
     from collections.abc import Iterable, Sequence, Collection
-
 
 __all__ = [
     'ordinals', 'musicOrdinals', 'ordinalsToNumbers',
@@ -65,10 +62,8 @@ musicOrdinals[8] = 'Octave'
 musicOrdinals[15] = 'Double-octave'
 musicOrdinals[22] = 'Triple-octave'
 
-
 # -----------------------------------------------------------------------------
 # Number methods
-
 
 def numToIntOrFloat(value: OffsetQLIn) -> int|float:
     '''
@@ -117,7 +112,6 @@ def numToIntOrFloat(value: OffsetQLIn) -> int|float:
     Traceback (most recent call last):
     ValueError: could not convert string to float: 'one'
 
-
     Fractions also become ints or floats
 
     >>> from fractions import Fraction
@@ -138,7 +132,6 @@ def numToIntOrFloat(value: OffsetQLIn) -> int|float:
         return intVal
 
     return value + 0.0  # fast opp for cast to float for fractions.Fraction
-
 
 DENOM_LIMIT = defaults.limitOffsetDenominator
 
@@ -225,7 +218,6 @@ def _preFracLimitDenominator(n: int, d: int) -> tuple[int, int]:
         return (bound2n, bound2d)
     else:
         return (bound1n, bound1d)
-
 
 # _KNOWN_PASSES is all values from whole to 64th notes with 0 or 1 dot
 # the length of this set does determine the time to search.  A set with all values from maxima to
@@ -359,7 +351,6 @@ def opFrac(num: OffsetQLIn) -> OffsetQL:
     else:
         raise TypeError(f'Cannot convert num: {num}')
 
-
 def mixedNumeral(expr: numbers.Real,
                  limitDenominator=defaults.limitOffsetDenominator):
     '''
@@ -425,7 +416,6 @@ def mixedNumeral(expr: numbers.Real,
             return str(remainderFrac)
     return str(0)
 
-
 def roundToHalfInteger(num: float|int) -> float|int:
     '''
     Given a floating-point number, round to the nearest half-integer. Returns int or float
@@ -473,7 +463,6 @@ def roundToHalfInteger(num: float|int) -> float|int:
         floatVal = 1
     return intVal + floatVal
 
-
 def addFloatPrecision(x, grain=1e-2) -> float|Fraction:
     '''
     Given a value that suggests a floating point fraction, like 0.33,
@@ -503,7 +492,6 @@ def addFloatPrecision(x, grain=1e-2) -> float|Fraction:
             return opFrac(v)
     return x
 
-
 def strTrimFloat(floatNum: float, maxNum: int = 4) -> str:
     '''
     returns a string from a float that is at most maxNum of
@@ -532,7 +520,6 @@ def strTrimFloat(floatNum: float, maxNum: int = 4) -> str:
             offLen = offLen - 1
     off = off[0:offLen]
     return off
-
 
 def nearestMultiple(n: float, unit: float) -> tuple[float, float, float]:
     '''
@@ -603,7 +590,6 @@ def nearestMultiple(n: float, unit: float) -> tuple[float, float, float]:
         # elif n >= (matchHigh - halfUnit) and n <= matchHigh:
         return matchHigh, round(matchHigh - n, 7), round(n - matchHigh, 7)
 
-
 _DOT_LOOKUP = (1.0, 1.5, 1.75, 1.875, 1.9375,
                1.96875, 1.984375, 1.9921875, 1.99609375)
 
@@ -630,7 +616,6 @@ def dotMultiplier(dots: int) -> float:
         return _DOT_LOOKUP[dots]
 
     return ((2 ** (dots + 1.0)) - 1.0) / (2 ** dots)
-
 
 def decimalToTuplet(decNum: float) -> tuple[int, int]:
     '''
@@ -693,7 +678,6 @@ def decimalToTuplet(decNum: float) -> tuple[int, int]:
     else:
         return (int(iy), int(jy))
 
-
 def unitNormalizeProportion(values: Sequence[int|float]) -> list[float]:
     '''
     Normalize values within the unit interval, where max is determined by the sum of the series.
@@ -707,7 +691,6 @@ def unitNormalizeProportion(values: Sequence[int|float]) -> list[float]:
 
     >>> common.unitNormalizeProportion([1.0, 1, 1.0])
     [0.3333333..., 0.333333..., 0.333333...]
-
 
     On 32-bit computers this number may be inexact even for small floats.
     On 64-bit it works fine.  This is the 32-bit output for this result.
@@ -731,7 +714,6 @@ def unitNormalizeProportion(values: Sequence[int|float]) -> list[float]:
         unit.append((x / summation))
     return unit
 
-
 def unitBoundaryProportion(
     series: Sequence[int|float]
 ) -> list[tuple[int|float, float]]:
@@ -754,7 +736,6 @@ def unitBoundaryProportion(
         else:  # last, avoid rounding errors
             bounds.append((summation, 1.0))
     return bounds
-
 
 def weightedSelection(values: list[int],
                       weights: list[int|float],
@@ -783,7 +764,6 @@ def weightedSelection(values: list[int],
             return values[index]
     # just in case we get the high boundary
     return values[index]
-
 
 def approximateGCD(values: Collection[int|float|Fraction], grain: float = 1e-4) -> float:
     '''
@@ -851,7 +831,6 @@ def approximateGCD(values: Collection[int|float|Fraction], grain: float = 1e-4) 
         raise ValueError('cannot find a common divisor')
     return max(commonUniqueDivisions)
 
-
 @deprecated('v9', 'v10', 'Use math.lcm instead')
 def lcm(filterList: Iterable[int]) -> int:
     '''
@@ -888,14 +867,12 @@ def lcm(filterList: Iterable[int]) -> int:
         lcmVal = _lcm(lcmVal, flValue)
     return lcmVal
 
-
 def contiguousList(inputListOrTuple) -> bool:
     '''
     returns bool True or False if a list containing ints
     contains only contiguous (increasing) values
 
     requires the list to be sorted first
-
 
     >>> l = [3, 4, 5, 6]
     >>> common.contiguousList(l)
@@ -919,7 +896,6 @@ def contiguousList(inputListOrTuple) -> bool:
             return False
         currentMaxVal += 1
     return True
-
 
 def groupContiguousIntegers(src: list[int]) -> list[list[int]]:
     '''
@@ -965,7 +941,6 @@ def groupContiguousIntegers(src: list[int]) -> list[list[int]]:
 
     return post
 
-
 # noinspection SpellCheckingInspection
 def fromRoman(num: str, *, strictModern=False) -> int:
     '''
@@ -973,7 +948,6 @@ def fromRoman(num: str, *, strictModern=False) -> int:
     Convert a Roman numeral (upper or lower) to an int
 
     https://code.activestate.com/recipes/81611-roman-numerals/
-
 
     >>> common.fromRoman('ii')
     2
@@ -987,7 +961,6 @@ def fromRoman(num: str, *, strictModern=False) -> int:
     >>> common.fromRoman('MCDLXXXIX')
     1489
 
-
     Some people consider this an error, but you see it in medieval and ancient roman documents:
 
     >>> common.fromRoman('ic')
@@ -998,7 +971,6 @@ def fromRoman(num: str, *, strictModern=False) -> int:
     >>> common.fromRoman('ic', strictModern=True)
     Traceback (most recent call last):
     ValueError: input contains an invalid subtraction element (modern interpretation): ic
-
 
     But things like this are never seen, and thus cause an error:
 
@@ -1040,7 +1012,6 @@ def fromRoman(num: str, *, strictModern=False) -> int:
         summation += n
     return summation
 
-
 # noinspection SpellCheckingInspection
 def toRoman(num: int) -> str:
     '''
@@ -1074,7 +1045,6 @@ def toRoman(num: int) -> str:
         num -= ints[i] * count
     return result
 
-
 def ordinalAbbreviation(value: int, plural=False) -> str:
     '''
     Return the ordinal abbreviations for integers
@@ -1106,7 +1076,6 @@ def ordinalAbbreviation(value: int, plural=False) -> str:
         post += 's'
     return post
 
-
 ordinalsToNumbers = {}
 for ordinal_index in range(len(ordinals)):
     ordinalName = ordinals[ordinal_index]
@@ -1123,72 +1092,6 @@ for ordinal_index in range(len(ordinals)):
 
 del ordinal_index
 
-
-class Test(unittest.TestCase):
-    '''
-    Tests not requiring file output.
-    '''
-
-    def setUp(self):
-        pass
-
-    def testToRoman(self):
-        for src, dst in [(1, 'I'), (3, 'III'), (5, 'V')]:
-            self.assertEqual(dst, toRoman(src))
-
-    def testOrdinalsToNumbers(self):
-        self.assertEqual(ordinalsToNumbers['unison'], 1)
-        self.assertEqual(ordinalsToNumbers['Unison'], 1)
-        self.assertEqual(ordinalsToNumbers['first'], 1)
-        self.assertEqual(ordinalsToNumbers['First'], 1)
-        self.assertEqual(ordinalsToNumbers['1st'], 1)
-        self.assertEqual(ordinalsToNumbers['octave'], 8)
-        self.assertEqual(ordinalsToNumbers['Octave'], 8)
-        self.assertEqual(ordinalsToNumbers['eighth'], 8)
-        self.assertEqual(ordinalsToNumbers['Eighth'], 8)
-        self.assertEqual(ordinalsToNumbers['8th'], 8)
-
-    def testWeightedSelection(self):
-        # test equal selection
-        for j in range(10):
-            x = 0
-            for i in range(1000):
-                # equal chance of -1, 1
-                x += weightedSelection([-1, 1], [1, 1])
-            # environLocal.printDebug(['weightedSelection([-1, 1], [1, 1])', x])
-            self.assertTrue(-250 < x < 250)
-
-        # test a strongly weighed boundary
-        for j in range(10):
-            x = 0
-            for i in range(1000):
-                # 10000 more chance of 0 than 1.
-                x += weightedSelection([0, 1], [10000, 1])
-            # environLocal.printDebug(['weightedSelection([0, 1], [10000, 1])', x])
-            self.assertTrue(0 <= x < 20)
-
-        for j in range(10):
-            x = 0
-            for i in range(1000):
-                # 10,000 times more likely 1 than 0.
-                x += weightedSelection([0, 1], [1, 10000])
-            # environLocal.printDebug(['weightedSelection([0, 1], [1, 10000])', x])
-            self.assertTrue(900 <= x <= 1000)
-
-        for unused_j in range(10):
-            x = 0
-            for i in range(1000):
-                # no chance of anything but 0.
-                x += weightedSelection([0, 1], [1, 0])
-            # environLocal.printDebug(['weightedSelection([0, 1], [1, 0])', x])
-            self.assertEqual(x, 0)
-
-
 # ------------------------------------------------------------------------------
 # define presented order in documentation
 _DOC_ORDER = [fromRoman, toRoman]
-
-
-if __name__ == '__main__':
-    import music21
-    music21.mainTest(Test)

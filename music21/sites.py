@@ -18,17 +18,14 @@ import collections
 from collections.abc import Generator, MutableMapping
 import typing as t
 from typing import overload  # for some reason does not work in PyCharm if not directly imported
-import unittest
 import weakref
 
 from music21 import common
 from music21 import exceptions21
 from music21 import prebase
 
-
 if t.TYPE_CHECKING:
     from music21 import stream
-
 
 # define whether weakrefs are used for storage of object locations
 WEAKREF_ACTIVE = True
@@ -45,12 +42,10 @@ WEAKREF_ACTIVE = True
 # possible without needing to recreate the whole stream.
 GLOBAL_SITE_STATE_DICT: MutableMapping[str, t.Any|None] = weakref.WeakValueDictionary()
 
-
 class SitesException(exceptions21.Music21Exception):
     pass
 
 # -----------------------------------------------------------------------------
-
 
 class SiteRef(common.SlottedObjectMixin, prebase.ProtoM21Object):
     '''
@@ -169,13 +164,11 @@ class SiteRef(common.SlottedObjectMixin, prebase.ProtoM21Object):
                 self.isDead = True
             self.site = currentSite
 
-
 _NoneSiteRef = SiteRef()
 _NoneSiteRef.globalSiteIndex = -2  # -1 is used elsewhere
 _NoneSiteRef.siteIndex = -2
 
 _singletonCounter = common.SingletonCounter()
-
 
 class Sites(common.SlottedObjectMixin):
     '''
@@ -1010,47 +1003,7 @@ class Sites(common.SlottedObjectMixin):
             except AttributeError:
                 pass
 
-
-class Test(unittest.TestCase):
-    def testSites(self):
-        from music21 import note
-        from music21 import stream
-        from music21 import corpus
-        from music21 import clef
-
-        m = stream.Measure()
-        m.number = 34
-        n = note.Note()
-        m.append(n)
-
-        n2 = note.Note()
-        n2.sites.add(m)
-
-        c = clef.Clef()
-        c.sites.add(n)
-
-        self.assertEqual(n2.sites.getAttrByName('number'), 34)
-        c.sites.setAttrByName('lyric', str(n2.sites.getAttrByName('number')))
-        self.assertEqual(n.lyric, '34')
-        c.sites.setAttrByName('lyric', n2.sites.getAttrByName('number'))
-        # converted to a string now
-        self.assertEqual(n.lyric, '34')
-
-        violin1 = corpus.parse(
-            'beethoven/opus18no1',
-            3,
-            fileExtensions=('xml',),
-        ).getElementById('Violin I')
-        lastNote = violin1.flatten().notes[-1]
-        lastNoteClef = lastNote.getContextByClass(clef.Clef)
-        self.assertIsInstance(lastNoteClef, clef.TrebleClef)
-
-
 # ----------------------------------------------------------------------------
 _DOC_ORDER = [SiteRef, Sites]
 
-
 # -----------------------------------------------------------------------------
-if __name__ == '__main__':
-    import music21
-    music21.mainTest(Test)

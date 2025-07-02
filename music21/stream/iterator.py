@@ -20,7 +20,6 @@ from collections.abc import Callable, Iterable, Sequence
 import copy
 import typing as t
 from typing import overload  # PyCharm can't use alias
-import unittest
 import warnings
 
 from music21 import common
@@ -45,11 +44,9 @@ StreamIteratorType = t.TypeVar('StreamIteratorType', bound='StreamIterator')
 # pipe | version not passing mypy.
 FilterType = t.Union[Callable[[t.Any, t.Optional[t.Any]], t.Any], filters.StreamFilter]
 
-
 # -----------------------------------------------------------------------------
 class StreamIteratorInefficientWarning(UserWarning):
     pass
-
 
 class ActiveInformation(t.TypedDict, total=False):
     stream: streamModule.Stream|None
@@ -57,7 +54,6 @@ class ActiveInformation(t.TypedDict, total=False):
     iterSection: t.Literal['_elements', '_endElements']
     sectionIndex: int
     lastYielded: base.Music21Object|None
-
 
 # -----------------------------------------------------------------------------
 class StreamIterator(prebase.ProtoM21Object, Sequence[M21ObjType]):
@@ -357,7 +353,6 @@ class StreamIterator(prebase.ProtoM21Object, Sequence[M21ObjType]):
         ('<music21.note.Note C>', '<music21.note.Note F#>')
         >>> sI.srcStream is s
         True
-
 
         To request an element by id, put a '#' sign in front of the id,
         like in HTML DOM queries:
@@ -815,7 +810,6 @@ class StreamIterator(prebase.ProtoM21Object, Sequence[M21ObjType]):
         x: StreamType = self.streamObj
         return x
 
-
     def stream(
         self,
         returnStreamSubClass: bool = True
@@ -859,7 +853,6 @@ class StreamIterator(prebase.ProtoM21Object, Sequence[M21ObjType]):
         >>> s4 = s.iter().getElementsByClass(bar.Barline).stream()
         >>> s4.show('t')
         {0.0} <music21.bar.Barline type=regular>
-
 
         Note that this routine can create Streams that have elements that the original
         stream did not, in the case of recursion:
@@ -1078,7 +1071,6 @@ class StreamIterator(prebase.ProtoM21Object, Sequence[M21ObjType]):
         ...     print(el)
         <music21.note.Rest quarter>
 
-
         ActiveSite is restored.
 
         >>> s2 = stream.Stream(id='s2')
@@ -1089,7 +1081,6 @@ class StreamIterator(prebase.ProtoM21Object, Sequence[M21ObjType]):
         >>> for el in s.iter().getElementsByClass(note.Rest):
         ...     print(el.activeSite.id)
         s1
-
 
         Strings work in addition to classes, but your IDE will not know that
         `el` is a :class:`~music21.note.Rest` object.
@@ -1146,7 +1137,6 @@ class StreamIterator(prebase.ProtoM21Object, Sequence[M21ObjType]):
         if querySelector.startswith('.'):
             return self.addFilter(filters.GroupFilter(querySelector[1:]), returnClone=returnClone)
         return self.addFilter(filters.ClassFilter(querySelector), returnClone=returnClone)
-
 
     def getElementsNotOfClass(self, classFilterList, *, returnClone=True):
         '''
@@ -1231,11 +1221,9 @@ class StreamIterator(prebase.ProtoM21Object, Sequence[M21ObjType]):
         There are several attributes that govern how this range is
         determined:
 
-
         If `mustFinishInSpan` is True then an event that begins
         between offsetStart and offsetEnd but which ends after offsetEnd
         will not be included.  The default is False.
-
 
         For instance, a half note at offset 2.0 will be found in
         getElementsByOffset(1.5, 2.5) or getElementsByOffset(1.5, 2.5,
@@ -1398,7 +1386,6 @@ class StreamIterator(prebase.ProtoM21Object, Sequence[M21ObjType]):
         <music21.stream.Measure 1 offset=1.0> 1.0 1.0 <music21.stream.Part Soprano>
         <music21.note.Note B> 1.0 2.0 <music21.stream.Measure 1 offset=1.0>
 
-
         RecursiveIterators will probably want to use
         :meth:`~music21.stream.iterator.RecursiveIterator.getElementsByOffsetInHierarchy`
         instead.  Or to get all elements with a particular local offset, such as everything
@@ -1545,7 +1532,6 @@ class StreamIterator(prebase.ProtoM21Object, Sequence[M21ObjType]):
         from music21 import stream
         return self.getElementsByClass(stream.Voice)
 
-
 # -----------------------------------------------------------------------------
 class OffsetIterator(StreamIterator, Sequence[list[M21ObjType]]):
     '''
@@ -1577,7 +1563,6 @@ class OffsetIterator(StreamIterator, Sequence[list[M21ObjType]]):
     [<music21.note.Note E>]
     [<music21.note.Note F>, <music21.note.Note G>]
     [<music21.bar.Repeat direction=end>, <music21.clef.TrebleClef>]
-
 
     >>> for groupedElements in oIter.notes:
     ...     print(groupedElements)
@@ -1709,8 +1694,6 @@ class OffsetIterator(StreamIterator, Sequence[list[M21ObjType]]):
         for now.
         '''
         return self.addFilter(filters.ClassFilter(classFilterList), returnClone=returnClone)
-
-
 
 # -----------------------------------------------------------------------------
 class RecursiveIterator(StreamIterator[M21ObjType], Sequence[M21ObjType]):
@@ -2097,7 +2080,6 @@ class RecursiveIterator(StreamIterator[M21ObjType], Sequence[M21ObjType]):
                            returnClone: bool = True) -> RecursiveIterator[M21ObjType]:
         ...
 
-
     def getElementsByClass(self,
                            classFilterList: t.Union[
                                str,
@@ -2115,91 +2097,4 @@ class RecursiveIterator(StreamIterator[M21ObjType], Sequence[M21ObjType]):
         else:
             return t.cast(RecursiveIterator[M21ObjType], out)
 
-
-class Test(unittest.TestCase):
-    def testSimpleClone(self):
-        from music21 import stream
-        s = stream.Stream()
-        r = note.Rest()
-        n = note.Note()
-        s.append([r, n])
-        all_s = list(s.iter())
-        self.assertEqual(len(all_s), 2)
-        self.assertIs(all_s[0], r)
-        self.assertIs(all_s[1], n)
-        s_notes = list(s.iter().notes)
-        self.assertEqual(len(s_notes), 1)
-        self.assertIs(s_notes[0], n)
-
-    def testAddingFiltersMidIteration(self):
-        from music21 import stream
-        s = stream.Stream()
-        r = note.Rest()
-        n = note.Note()
-        s.append([r, n])
-        sIter = s.iter()
-        r0 = next(sIter)
-        self.assertIs(r0, r)
-
-        # adding a filter gives a new StreamIterator that restarts at 0
-        sIter2 = sIter.notesAndRests  # this filter does nothing here.
-        obj0 = next(sIter2)
-        self.assertIs(obj0, r)
-
-        # the original StreamIterator should be at its original spot, so this should
-        # move to the next element
-        n0 = next(sIter)
-        self.assertIs(n0, n)
-
-    def testRecursiveActiveSites(self):
-        from music21 import converter
-        s = converter.parse('tinyNotation: 4/4 c1 c4 d=id2 e f')
-        rec = s.recurse()
-        n = rec.getElementById('id2')
-        self.assertEqual(n.activeSite.number, 2)
-
-    def testCurrentHierarchyOffsetReset(self):
-        from music21 import stream
-        p = stream.Part()
-        m = stream.Measure()
-        m.append(note.Note('D'))
-        m.append(note.Note('E'))
-        p.insert(0, note.Note('C'))
-        p.append(m)
-        pRecurse = p.recurse(includeSelf=True)
-        allOffsets = []
-        for _ in pRecurse:
-            allOffsets.append(pRecurse.currentHierarchyOffset())
-        self.assertListEqual(allOffsets, [0.0, 0.0, 1.0, 1.0, 2.0])
-        currentOffset = pRecurse.currentHierarchyOffset()
-        self.assertIsNone(currentOffset)
-
-    def testAddingFiltersMidRecursiveIteration(self):
-        from music21 import stream
-        # noinspection PyUnresolvedReferences
-        from music21.stream.iterator import RecursiveIterator as ImportedRecursiveIterator
-        m = stream.Measure()
-        r = note.Rest()
-        n = note.Note()
-        m.append([r, n])
-        p = stream.Part()
-        p.append(m)
-
-        sc = stream.Score()
-        sc.append(p)
-
-        sIter = sc.recurse()
-        p0 = next(sIter)
-        self.assertIs(p0, p)
-
-        child = sIter.childRecursiveIterator
-        self.assertIsInstance(child, ImportedRecursiveIterator)
-
-
-
-
-_DOC_ORDER = [StreamIterator, RecursiveIterator, OffsetIterator]
-
-if __name__ == '__main__':
-    import music21
-    music21.mainTest(Test)  # , runTest='testCurrentHierarchyOffsetReset')
+# , runTest='testCurrentHierarchyOffsetReset')

@@ -17,13 +17,10 @@ can happily ignore this module.
 '''
 from __future__ import annotations
 
-import unittest
-
 from music21.tree import core
 from music21.base import Music21Object
 from music21.sorting import SortTuple
 # -----------------------------------------------------------------------------
-
 
 class ElementNode(core.AVLNode):
     r'''
@@ -75,14 +72,12 @@ class ElementNode(core.AVLNode):
     >>> m.offset
     0.0
 
-
     >>> rElNode.payloadElementIndex = 0
     >>> elNode.payloadElementIndex = 1
     >>> n2ElNode.payloadElementIndex = 2
 
     >>> elNode.updateIndices()
     >>> elNode.updateEndTimes()
-
 
     Now let's look at the ElementNode:
 
@@ -283,7 +278,6 @@ class ElementNode(core.AVLNode):
         self.endTimeLow = endTimeLow
         self.endTimeHigh = endTimeHigh
 
-
 # -----------------------------------------------------------------------------
 class OffsetNode(ElementNode):
     r'''
@@ -346,7 +340,6 @@ class OffsetNode(ElementNode):
     <music21.note.Note F>
     >>> rn.payload[0].element is sf[11]
     True
-
 
     We can look at the leftChild of the root node to get some more interesting cases:
 
@@ -546,20 +539,8 @@ class OffsetNode(ElementNode):
 
 # -----------------------------------------------------------------------------
 
-
-class Test(unittest.TestCase):
-    pass
-
-
 # -----------------------------------------------------------------------------
-
 
 _DOC_ORDER = (ElementNode, OffsetNode)
 
-
 # -----------------------------------------------------------------------------
-
-
-if __name__ == '__main__':
-    import music21
-    music21.mainTest()

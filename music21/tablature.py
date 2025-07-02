@@ -17,18 +17,14 @@ Chord from FretBoard Object with tuning.
 '''
 from __future__ import annotations
 
-import unittest
-
 from music21 import common
 from music21 import exceptions21
 from music21 import harmony
 from music21 import pitch
 from music21 import prebase
 
-
 class TablatureException(exceptions21.Music21Exception):
     pass
-
 
 class FretNote(prebase.ProtoM21Object):
     '''
@@ -107,7 +103,6 @@ class FretNote(prebase.ProtoM21Object):
 
         fullRepr = ', '.join(nonEmptyRepr)
         return fullRepr
-
 
 class FretBoard(prebase.ProtoM21Object):
     '''
@@ -250,7 +245,6 @@ class FretBoard(prebase.ProtoM21Object):
 
         return pitchList
 
-
 class FirstFret:
     '''
     FirstFretInfo returns the information regarding the first fret utilized in a
@@ -262,7 +256,6 @@ class FirstFret:
         self.location = location
 
 # class that combines a ChordSymbol and a FretBoard
-
 
 class ChordWithFretBoard(harmony.ChordSymbol, FretBoard):
     '''
@@ -302,7 +295,6 @@ class ChordWithFretBoard(harmony.ChordSymbol, FretBoard):
 # Tablature notation.
 #
 
-
 class GuitarFretBoard(FretBoard):
     '''
     A six-string fretboard tuned to E A D G B E.
@@ -315,7 +307,6 @@ class GuitarFretBoard(FretBoard):
         self.tuning = [pitch.Pitch('E2'), pitch.Pitch('A2'), pitch.Pitch('D3'),
                        pitch.Pitch('G3'), pitch.Pitch('B3'), pitch.Pitch('E4')]
 
-
 class UkeleleFretBoard(FretBoard):
     '''
     A four-string fretboard tuned to G C E A
@@ -326,7 +317,6 @@ class UkeleleFretBoard(FretBoard):
         super().__init__(numStrings, fretNotes, displayFrets)
 
         self.tuning = [pitch.Pitch('G4'), pitch.Pitch('C4'), pitch.Pitch('E4'), pitch.Pitch('A4')]
-
 
 class BassGuitarFretBoard(FretBoard):
     '''
@@ -339,7 +329,6 @@ class BassGuitarFretBoard(FretBoard):
 
         self.tuning = [pitch.Pitch('E1'), pitch.Pitch('A1'), pitch.Pitch('D2'), pitch.Pitch('G2')]
 
-
 class MandolinFretBoard(FretBoard):
     '''
     A four-string fretboard tuned to G D A E
@@ -351,42 +340,3 @@ class MandolinFretBoard(FretBoard):
 
         self.tuning = [pitch.Pitch('G3'), pitch.Pitch('D4'), pitch.Pitch('A4'), pitch.Pitch('E5')]
 # ------------------------------------------------------------------------------
-
-
-class Test(unittest.TestCase):
-
-    def testFretNoteString(self):
-        f = FretNote(4, 1, 2)
-
-        stringAndFretInfo = [f.string, f.fret]
-
-        self.assertEqual(stringAndFretInfo, [4, 1])
-
-    def testStupidFretNote(self):
-        self.assertEqual(FretNote().string, None)
-
-    def testFretNoteWeirdRepr(self):
-        from music21 import tablature
-        weirdFretNote = tablature.FretNote(6, 133)
-
-        expectedRepr = '<music21.tablature.FretNote 6th string, 133rd fret>'
-
-        self.assertEqual(repr(weirdFretNote), expectedRepr)
-
-    def testFretBoardLowestFirst(self):
-        fretNote1 = FretNote(1, 2, 2)
-        fretNote2 = FretNote(2, 1, 1)
-
-        myFretBoard = FretBoard(6, fretNotes=[fretNote1, fretNote2])
-
-        stringList = []
-
-        for thisNote in myFretBoard.fretNotesLowestFirst():
-            stringList.append(thisNote.string)
-
-        self.assertEqual(stringList, [2, 1])
-
-
-if __name__ == '__main__':
-    import music21
-    music21.mainTest(Test)

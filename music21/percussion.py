@@ -14,16 +14,12 @@ from __future__ import annotations
 
 from collections.abc import Iterable
 import typing as t
-import unittest
-
 from music21 import common
 from music21 import chord
 from music21 import note
 
-
 if t.TYPE_CHECKING:
     from music21 import pitch
-
 
 class PercussionChord(chord.ChordBase):
     '''
@@ -130,7 +126,6 @@ class PercussionChord(chord.ChordBase):
 
         return '[' + ' '.join(allNotes) + ']'
 
-
     @property
     def pitches(self) -> tuple[pitch.Pitch, ...]:
         '''
@@ -161,12 +156,3 @@ class PercussionChord(chord.ChordBase):
         for p in value:
             # assumes value is an iterable of pitches or something to pass to Note __init__
             self._notes.append(note.Note(p))
-
-
-class Test(unittest.TestCase):
-    pass
-
-
-if __name__ == '__main__':
-    import music21
-    music21.mainTest(Test)

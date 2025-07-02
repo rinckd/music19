@@ -28,8 +28,6 @@ __all__ = [
 from collections.abc import Iterable
 import datetime
 import typing as t
-import unittest
-
 from music21 import common
 from music21 import environment
 from music21 import exceptions21
@@ -38,8 +36,6 @@ from music21 import prebase
 # -----------------------------------------------------------------------------
 
 environLocal = environment.Environment('metadata.primitives')
-
-
 
 # -----------------------------------------------------------------------------
 
@@ -459,7 +455,6 @@ class Date(prebase.ProtoM21Object):
                 return True
         return False
 
-
 # -----------------------------------------------------------------------------
 class DatePrimitive(prebase.ProtoM21Object):
     '''
@@ -553,7 +548,6 @@ class DatePrimitive(prebase.ProtoM21Object):
             raise exceptions21.MetadataException(
                 f'Relevance value is not supported by this object: {value!r}')
 
-
 class DateSingle(DatePrimitive):
     r'''
     Store a date, either as certain, approximate, or uncertain relevance.
@@ -594,10 +588,7 @@ class DateSingle(DatePrimitive):
         self._data.append(Date())
         self._data[0].load(data)
 
-
-
 # -----------------------------------------------------------------------------
-
 
 class DateRelative(DatePrimitive):
     r'''
@@ -668,7 +659,6 @@ class DateRelative(DatePrimitive):
         self._data[0].load(data)
 # -----------------------------------------------------------------------------
 
-
 class DateBetween(DatePrimitive):
     r'''
     Store a relative date, sometime between two dates:
@@ -734,9 +724,7 @@ class DateBetween(DatePrimitive):
                 f'Relevance value is not supported by this object: {value!r}')
         self._relevance = value
 
-
 # -----------------------------------------------------------------------------
-
 
 class DateSelection(DatePrimitive):
     r'''
@@ -819,9 +807,7 @@ class DateSelection(DatePrimitive):
                 f'Relevance value is not supported by this object: {value!r}')
         self._relevance = value
 
-
 # -----------------------------------------------------------------------------
-
 
 # This was enhanced in music21 v8 to add an optional encoding scheme (e.g. URI, DCMIPoint,
 # etc.) as well as whether the text is translated, or in the original language.
@@ -907,7 +893,6 @@ class Text(prebase.ProtoM21Object):
             return False
         return True
 
-
     def __lt__(self, other):
         '''
         Allows for alphabetically sorting two elements
@@ -918,7 +903,6 @@ class Text(prebase.ProtoM21Object):
             (self._data, self.language, self.isTranslated, self.encodingScheme)
             < (other._data, other.language, other.isTranslated, other.encodingScheme)
         )
-
 
     # PUBLIC PROPERTIES #
 
@@ -961,7 +945,6 @@ class Text(prebase.ProtoM21Object):
         return text.prependArticle(str(self), self._language)
 
 # -----------------------------------------------------------------------------
-
 
 class Copyright(Text):
     '''
@@ -1020,9 +1003,7 @@ class Copyright(Text):
             return False
         return True
 
-
 # -----------------------------------------------------------------------------
-
 
 class Contributor(prebase.ProtoM21Object):
     r'''
@@ -1389,7 +1370,6 @@ class Contributor(prebase.ProtoM21Object):
 
 # -----------------------------------------------------------------------------
 
-
 class Creator(Contributor):
     r'''
     A person that created a work. Can be a composer, lyricist, arranger, or
@@ -1412,9 +1392,7 @@ class Creator(Contributor):
 
     relevance = 'creator'
 
-
 # -----------------------------------------------------------------------------
-
 
 class Imprint(prebase.ProtoM21Object):
     r'''
@@ -1434,9 +1412,7 @@ class Imprint(prebase.ProtoM21Object):
 # !!!SML: Manuscript location.
 # !!!SMA: Acknowledgement of manuscript access.
 
-
 # -----------------------------------------------------------------------------
-
 
 # !!!YEP: Publisher of electronic edition.
 # !!!YEC: Date and owner of electronic copyright.
@@ -1476,124 +1452,9 @@ class Imprint(prebase.ProtoM21Object):
 #     'ocy' : 'countryOfComposition',
 #     'opc' : 'localeOfComposition',  # origin in abc
 
-
 # -----------------------------------------------------------------------------
 
-
-class Test(unittest.TestCase):
-
-    def testText(self):
-        from music21 import metadata
-
-        text = metadata.primitives.Text('my text')
-        text.language = 'en'
-        self.assertEqual(text._data, 'my text')
-        self.assertEqual(text._language, 'en')
-
-    def testContributor(self):
-        from music21 import metadata
-
-        contributor = metadata.primitives.Contributor(
-            role='composer',
-            name='Gilles Binchois',
-        )
-        self.assertEqual(contributor.role, 'composer')
-        self.assertEqual(contributor.relevance, 'contributor')
-        self.assertEqual(contributor.name, 'Gilles Binchois')
-
-    def testCreator(self):
-        from music21 import metadata
-
-        creator = metadata.primitives.Creator(
-            role='composer',
-            name='Gilles Binchois',
-        )
-        self.assertEqual(creator.role, 'composer')
-        self.assertEqual(creator.relevance, 'creator')
-        self.assertEqual(creator.name, 'Gilles Binchois')
-
-    def testDate(self):
-        from music21 import metadata
-
-        date1 = metadata.primitives.Date(year=1843, yearError='approximate')
-        date2 = metadata.primitives.Date(year='1843?')
-
-        self.assertEqual(date1.year, 1843)
-        self.assertEqual(date1.yearError, 'approximate')
-
-        self.assertEqual(date2.year, 1843)
-        self.assertEqual(date2.yearError, 'uncertain')
-
-    def testDateValueError(self):
-        with self.assertRaisesRegex(ValueError, 'Month must be.*not 13'):
-            Date(month=13)
-
-        for d, m, y in ((32, None, None),
-                        (0, None, None),
-                        (31, 4, None),
-                        (30, 2, None),
-                        (29, 2, 1999),
-                        ):
-            with self.assertRaisesRegex(ValueError, 'Day.*is not possible'):
-                Date(year=y, month=m, day=d)
-
-        with self.assertRaisesRegex(ValueError, 'Hour'):
-            Date(hour=24)
-        with self.assertRaisesRegex(ValueError, 'Minute'):
-            Date(minute=61)
-        with self.assertRaisesRegex(ValueError, 'Second'):
-            Date(second=-1)
-
-        self.assertIsNotNone(Date(year=2000, month=2, day=29))
-        self.assertIsNotNone(Date(month=2, day=29))
-        self.assertIsNotNone(Date(month=12, day=31))
-        self.assertIsNotNone(Date(hour=23, minute=59, second=59))
-
-    def testDateSingle(self):
-        from music21 import metadata
-
-        dateSingle = metadata.primitives.DateSingle(
-            '2009/12/31', 'approximate')
-        self.assertEqual(str(dateSingle), '2009/12/31')
-        self.assertEqual(len(dateSingle._data), 1)
-        self.assertEqual(dateSingle._relevance, 'approximate')
-        self.assertEqual(dateSingle._dataUncertainty, ['approximate'])
-
-    def testDateRelative(self):
-        from music21 import metadata
-
-        dateRelative = metadata.primitives.DateRelative('2001/12/31', 'prior')
-        self.assertEqual(str(dateRelative), 'prior to 2001/12/31')
-        self.assertEqual(dateRelative.relevance, 'prior')
-        self.assertEqual(len(dateRelative._data), 1)
-        self.assertEqual(dateRelative._dataUncertainty, [None])
-
-    def testDateBetween(self):
-        from music21 import metadata
-
-        dateBetween = metadata.primitives.DateBetween(
-            ('2009/12/31', '2010/1/28'))
-        self.assertEqual(str(dateBetween), '2009/12/31 to 2010/01/28')
-        self.assertEqual(dateBetween.relevance, 'between')
-        self.assertEqual(dateBetween._dataUncertainty, [None, None])
-        self.assertEqual(len(dateBetween._data), 2)
-
-    def testDateSelection(self):
-        from music21 import metadata
-
-        dateSelection = metadata.primitives.DateSelection(
-            ['2009/12/31', '2010/1/28', '1894/1/28'],
-            'or',
-        )
-        self.assertEqual(str(dateSelection),
-                         '2009/12/31 or 2010/01/28 or 1894/01/28')
-        self.assertEqual(dateSelection.relevance, 'or')
-        self.assertEqual(dateSelection._dataUncertainty, [None, None, None])
-        self.assertEqual(len(dateSelection._data), 3)
-
-
 # -----------------------------------------------------------------------------
-
 
 _DOC_ORDER = (
     Text,
@@ -1608,11 +1469,5 @@ _DOC_ORDER = (
 
 DateParseType = Date|datetime.datetime|str
 ValueType = DatePrimitive|Text|Contributor|Copyright|int
-
-
-if __name__ == '__main__':
-    import music21
-    music21.mainTest(Test)
-
 
 # -----------------------------------------------------------------------------

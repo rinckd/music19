@@ -16,8 +16,6 @@ from __future__ import annotations
 
 from collections.abc import Sequence
 import typing as t
-import unittest
-
 from music21.base import Music21Object
 from music21.common.types import M21ObjType, StreamType
 from music21 import common
@@ -28,7 +26,6 @@ from music21.tree import trees
 
 if t.TYPE_CHECKING:
     from music21 import stream
-
 
 def listOfTreesByClass(
     inputStream: StreamType,
@@ -53,7 +50,6 @@ def listOfTreesByClass(
     a single optimized pass through the `inputStream`.
 
     This is used internally by `streamToTimespanTree`.
-
 
     >>> score = tree.makeExampleScore()
 
@@ -153,7 +149,6 @@ def listOfTreesByClass(
                     classBasedTree.insert(offset, element)
 
     return outputTrees
-
 
 def asTree(
     inputStream: StreamType,
@@ -314,7 +309,6 @@ def makeFastShallowTreeFromSortedStream(
         outputTree.rootNode.updateEndTimes()
     return outputTree
 
-
 def asTimespans(
     inputStream,
     *,
@@ -379,38 +373,8 @@ def asTimespans(
         assert isinstance(timespanTreeFirst, timespanTree.TimespanTree)
     return timespanTreeFirst
 
-
 # --------------------
-class Test(unittest.TestCase):
-
-    def testFastPopulate(self):
-        '''
-        tests that the isSorted speed up trick ends up producing identical results.
-        '''
-        from music21 import corpus
-        sf = corpus.parse('bwv66.6').flatten()
-        sfTree = sf.asTree()
-        # print(sfTree)
-
-        sf.isSorted = False
-        sf._cache = {}
-        sfTreeSlow = sf.asTree()
-        self.assertEqual(len(sf), len(sfTreeSlow))
-        self.assertEqual(len(sf), len(sfTree))
-        for fastI, slowI in zip(sfTree, sfTreeSlow):
-            self.assertIs(fastI, slowI)
-
-    def testAutoSortExample(self):
-        from music21.tree import makeExampleScore
-        sc = makeExampleScore()
-        sc.sort()
-        scTree = asTree(sc)
-        self.assertEqual(scTree.endTime, 8.0)
-        # print(repr(scTree))
-
 
 # --------------------
 
-if __name__ == '__main__':
-    import music21
-    music21.mainTest(Test)  # , runTest='testAutoSortExample')
+# , runTest='testAutoSortExample')

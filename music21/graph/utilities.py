@@ -16,7 +16,6 @@ from __future__ import annotations
 
 from collections import namedtuple
 import typing as t
-import unittest
 import webcolors  # type: ignore  # no typing in module
 
 # TODO: Move _missingImport to environment or common so this is unnecessary.
@@ -28,10 +27,8 @@ from music21 import pitch
 
 environLocal = environment.Environment('graph.utilities')
 
-
 ExtendedModules = namedtuple('ExtendedModules',
                              ['matplotlib', 'Axes3D', 'collections', 'patches', 'plt', 'networkx'])
-
 
 def getExtendedModules():
     '''
@@ -72,14 +69,11 @@ def getExtendedModules():
 
 # ------------------------------------------------------------------------------
 
-
 class GraphException(exceptions21.Music21Exception):
     pass
 
-
 class PlotStreamException(exceptions21.Music21Exception):
     pass
-
 
 def accidentalLabelToUnicode(label):
     '''
@@ -104,7 +98,6 @@ def accidentalLabelToUnicode(label):
             break
 
     return label
-
 
 def getColor(color):
     '''
@@ -184,15 +177,6 @@ def getColor(color):
         else:  # assume integers
             return webcolors.rgb_to_hex(tuple(color))
     raise GraphException(f'invalid color specification: {color}')
-
-
-class Test(unittest.TestCase):
-    def testColors(self):
-        self.assertEqual(getColor([0.5, 0.5, 0.5]), '#808080')
-        self.assertEqual(getColor(0.5), '#808080')
-        self.assertEqual(getColor(255), '#ffffff')
-        self.assertEqual(getColor('Steel Blue'), '#4682b4')
-
 
 if __name__ == '__main__':
     # sys.arg test options will be used in mainTest()

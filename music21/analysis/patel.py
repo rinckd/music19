@@ -11,18 +11,14 @@
 from __future__ import annotations
 
 from statistics import mean, stdev
-import unittest
-
 def nPVI(streamForAnalysis):
     '''
     Algorithm to give the normalized pairwise variability index
     (Low, Grabe, & Nolan, 2000) of the rhythm of a stream.
 
-
     Used by Aniruddh D. Patel to argue for national differences between musical
     themes.  First encountered it in a presentation by Patel, Chew, Francois,
     and Child at MIT.
-
 
     n.b. -- takes the distance between each element, including clefs, keys, etc.
     use .notesAndRests etc. to filter out elements that are not useful (though this will skip
@@ -100,16 +96,6 @@ def melodicIntervalVariability(streamForAnalysis, **skipKeywords):
     semitoneList = [myInt.chromatic.undirected for myInt in intervalStream]
     return 100 * (stdev(semitoneList) / mean(semitoneList))
 
-
-class Test(unittest.TestCase):
-    pass
-
-
 # ------------------------------------------------------------------------------
 # define presented order in documentation
 _DOC_ORDER = [melodicIntervalVariability]
-
-if __name__ == '__main__':
-    import music21
-    music21.mainTest(Test)
-

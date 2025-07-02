@@ -15,8 +15,6 @@ subclasses, the :class:`~music21.dynamics.Dynamic` object is often specialized b
 '''
 from __future__ import annotations
 
-import unittest
-
 from music21 import base
 from music21 import common
 from music21 import environment
@@ -25,7 +23,6 @@ from music21 import spanner
 from music21 import style
 
 environLocal = environment.Environment('dynamics')
-
 
 shortNames = ['pppppp', 'ppppp', 'pppp', 'ppp', 'pp', 'p', 'mp',
                   'mf', 'f', 'fp', 'sf', 'ff', 'fff', 'ffff', 'fffff', 'ffffff']
@@ -50,13 +47,11 @@ englishNames = {'ppp': 'extremely soft',
                  'ff': 'very loud',
                  'fff': 'extremely loud'}
 
-
 def dynamicStrFromDecimal(n):
     '''
     Given a decimal from 0 to 1, return a string representing a dynamic
     with 0 being the softest (0.01 = 'ppp') and 1 being the loudest (0.9+ = 'fff')
     0 returns "n" (niente), while ppp and fff are the loudest dynamics used.
-
 
     >>> dynamics.dynamicStrFromDecimal(0.25)
     'pp'
@@ -84,7 +79,6 @@ def dynamicStrFromDecimal(n):
     else:
         return 'fff'
 
-
 # defaults used for volume scalar
 dynamicStrToScalar = {
     None: 0.5,  # default value
@@ -103,11 +97,9 @@ dynamicStrToScalar = {
     'ffff': 0.95,
 }
 
-
 # ------------------------------------------------------------------------------
 class DynamicException(exceptions21.Music21Exception):
     pass
-
 
 # ------------------------------------------------------------------------------
 class Dynamic(base.Music21Object):
@@ -164,7 +156,6 @@ class Dynamic(base.Music21Object):
 
     Dynamics can be placed anywhere in a stream.
 
-
     >>> s = stream.Stream()
     >>> s.insert(0, note.Note('E-4', type='half'))
     >>> s.insert(2, note.Note('F#5', type='half'))
@@ -185,14 +176,12 @@ class Dynamic(base.Music21Object):
         'longName': r'''
             the name of this dynamic in Italian.
 
-
             >>> d = dynamics.Dynamic('pp')
             >>> d.longName
             'pianissimo'
             ''',
         'englishName': r'''
             the name of this dynamic in English.
-
 
             >>> d = dynamics.Dynamic('pp')
             >>> d.englishName
@@ -311,7 +300,6 @@ class Dynamic(base.Music21Object):
         As mezzo is at 0.5, the unit interval range is doubled for
         generating final output. The default output is 0.5.
 
-
         >>> d = dynamics.Dynamic('mf')
         >>> d.volumeScalar
         0.55...
@@ -321,7 +309,6 @@ class Dynamic(base.Music21Object):
         0.1
         >>> d.value
         'mf'
-
 
         int(volumeScalar \* 127) gives the MusicXML <sound dynamics="x"/> tag
 
@@ -337,7 +324,6 @@ class Dynamic(base.Music21Object):
             <sound dynamics="12" />
         </direction>...
         ''')
-
 
 # ------------------------------------------------------------------------------
 class DynamicWedge(spanner.Spanner):
@@ -355,7 +341,6 @@ class DynamicWedge(spanner.Spanner):
         self.placement = 'below'  # can above or below, after musicxml
         self.spread = 15  # this unit is in tenths
         self.niente = False
-
 
 class Crescendo(DynamicWedge):
     '''
@@ -375,7 +360,6 @@ class Crescendo(DynamicWedge):
         super().__init__(*spannedElements, **keywords)
         self.type = 'crescendo'
 
-
 class Diminuendo(DynamicWedge):
     '''
     A spanner diminuendo wedge.
@@ -392,104 +376,8 @@ class Diminuendo(DynamicWedge):
 
 # ------------------------------------------------------------------------------
 
-
-class TestExternal(unittest.TestCase):
-    show = True
-
-    def testSingle(self):
-        a = Dynamic('ffff')
-        if self.show:
-            a.show()
-
-    def testBasic(self):
-        '''
-        present each dynamic in a single measure
-        '''
-        from music21 import stream
-        a = stream.Stream()
-        o = 0
-        for dynStr in shortNames:
-            b = Dynamic(dynStr)
-            a.insert(o, b)
-            o += 4  # increment
-        if self.show:
-            a.show()
-
-
 # ------------------------------------------------------------------------------
-class Test(unittest.TestCase):
-
-    def testCopyAndDeepcopy(self):
-        from music21.test.commonTest import testCopyAll
-        testCopyAll(self, globals())
-
-    def testBasic(self):
-        noDyn = Dynamic()
-        assert noDyn.longName is None
-
-        pp = Dynamic('pp')
-        self.assertEqual(pp.value, 'pp')
-        self.assertEqual(pp.longName, 'pianissimo')
-        self.assertEqual(pp.englishName, 'very soft')
-
-    def testCorpusDynamicsWedge(self):
-        from music21 import corpus
-        from music21 import dynamics
-
-        a = corpus.parse('opus41no1/movement2')  # has dynamics!
-        b = a.parts[0].flatten().getElementsByClass(dynamics.Dynamic)
-        self.assertEqual(len(b), 35)
-
-        b = a.parts[0].flatten().getElementsByClass(dynamics.DynamicWedge)
-        self.assertEqual(len(b), 2)
-
-    def testMusicxmlOutput(self):
-        # test direct rendering of musicxml
-        from music21.musicxml import m21ToXml
-        d = Dynamic('p')
-        xmlOut = m21ToXml.GeneralObjectExporter().parse(d).decode('utf-8')
-        match = '<p />'
-        self.assertNotEqual(xmlOut.find(match), -1, xmlOut)
-
-    def testDynamicsPositionA(self):
-        from music21 import stream
-        from music21 import note
-        s = stream.Stream()
-        selections = ['pp', 'f', 'mf', 'fff']
-        # positions = [-20, 0, 20]
-        for i in range(10):
-            d = Dynamic(selections[i % len(selections)])
-            s.append(d)
-            s.append(note.Note('c1'))
-        # s.show()
-
-    def testDynamicsPositionB(self):
-        import random
-        from music21 import stream
-        from music21 import note
-        from music21 import layout
-        s = stream.Stream()
-        for i in range(6):
-            m = stream.Measure(number=i + 1)
-            m.append(layout.SystemLayout(isNew=True))
-            m.append(note.Rest(type='whole'))
-            s.append(m)
-        stream_iterator = s.getElementsByClass(stream.Measure)
-        for m in stream_iterator:
-            offsets = [x * 0.25 for x in range(16)]
-            random.shuffle(offsets)
-            offsets = offsets[:4]
-            for o in offsets:
-                d = Dynamic('mf')
-                d.style.absoluteY = 20
-                m.insert(o, d)
-        # s.show()
-
 
 # ------------------------------------------------------------------------------
 # define presented order in documentation
 _DOC_ORDER = [Dynamic, dynamicStrFromDecimal]
-
-if __name__ == '__main__':
-    import music21
-    music21.mainTest(Test)

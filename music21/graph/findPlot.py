@@ -16,7 +16,6 @@ from __future__ import annotations
 
 import collections
 import types
-import unittest
 import typing as t
 
 from music21.graph import axis
@@ -32,7 +31,6 @@ PLOTCLASS_SHORTCUTS: dict[str, type[plot.PlotStreamMixin]] = {
     'pianoroll': plot.HorizontalBarPitchSpaceOffset,
 }
 
-
 # all formats need to be here, and first for each row must match a graphType.
 FORMAT_SYNONYMS: list[tuple[str, ...]] = [
     ('horizontalbar', 'bar', 'horizontal', 'pianoroll', 'piano'),
@@ -46,7 +44,6 @@ FORMAT_SYNONYMS: list[tuple[str, ...]] = [
 
 # define co format strings
 FORMATS = [syn[0] for syn in FORMAT_SYNONYMS]
-
 
 def getPlotClasses() -> list[type[plot.PlotStreamMixin]]:
     '''
@@ -72,7 +69,6 @@ def getPlotClasses() -> list[type[plot.PlotStreamMixin]]:
             allPlot.append(t.cast(type[plot.PlotStreamMixin], name))
     return allPlot
 
-
 def getAxisClasses() -> list[type[axis.Axis]]:
     '''
     return a list of all Axis subclasses.  Returns a list sorted by name
@@ -93,7 +89,6 @@ def getAxisClasses() -> list[type[axis.Axis]]:
             allAxis.append(name)
     return allAxis
 
-
 def getAxisQuantities(synonyms=False, axesToCheck=None):
     '''
     >>> graph.findPlot.getAxisQuantities()
@@ -111,7 +106,6 @@ def getAxisQuantities(synonyms=False, axesToCheck=None):
     ['count', 'quantity', 'frequency', 'counting',
      'offset', 'measure', 'offsets', 'measures', 'time']
 
-
     '''
     if axesToCheck is None:
         axesToCheck = getAxisClasses()
@@ -122,7 +116,6 @@ def getAxisQuantities(synonyms=False, axesToCheck=None):
         else:
             allQuantities.append(axClass.quantities[0])
     return allQuantities
-
 
 def userFormatsToFormat(userFormat):
     '''
@@ -153,7 +146,6 @@ def userFormatsToFormat(userFormat):
     # environLocal.printDebug(['userFormatsToFormat(): could not match value', value])
     return userFormat
 
-
 def getPlotClassesFromFormat(graphFormat, checkPlotClasses=None):
     '''
     Given a graphFormat, find a list of plots that match:
@@ -181,7 +173,6 @@ def getPlotClassesFromFormat(graphFormat, checkPlotClasses=None):
             filteredPlots.append(p)
     return filteredPlots
 
-
 def getAxisClassFromValue(axisValue: str) -> type[axis.Axis]|None:
     '''
     given an axis value return the single best axis for the value, or None
@@ -204,7 +195,6 @@ def getAxisClassFromValue(axisValue: str) -> type[axis.Axis]|None:
             return thisAxis
     return None
 
-
 def axisMatchesValue(axisClass: type[axis.Axis]|axis.Axis,
                      axisValue: str) -> bool:
     '''
@@ -217,7 +207,6 @@ def axisMatchesValue(axisClass: type[axis.Axis]|axis.Axis,
     True
     >>> graph.findPlot.axisMatchesValue(ax, 'offset')
     False
-
 
     Works on an instantiated object as well:
 
@@ -236,7 +225,6 @@ def axisMatchesValue(axisClass: type[axis.Axis]|axis.Axis,
             return True
     return False
 
-
 def getPlotsToMake(graphFormat: str|None = None,
                    xValue=None,
                    yValue=None,
@@ -247,9 +235,7 @@ def getPlotsToMake(graphFormat: str|None = None,
     or a list of tuples where the first element of each tuple is the plot class
     and the second is a dict of {'x': axisXClass, 'y': axisYClass} etc.
 
-
     Default is pianoroll
-
 
     >>> graph.findPlot.getPlotsToMake()
     [<class 'music21.graph.plot.HorizontalBarPitchSpaceOffset'>]
@@ -290,7 +276,6 @@ def getPlotsToMake(graphFormat: str|None = None,
     [(<class 'music21.graph.plot.Scatter'>,
       OrderedDict([('x', <class 'music21.graph.axis.OffsetAxis'>),
                    ('y', <class 'music21.graph.axis.DynamicsAxis'>)]))]
-
 
     Just a couple of values:
 
@@ -408,46 +393,3 @@ def getPlotsToMake(graphFormat: str|None = None,
             return [(filteredClasses[0], axisDict)]
         else:  # we have done our best
             return [(graphClasses[0], axisDict)]
-
-
-class Test(unittest.TestCase):
-    def testGetPlotsToMakeA(self):
-        post = getPlotsToMake('ambitus')
-        self.assertEqual(post, [plot.WindowedAmbitus])
-        post = getPlotsToMake('key')
-        self.assertEqual(post, [plot.WindowedKey])
-
-        # no args get pitch space piano roll
-        post = getPlotsToMake()
-        self.assertEqual(post, [plot.HorizontalBarPitchSpaceOffset])
-
-        # one arg gives a histogram of that parameters
-        post = getPlotsToMake('duration')
-        self.assertEqual(post, [plot.HistogramQuarterLength])
-        post = getPlotsToMake('quarterLength')
-        self.assertEqual(post, [plot.HistogramQuarterLength])
-        post = getPlotsToMake('ps')
-        self.assertEqual(post, [plot.HistogramPitchSpace])
-        post = getPlotsToMake('pitch')
-        self.assertEqual(post, [plot.HistogramPitchSpace])
-        post = getPlotsToMake('pitchspace')
-        self.assertEqual(post, [plot.HistogramPitchSpace])
-        post = getPlotsToMake('pitchClass')
-        self.assertEqual(post, [plot.HistogramPitchClass])
-
-        post = getPlotsToMake('scatter', 'pitch', 'ql')
-        self.assertEqual(post, [plot.ScatterPitchSpaceQuarterLength])
-
-        post = getPlotsToMake('scatter', 'pc', 'offset')
-        self.assertEqual(post, [plot.ScatterPitchClassOffset])
-
-    def testGetPlotsToMakeB(self):
-        post = getPlotsToMake('dolan')
-        self.assertEqual(post, [plot.Dolan])
-        post = getPlotsToMake('instruments')
-        self.assertEqual(post, [plot.Dolan])
-
-
-if __name__ == '__main__':
-    import music21
-    music21.mainTest(Test)

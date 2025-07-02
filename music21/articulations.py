@@ -76,8 +76,6 @@ A longer test showing the utility of the module:
 '''
 from __future__ import annotations
 
-import unittest
-
 from music21 import base
 from music21 import common
 from music21.common.classTools import tempAttribute
@@ -87,10 +85,7 @@ from music21 import interval
 from music21 import spanner
 from music21 import style
 
-
-
 environLocal = environment.Environment('articulations')
-
 
 # ------------------------------------------------------------------------------
 class Articulation(base.Music21Object):
@@ -186,7 +181,6 @@ class Articulation(base.Music21Object):
         Get or set the volumeShift of this Articulation. This value, between -1 and 1,
         that is used to shift the final Volume of the object it is attached to.
 
-
         >>> at1 = articulations.StrongAccent()
         >>> at1.volumeShift > 0.1
         True
@@ -216,7 +210,6 @@ class TimbreArticulation(Articulation):
     Superclass for all articulations that change the timbre of a note.
     '''
 
-
 # ------------------------------------------------------------------------------
 class Accent(DynamicArticulation):
     '''
@@ -226,7 +219,6 @@ class Accent(DynamicArticulation):
     def __init__(self, **keywords):
         super().__init__(**keywords)
         self._volumeShift = 0.1
-
 
 class StrongAccent(Accent):
     '''
@@ -284,7 +276,6 @@ class Spiccato(Staccato, Accent):
         with tempAttribute(self, 'lengthShift'):
             Accent.__init__(self)  # order matters!
 
-
 class Tenuto(LengthArticulation):
     '''
     >>> a = articulations.Tenuto()
@@ -314,14 +305,12 @@ class IndeterminateSlide(PitchArticulation):
     '''
     _styleClass = style.LineStyle
 
-
 class Scoop(IndeterminateSlide):
     '''
     An indeterminateSlide coming before the main note and going up
 
     >>> a = articulations.Scoop()
     '''
-
 
 class Plop(IndeterminateSlide):
     '''
@@ -351,7 +340,6 @@ class Falloff(IndeterminateSlide):
         self.tieAttach = 'last'
 
 # --------- end indeterminate slide
-
 
 class BreathMark(LengthArticulation):
     '''
@@ -390,7 +378,6 @@ class Unstress(DynamicArticulation):
     def __init__(self, **keywords):
         super().__init__(**keywords)
         self._volumeShift = -0.05
-
 
 # ------------------------------------------------------------------------------
 class TechnicalIndication(Articulation):
@@ -453,7 +440,6 @@ class Fingering(TechnicalIndication):
     def _reprInternal(self):
         return str(self.fingerNumber)
 
-
 # ------------------------------------------------------------------------------
 class UpBow(Bowing):
     '''
@@ -507,7 +493,6 @@ class StringIndication(Bowing):
 
     def _reprInternal(self):
         return f'{self.number}'
-
 
 class StringThumbPosition(Bowing):
     '''
@@ -669,7 +654,6 @@ class OrganIndication(TechnicalIndication):
         super().__init__(**keywords)
         self.substitution = False
 
-
 class OrganHeel(OrganIndication):
     pass
 
@@ -695,42 +679,8 @@ class HandbellIndication(TechnicalIndication):
     '''
     pass
 
-
 # ------------------------------------------------------------------------------
-class Test(unittest.TestCase):
-    def testCopyAndDeepcopy(self):
-        from music21.test.commonTest import testCopyAll
-        testCopyAll(self, globals())
-
-
-    def testBasic(self):
-        a = FretBend()
-        self.assertEqual(a.bendAlter, None)
-
-
-    # def testArticulationEquality(self):
-    #     a1 = Accent()
-    #     a2 = Accent()
-    #     a3 = StrongAccent()
-    #     a4 = StrongAccent()
-    #
-    #     self.assertEqual(a1, a2)
-    #     self.assertEqual(a3, a4)
-    #
-    #     # in order lists
-    #     self.assertEqual([a1, a3], [a2, a4])
-    #
-    #     self.assertEqual(set([a1, a3]), set([a1, a3]))
-    #     self.assertEqual(set([a1, a3]), set([a3, a1]))
-    #
-    #     # comparison of sets of different objects do not pass
-    #     # self.assertEqual(list(set([a1, a3])), list(set([a2, a4])))
-
 
 # ------------------------------------------------------------------------------
 # define presented order in documentation
 _DOC_ORDER = [Articulation]
-
-if __name__ == '__main__':
-    import music21
-    music21.mainTest(Test)

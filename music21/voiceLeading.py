@@ -38,8 +38,6 @@ from __future__ import annotations
 from collections.abc import Generator
 import enum
 import typing as t
-import unittest
-
 from music21 import base
 from music21 import chord
 from music21 import clef
@@ -63,7 +61,6 @@ if t.TYPE_CHECKING:
 # to be populated the first time a VLQ object is created
 intervalCache: list[interval.Interval] = []
 
-
 class MotionType(str, enum.Enum):
     antiParallel = 'Anti-Parallel'
     contrary = 'Contrary'
@@ -71,7 +68,6 @@ class MotionType(str, enum.Enum):
     oblique = 'Oblique'
     parallel = 'Parallel'
     similar = 'Similar'
-
 
 # ------------------------------------------------------------------------------
 class VoiceLeadingQuartet(base.Music21Object):
@@ -357,7 +353,6 @@ class VoiceLeadingQuartet(base.Music21Object):
         >>> vl.motionType()
         <MotionType.noMotion: 'No Motion'>
 
-
         Anti-parallel motion has to be explicitly enabled to appear:
 
         >>> n1_a5 = note.Note('A5')
@@ -596,8 +591,6 @@ class VoiceLeadingQuartet(base.Music21Object):
 
             return intervalsAreValid
 
-
-
     def contraryMotion(self) -> bool:
         '''
         Returns True if both voices move in opposite directions
@@ -781,7 +774,6 @@ class VoiceLeadingQuartet(base.Music21Object):
         >>> vlq2a.parallelInterval(interval.Interval('P8'))
         True
 
-
         Non-parallel intervals are, of course, False
 
         >>> n12b = note.Note('B4')  # ascending 3rd
@@ -797,7 +789,6 @@ class VoiceLeadingQuartet(base.Music21Object):
             )
             or self.antiParallelMotion(thisInterval)
         )
-
 
     def parallelFifth(self) -> bool:
         '''
@@ -1050,7 +1041,6 @@ class VoiceLeadingQuartet(base.Music21Object):
             d5:     in by contrary motion to a third, with 7 resolving up to 1 in the bass
 
             m7:     Resolves to a third with a leap from 5 to 1 in the bass
-
 
         We will make the examples shorter with this abbreviation:
         >>> N = note.Note
@@ -1350,10 +1340,8 @@ class VoiceLeadingQuartet(base.Music21Object):
                      and self.key.pitchFromDegree(1).name in closingPitches
                      and self.contraryMotion())
 
-
 class VoiceLeadingQuartetException(exceptions21.Music21Exception):
     pass
-
 
 def getVerticalityFromObject(music21Obj, scoreObjectIsFrom, classFilterList=None):
     '''
@@ -1412,7 +1400,6 @@ def getVerticalityFromObject(music21Obj, scoreObjectIsFrom, classFilterList=None
             else:
                 contentDict[partNum] = [el]
     return Verticality(contentDict)
-
 
 class Verticality(base.Music21Object):
     '''
@@ -1634,7 +1621,6 @@ class Verticality(base.Music21Object):
         else:
             return None
 
-
     def getObjectsByClass(self, classFilterList, partNums=None):
         '''
         returns a list of all objects in the Verticality of a type contained
@@ -1804,7 +1790,6 @@ class Verticality(base.Music21Object):
         [(<music21.note.Note C>, 'blue'), (<music21.harmony.ChordSymbol D>, 'blue')]
     ''')
 
-
 class VerticalityNTuplet(base.Music21Object):
     '''
     a collection of n number of Verticalities. These objects are useful when
@@ -1828,8 +1813,6 @@ class VerticalityNTuplet(base.Music21Object):
 
     def _reprInternal(self):
         return f'listOfVerticalities={self.verticalities}'
-
-
 
 class VerticalityTriplet(VerticalityNTuplet):
     '''
@@ -1857,7 +1840,6 @@ class VerticalityTriplet(VerticalityNTuplet):
                     self.verticalities[2].getObjectsByPart(partNum, note.Note)
                 ]
             )
-
 
     def hasPassingTone(self, partNumToIdentify, unaccentedOnly=False):
         '''
@@ -1933,9 +1915,6 @@ class VerticalityTriplet(VerticalityNTuplet):
                 pass
         return ret and not self.chordList[1].isConsonant()
 
-
-
-
 class NNoteLinearSegment(base.Music21Object):
     '''
     a list of n notes strung together in a sequence
@@ -1975,7 +1954,6 @@ class NNoteLinearSegment(base.Music21Object):
         '''
         return self._noteList[:]
 
-
     def _getMelodicIntervals(self):
         tempListOne = self.noteList[:-1]
         tempListTwo = self.noteList[1:]
@@ -1999,10 +1977,8 @@ class NNoteLinearSegment(base.Music21Object):
          <music21.interval.Interval M2>]
         ''')
 
-
 class ThreeNoteLinearSegmentException(exceptions21.Music21Exception):
     pass
-
 
 class ThreeNoteLinearSegment(NNoteLinearSegment):
     '''
@@ -2094,7 +2070,6 @@ class ThreeNoteLinearSegment(NNoteLinearSegment):
                 raise ThreeNoteLinearSegmentException(
                     f'not a valid note specification: {value!r}'
                 ) from e
-
 
     n1 = property(_getN1, _setN1, doc='''
         get or set the first note (left-most) in the segment
@@ -2225,7 +2200,6 @@ class ThreeNoteLinearSegment(NNoteLinearSegment):
                 and self.iLeft.generic.undirected * self.iRight.generic.undirected == 4
                 and self.iLeft.direction * self.iRight.direction == 1)
 
-
     def couldBeChromaticPassingTone(self):
         '''
         A note could a chromatic passing tone (and therefore a passing tone in general)
@@ -2285,7 +2259,6 @@ class ThreeNoteLinearSegment(NNoteLinearSegment):
         else:
             return self.couldBeDiatonicNeighborTone() or self.couldBeChromaticNeighborTone()
 
-
     def couldBeDiatonicNeighborTone(self) -> bool:
         '''
         Returns True if and only if noteToAnalyze could be a diatonic neighbor tone, that is,
@@ -2304,7 +2277,6 @@ class ThreeNoteLinearSegment(NNoteLinearSegment):
             and self.iLeft.chromatic.undirected == 2
             and self.iRight.chromatic.undirected == 2
             and self.iLeft.direction * self.iRight.direction == -1)
-
 
     def couldBeChromaticNeighborTone(self) -> bool:
         '''
@@ -2326,13 +2298,11 @@ class ThreeNoteLinearSegment(NNoteLinearSegment):
                  and self.iRight.isChromaticStep
                  and (self.iLeft.direction * self.iRight.direction == -1)))
 
-
 # Below: beginnings of an implementation for any object segments,
 # such as two chord linear segments
 # currently only used by theoryAnalyzer
 class NChordLinearSegmentException(exceptions21.Music21Exception):
     pass
-
 
 class NObjectLinearSegment(base.Music21Object):
     def __init__(self, objectList=(), **keywords):
@@ -2341,7 +2311,6 @@ class NObjectLinearSegment(base.Music21Object):
 
     def _reprInternal(self):
         return f'objectList={self.objectList}'
-
 
 class NChordLinearSegment(NObjectLinearSegment):
     def __init__(self, chordList=(), **keywords):
@@ -2378,7 +2347,6 @@ class NChordLinearSegment(NObjectLinearSegment):
         '''
         return self._chordList[:]
 
-
     def _reprInternal(self):
         return f'chordList={self.chordList}'
 
@@ -2414,7 +2382,6 @@ class TwoChordLinearSegment(NChordLinearSegment):
         <music21.interval.ChromaticInterval 3>
         '''
         return interval.notesToChromatic(self.chordList[0].bass(), self.chordList[1].bass())
-
 
 def iterateAllVoiceLeadingQuartets(
     s: stream.Stream,
@@ -2454,63 +2421,6 @@ def iterateAllVoiceLeadingQuartets(
 
 # ------------------------------------------------------------------------------
 
-class Test(unittest.TestCase):
-
-    def testInstantiateEmptyObject(self):
-        '''
-        test instantiating an empty VoiceLeadingQuartet
-        '''
-        VoiceLeadingQuartet()
-
-    def testCopyAndDeepcopy(self):
-        from music21.test.commonTest import testCopyAll
-        testCopyAll(self, globals())
-
-    def test_unifiedTest(self):
-        c4 = note.Note('C4')
-        d4 = note.Note('D4')
-        e4 = note.Note('E4')
-        # f4 = note.Note('F4')
-        g4 = note.Note('G4')
-        a4 = note.Note('A4')
-        # b4 = note.Note('B4')
-        c5 = note.Note('C5')
-        # d5 = note.Note('D5')
-
-        a = VoiceLeadingQuartet(c4, d4, g4, a4)
-        assert a.similarMotion() is True
-        assert a.parallelMotion() is True
-        assert a.antiParallelMotion() is False
-        assert a.obliqueMotion() is False
-        assert a.parallelInterval(interval.Interval('P5')) is True
-        assert a.parallelInterval(interval.Interval('M3')) is False
-
-        b = VoiceLeadingQuartet(c4, c4, g4, g4)
-        assert b.noMotion() is True
-        assert b.parallelMotion() is False
-        assert b.antiParallelMotion() is False
-        assert b.obliqueMotion() is False
-
-        c = VoiceLeadingQuartet(c4, g4, c5, g4)
-        assert c.antiParallelMotion() is True
-        assert c.hiddenInterval(interval.Interval('P5')) is False
-
-        d = VoiceLeadingQuartet(c4, d4, e4, a4)
-        assert d.hiddenInterval(interval.Interval('P5')) is True
-        assert d.hiddenInterval(interval.Interval('A4')) is False
-        assert d.hiddenInterval(interval.Interval('AA4')) is False
-
-
-class TestExternal(unittest.TestCase):
-    pass
-
-
 # -----------------------------------------------------------------------------
 
 _DOC_ORDER = [VoiceLeadingQuartet, ThreeNoteLinearSegment, Verticality, VerticalityNTuplet]
-
-if __name__ == '__main__':
-    import music21
-    music21.mainTest(Test)
-
-

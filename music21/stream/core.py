@@ -26,8 +26,6 @@ from __future__ import annotations
 import copy
 from fractions import Fraction
 import typing as t
-import unittest
-
 from music21.base import Music21Object
 from music21.common.enums import OffsetSpecial
 from music21.common.numberTools import opFrac
@@ -37,10 +35,8 @@ from music21 import tree
 from music21.exceptions21 import StreamException, ImmutableStreamException
 from music21.stream.iterator import StreamIterator, RecursiveIterator
 
-
 if t.TYPE_CHECKING:
     from music21.stream import Stream
-
 
 class StreamCore(Music21Object):
     '''
@@ -597,7 +593,6 @@ class StreamCore(Music21Object):
         {0.0} <music21.note.Note C>
         {1.0} <music21.note.Note D>
 
-
         Now we'll remove the second note so not all elements of the Slur
         are present. This, by default, will not insert the Slur:
 
@@ -628,7 +623,6 @@ class StreamCore(Music21Object):
             {0.0} <music21.note.Note C>
             {1.0} <music21.note.Note D>
 
-
         But the default acts with recursion:
 
         >>> part.coreGatherMissingSpanners()
@@ -637,7 +631,6 @@ class StreamCore(Music21Object):
             {0.0} <music21.note.Note C>
             {1.0} <music21.note.Note D>
         {0.0} <music21.spanner.Slur <music21.note.Note C><music21.note.Note D>>
-
 
         Spanners already in the stream are not put there again:
 
@@ -733,12 +726,3 @@ class StreamCore(Music21Object):
 # after adding subclass -- actually faster, showing the rounding error:
 # In [2]: timeit('s = stream.Stream()', setup='from music21 import stream', number=100000)
 # Out[2]: 1.5247003990225494
-
-
-class Test(unittest.TestCase):
-    pass
-
-
-if __name__ == '__main__':
-    import music21
-    music21.mainTest(Test)

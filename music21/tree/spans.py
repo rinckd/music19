@@ -19,8 +19,6 @@ from __future__ import annotations
 import copy
 from math import inf
 import typing as t
-import unittest
-
 from music21.common.types import OffsetQLIn
 from music21 import environment
 from music21 import exceptions21
@@ -32,12 +30,10 @@ if t.TYPE_CHECKING:
 environLocal = environment.Environment('tree.spans')
 # -----------------------------------------------------------------------------
 
-
 class TimespanException(exceptions21.TreeException):
     pass
 
 # -----------------------------------------------------------------------------
-
 
 class Timespan:
     r'''
@@ -228,7 +224,6 @@ class Timespan:
         right = self.new(offset=offset)
         return left, right
 
-
 # -----------------------------------------------------------------------------
 
 class ElementTimespan(Timespan):
@@ -261,7 +256,6 @@ class ElementTimespan(Timespan):
 
     There are four PitchedTimespans in the verticality -- each representing
     a note.  The notes are arranged from lowest to highest.
-
 
     We can find all the PitchedTimespans that start exactly at 6.5. There's
     one.
@@ -517,7 +511,6 @@ class ElementTimespan(Timespan):
 
 # -----------------------------------------------------------------------------
 
-
 class PitchedTimespan(ElementTimespan):
     def __init__(self,
                  element=None,
@@ -588,7 +581,6 @@ class PitchedTimespan(ElementTimespan):
         >>> merged.part is timespan_one.part
         True
 
-
         Attempting to merge timespans which are not contiguous, or which do not
         have identical pitches will result in error:
 
@@ -596,13 +588,11 @@ class PitchedTimespan(ElementTimespan):
         (False, 'Cannot merge <PitchedTimespan (0.0 to 0.5) <music21.note.Note C#>>
              with <PitchedTimespan (9.5 to 10.0) <music21.note.Note B>>: not contiguous')
 
-
         >>> scoreTree[0].mergeWith(scoreTree[50])
         Traceback (most recent call last):
         music21.tree.spans.TimespanException: Cannot merge
                 <PitchedTimespan (0.0 to 0.5) <music21.note.Note C#>>
                 with <PitchedTimespan (9.5 to 10.0) <music21.note.Note B>>: not contiguous
-
 
         This is probably not what you want to do: get the next element timespan in
         the same score:
@@ -622,13 +612,4 @@ class PitchedTimespan(ElementTimespan):
                 can = False
         return (can, message)
 
-
 # -----------------------------------------------------------------------------
-
-class Test(unittest.TestCase):
-    pass
-
-
-if __name__ == '__main__':
-    import music21
-    music21.mainTest(Test)

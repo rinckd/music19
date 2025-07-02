@@ -14,8 +14,6 @@ from __future__ import annotations
 from collections import Counter
 import copy
 from operator import attrgetter
-import unittest
-
 from music21 import base
 from music21 import common
 from music21 import environment
@@ -26,7 +24,6 @@ from music21 import stream
 environLocal = environment.Environment()
 
 # ------- parsing functions for atonal music -------
-
 
 class ContiguousSegmentOfNotes(base.Music21Object):
     '''
@@ -207,7 +204,6 @@ class ContiguousSegmentOfNotes(base.Music21Object):
                     pitchClasses.append(p.pitchClass)
         return pitchClasses
 
-
 class ContiguousSegmentSearcher:
     '''
     Class that when given a :class:`~music21.stream.Stream`
@@ -288,7 +284,6 @@ class ContiguousSegmentSearcher:
     [[<music21.note.Note G>, <music21.note.Note A>, <music21.note.Note B>],
      [<music21.note.Note A>, <music21.note.Note B>, <music21.note.Note C>]]
 
-
     In order to be considered repetition, the spellings of the notes
     in question must be exactly the same:
     enharmonic equivalents are not checked and notes with the
@@ -311,7 +306,6 @@ class ContiguousSegmentSearcher:
     >>> foundSegments = searcherNew.byLength(3)
     >>> [seg.segment for seg in foundSegments]
     [[<music21.note.Note C>, <music21.note.Note C>, <music21.note.Note B#>]]
-
 
     'rowsOnly' searches only for tone rows, in which all pitch classes
     in the segment must be distinct. Below,
@@ -825,7 +819,6 @@ class ContiguousSegmentSearcher:
             removedChord = chordList.pop(0)
             self.totalLength -= len(removedChord.pitches)
 
-
 class SegmentMatcher:
     '''
     Matches all the ContiguousSegmentsOfNotes (found by ContiguousSegmentSearcher)
@@ -847,7 +840,6 @@ class SegmentMatcher:
     :attr:`~music21.search.serial.ContiguousSegmentOfNotes.activeSegment`
     matches at least one of the elements of the searchList,
     subject to the settings specified in reps and includeChords.
-
 
     >>> sc = stream.Score()
     >>> part = stream.Part()
@@ -921,7 +913,6 @@ class SegmentMatcher:
     >>> matcher = search.serial.SegmentMatcher(sc, reps='ignoreAll', includeChords=True)
     >>> [seg.segment for seg in matcher.find([[5, 7, 'B']])]
     [[<music21.note.Note F>, <music21.chord.Chord G4 B4>]]
-
 
     As expected, the pitch classes found segment are read
     in the order 5, 7, 11 ('B'), as the pitches
@@ -1192,7 +1183,6 @@ class SegmentMatcher:
         '''
         return bool(searchSegment == subsetToCheck)
 
-
 class TransposedSegmentMatcher(SegmentMatcher):
     '''
     Finds all instances of given contiguous segments of pitch classes, with transpositions,
@@ -1213,7 +1203,6 @@ class TransposedSegmentMatcher(SegmentMatcher):
     :attr:`~music21.search.serial.ContiguousSegmentOfNotes.activeSegment` matches at
     least one of the elements of the searchList,
     subject to the settings specified in reps and includeChords.
-
 
     >>> part = stream.Part()
     >>> n1 = note.Note('e4')
@@ -1334,7 +1323,6 @@ class TransposedSegmentMatcher(SegmentMatcher):
         '''
         return pcToToneRow(segment).getIntervalsAsString()
 
-
 class TransformedSegmentMatcher(SegmentMatcher):
     '''
     Finds all instances of given contiguous segments of pitch classes,
@@ -1367,7 +1355,6 @@ class TransformedSegmentMatcher(SegmentMatcher):
     least one of the elements of the searchList,
     subject to the settings specified in reps and includeChords.
 
-
     >>> n1 = note.Note('c#4')
     >>> n2 = note.Note('e4')
     >>> n3 = note.Note('d#4')
@@ -1382,7 +1369,6 @@ class TransformedSegmentMatcher(SegmentMatcher):
 
     .. image:: images/serial-findTransformedSegments.png
         :width: 150
-
 
     >>> tsMatcher = search.serial.TransformedSegmentMatcher(part, 'rowsOnly',
     ...                 includeChords=False)
@@ -1546,7 +1532,6 @@ class TransformedSegmentMatcher(SegmentMatcher):
         '''
         return bool(self.getTransformations(searchSegment, subsetToCheck))
 
-
 class MultisetSegmentMatcher(SegmentMatcher):
     '''
     Finds all instances of given multisets of pitch classes
@@ -1577,7 +1562,6 @@ class MultisetSegmentMatcher(SegmentMatcher):
     interpreted as a multiset,
     matches at least one of the elements of the searchList,
     subject to the settings specified in reps and includeChords.
-
 
     >>> part = stream.Part()
     >>> n1 = note.Note('e4')
@@ -1616,7 +1600,6 @@ class MultisetSegmentMatcher(SegmentMatcher):
     .. image:: images/serial-findMultisets.png
         :width: 150
 
-
     Find all instances of the multiset [5, 4, 4] in the part
 
     >>> MSS = search.serial.MultisetSegmentMatcher(part, 'includeAll', includeChords=False)
@@ -1626,7 +1609,6 @@ class MultisetSegmentMatcher(SegmentMatcher):
      <music21.search.serial.ContiguousSegmentOfNotes ['E4', 'F4', 'E4']>]
     >>> [(seg.activeSegment, seg.startMeasureNumber) for seg in EEF]
     [([4, 4, 5], 1), ([4, 5, 4], 2)]
-
 
     >>> MSS = search.serial.MultisetSegmentMatcher(part, 'ignoreAll')
     >>> EF = MSS.find([5, 4])
@@ -1714,7 +1696,6 @@ class MultisetSegmentMatcher(SegmentMatcher):
         subsetCounter = Counter(subsetToCheck)
         return bool(searchSegmentCounter == subsetCounter)
 
-
 class TransposedMultisetMatcher(SegmentMatcher):
     '''
     Finds all instances of given multisets of pitch classes, with transpositions,
@@ -1741,7 +1722,6 @@ class TransposedMultisetMatcher(SegmentMatcher):
     matches at least one of the elements of the searchList,
     subject to the settings specified in reps and includeChords.
 
-
     >>> part = stream.Part()
     >>> n1 = note.Note('c4')
     >>> n2 = note.Note('c#4')
@@ -1767,9 +1747,7 @@ class TransposedMultisetMatcher(SegmentMatcher):
     ([2, 4, 3], 3, [-9, -10, -11])
     ([3, 4, 2], 5, [-9, -10, -11])
 
-
     OMIT_FROM_DOCS
-
 
     >>> part2 = stream.Part()
     >>> n1 = chord.Chord(['c4', 'c5'])
@@ -1826,7 +1804,6 @@ class TransposedMultisetMatcher(SegmentMatcher):
                 return True
         return False
 
-
 class TransposedInvertedMultisetMatcher(TransposedMultisetMatcher):
     '''
     Finds all instances of given multisets of pitch classes, with
@@ -1851,7 +1828,6 @@ class TransposedInvertedMultisetMatcher(TransposedMultisetMatcher):
     interpreted as a multiset,
     matches at least one of the elements of the searchList,
     subject to the settings specified in reps and includeChords.
-
 
     >>> s = stream.Stream()
     >>> n1 = note.Note('c4')
@@ -1935,7 +1911,6 @@ class TransposedInvertedMultisetMatcher(TransposedMultisetMatcher):
                 return True
         return False
 
-
 def _labelGeneral(segmentsToLabel, inputStream, segmentDict, reps, includeChords,
                   labelTransformations=False):
     '''
@@ -1995,7 +1970,6 @@ def _labelGeneral(segmentsToLabel, inputStream, segmentDict, reps, includeChords
             break
 
     return inputStream
-
 
 def labelSegments(inputStream, segmentDict, reps='skipConsecutive', includeChords=True):
     '''
@@ -2062,7 +2036,6 @@ def labelSegments(inputStream, segmentDict, reps='skipConsecutive', includeChord
     segmentList = [segmentDict[label] for label in segmentDict]
     segmentsToLabel = SegmentMatcher(streamCopy, reps, includeChords).find(segmentList)
     return _labelGeneral(segmentsToLabel, streamCopy, segmentDict, reps, includeChords)
-
 
 def labelTransposedSegments(inputStream, segmentDict, reps='skipConsecutive', includeChords=True):
     '''
@@ -2147,7 +2120,6 @@ def labelTransposedSegments(inputStream, segmentDict, reps='skipConsecutive', in
     segmentsToLabel = TransposedSegmentMatcher(streamCopy, reps, includeChords).find(segmentList)
     return _labelGeneral(segmentsToLabel, streamCopy, segmentDict, reps, includeChords)
 
-
 def labelTransformedSegments(inputStream,
                              segmentDict,
                              reps='skipConsecutive',
@@ -2212,7 +2184,6 @@ def labelTransformedSegments(inputStream,
         labelTransformations=convention
     )
 
-
 def labelMultisets(inputStream, multisetDict, reps='skipConsecutive', includeChords=True):
     '''
     Labels all instances of a given collection of multisets of pitch classes in a
@@ -2241,7 +2212,6 @@ def labelMultisets(inputStream, multisetDict, reps='skipConsecutive', includeCho
     there will be more than six spanners active
     simultaneously, which may result in some
     spanners not showing correctly in XML format, or not at all.
-
 
     >>> part = stream.Part()
     >>> n1 = note.Note('e4')
@@ -2276,7 +2246,6 @@ def labelMultisets(inputStream, multisetDict, reps='skipConsecutive', includeCho
     segmentList = [multisetDict[label] for label in multisetDict]
     segmentsToLabel = MultisetSegmentMatcher(streamCopy, reps, includeChords).find(segmentList)
     return _labelGeneral(segmentsToLabel, streamCopy, multisetDict, reps, includeChords)
-
 
 def labelTransposedMultisets(inputStream, multisetDict,
                              reps='skipConsecutive', includeChords=True):
@@ -2337,7 +2306,6 @@ def labelTransposedMultisets(inputStream, multisetDict,
     segmentsToLabel = TransposedMultisetMatcher(streamCopy, reps,
                                                 includeChords).find(segmentList)
     return _labelGeneral(segmentsToLabel, streamCopy, multisetDict, reps, includeChords)
-
 
 def labelTransposedAndInvertedMultisets(inputStream,
                                         multisetDict,
@@ -2406,11 +2374,6 @@ def labelTransposedAndInvertedMultisets(inputStream,
 
 # --------------------------------------------------------------------
 
-
-class Test(unittest.TestCase):
-    pass
-
-
 # ------------------------------------------------------------------------------
 # define presented order in documentation
 _DOC_ORDER = [
@@ -2429,8 +2392,3 @@ _DOC_ORDER = [
     'labelTransposedMultisets',
     'labelTransposedAndInvertedMultisets'
 ]
-
-if __name__ == '__main__':
-    import music21
-    music21.mainTest(Test)
-

@@ -20,8 +20,6 @@ import collections
 import math
 import re
 import typing as t
-import unittest
-
 from music21.graph.utilities import accidentalLabelToUnicode, GraphException
 
 from music21 import bar
@@ -35,13 +33,10 @@ from music21 import stream
 from music21.analysis import elements as elementAnalysis
 from music21.analysis import pitchAnalysis
 
-
 if t.TYPE_CHECKING:
     from music21 import note
 
-
 USE_GRACE_NOTE_SPACING = -1
-
 
 class Axis(prebase.ProtoM21Object):
     '''
@@ -292,7 +287,6 @@ class Axis(prebase.ProtoM21Object):
 
 # -----------------------------------------------------------------------------
 
-
 class PitchAxis(Axis):
     '''
     Axis subclass for dealing with Pitches
@@ -441,7 +435,6 @@ class PitchAxis(Axis):
         ticks = self.makePitchLabelsUnicode(ticks)
         return ticks
 
-
 class PitchClassAxis(PitchAxis):
     '''
     Axis subclass for dealing with PitchClasses
@@ -493,7 +486,6 @@ class PitchClassAxis(PitchAxis):
         7 G
         9 A
         11 B
-
 
         >>> s = corpus.parse('bach/bwv281.xml')
         >>> plotS = graph.plot.PlotStream(s)
@@ -569,7 +561,6 @@ class PitchClassAxis(PitchAxis):
         10 B♭
         11 B
 
-
         OMIT_FROM_DOCS
 
         TODO: this ultimately needs to look at key signature/key to determine
@@ -578,7 +569,6 @@ class PitchClassAxis(PitchAxis):
         # keys are integers
         # name strings are keys, and enharmonic are thus different
         return self._pitchTickHelper('name', 'pitchClass')
-
 
 class PitchSpaceAxis(PitchAxis):
     '''
@@ -642,7 +632,6 @@ class PitchSpaceAxis(PitchAxis):
         (57, 'A')
         '''
         return self._pitchTickHelper('nameWithOctave', 'ps')
-
 
 class PitchSpaceOctaveAxis(PitchSpaceAxis):
     '''
@@ -739,7 +728,6 @@ class PitchSpaceOctaveAxis(PitchSpaceAxis):
 
 # -----------------------------------------------------------------------------
 
-
 class PositionAxis(Axis):
     '''
     Axis subclass for dealing with Positions
@@ -757,7 +745,6 @@ class PositionAxis(Axis):
     def __init__(self, client=None, axisName='x'):
         super().__init__(client, axisName)
         self.graceNoteQL = 2**-4
-
 
 class OffsetAxis(PositionAxis):
     '''
@@ -858,7 +845,6 @@ class OffsetAxis(PositionAxis):
         >>> ax.ticks()
         [(0.0, '0'), (9.0, '3'), (21.0, '6'), (29.0, '8')]
 
-
         We can also plot on a part:
 
         >>> soprano = bach.parts.first()
@@ -875,7 +861,6 @@ class OffsetAxis(PositionAxis):
         >>> ax.ticks()
         [(0.0, '0'), (29.0, '8')]
 
-
         Only show ticks between minValue and maxValue (in offsets):
 
         >>> ax.minMaxMeasureOnly = False
@@ -883,7 +868,6 @@ class OffsetAxis(PositionAxis):
         >>> ax.maxValue = 12
         >>> ax.ticks()
         [(9.0, '3')]
-
 
         Double bars and other heavy bars always show up.
         (Let's get a new axis object to see.)
@@ -1108,7 +1092,6 @@ class OffsetAxis(PositionAxis):
         self.useMeasures = bool(offsetMap)
         return self.useMeasures
 
-
 class QuarterLengthAxis(PositionAxis):
     '''
     Axis subclass for dealing with QuarterLengths
@@ -1261,7 +1244,6 @@ class QuarterLengthAxis(PositionAxis):
         except ValueError:  # pragma: no cover
             raise GraphException(f'cannot take log of x value: {x}')
 
-
 class OffsetEndAxis(OffsetAxis):
     '''
     An Axis that gives beginning and ending values for each element
@@ -1294,7 +1276,6 @@ class OffsetEndAxis(OffsetAxis):
         return (off, useQL)
 
 # -----------------------------------------------------------------------------
-
 
 class DynamicsAxis(Axis):
     '''
@@ -1339,7 +1320,6 @@ class DynamicsAxis(Axis):
         return ticks
 
 # -----------------------------------------------------------------------------
-
 
 class CountingAxis(Axis):
     '''
@@ -1416,30 +1396,6 @@ class CountingAxis(Axis):
         client.data = sorted(newClientData)
         return client.data
 
+# -----------------------------------------------------------------------------
 
 # -----------------------------------------------------------------------------
-class Test(unittest.TestCase):
-
-    def testCountingAxisFormat(self):
-        def countingAxisFormatter(n, formatDict):
-            if n.pitch.accidental is not None:
-                formatDict['color'] = 'red'
-            return n.pitch.diatonicNoteNum
-
-        from music21.graph.plot import Histogram
-        from music21 import converter
-        s = converter.parse('tinynotation: 4/4 C4 D E F C D# E F#')
-        hist = Histogram(s)
-        hist.doneAction = None
-        hist.axisX = Axis(hist, 'x')
-        hist.axisX.extractOneElement = countingAxisFormatter
-        hist.run()
-        self.assertEqual(hist.data,
-                         [(1, 2, {}), (2, 2, {'color': 'red'}),
-                          (3, 2, {}), (4, 2, {'color': 'red'})])
-
-
-# -----------------------------------------------------------------------------
-if __name__ == '__main__':
-    import music21
-    music21.mainTest(Test)

@@ -22,13 +22,10 @@ import multiprocessing
 import pathlib
 import pickle
 import traceback
-import unittest
-
 from music21 import common
 from music21 import environment
 
 environLocal = environment.Environment('metadata.caching')
-
 
 def cacheMetadata(corpusNames=None,
                   useMultiprocessing=True,
@@ -73,9 +70,7 @@ def cacheMetadata(corpusNames=None,
         else:
             environLocal.printDebug(message)
 
-
 # -----------------------------------------------------------------------------
-
 
 class MetadataCachingJob:
     '''
@@ -252,9 +247,7 @@ class MetadataCachingJob:
             cleanFilePath = self.filePath
         return cleanFilePath
 
-
 # -----------------------------------------------------------------------------
-
 
 class JobProcessor:
     '''
@@ -371,9 +364,7 @@ class JobProcessor:
             }
         # end generator
 
-
 # -----------------------------------------------------------------------------
-
 
 class WorkerProcess(multiprocessing.Process):
     '''
@@ -402,20 +393,9 @@ class WorkerProcess(multiprocessing.Process):
             self.job_queue.task_done()
             self.result_queue.put(pickle.dumps(job, protocol=0))
 
-
 # -----------------------------------------------------------------------------
-
-
-class Test(unittest.TestCase):
-    pass
-
 
 # -----------------------------------------------------------------------------
 _DOC_ORDER: list[type] = []
-
-if __name__ == '__main__':
-    import music21
-    music21.mainTest(Test)
-
 
 # -----------------------------------------------------------------------------

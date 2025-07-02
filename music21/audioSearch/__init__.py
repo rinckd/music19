@@ -41,8 +41,6 @@ import math
 import pathlib
 import wave
 import warnings
-import unittest
-
 from typing import cast
 
 # cannot call this base, because when audioSearch.__init__.py
@@ -64,7 +62,6 @@ environLocal = environment.Environment('audioSearch')
 
 audioChunkLength = 1024
 recordSampleRate = 44100
-
 
 def histogram(data, bins):
     # noinspection PyShadowingNames
@@ -109,7 +106,6 @@ def histogram(data, bins):
         binsLimits.append(minValue + count * lengthEachBin)
         count += 1
     return container, binsLimits
-
 
 def autocorrelationFunction(recordedSignal, recordSampleRateIn):
     # noinspection PyShadowingNames
@@ -165,7 +161,6 @@ def autocorrelationFunction(recordedSignal, recordSampleRateIn):
         finalResult = recordSampleRateIn / vertex
     return finalResult
 
-
 def prepareThresholds(useScale=None):
     # noinspection PyShadowingNames
     '''
@@ -184,7 +179,6 @@ def prepareThresholds(useScale=None):
     Thus, the list returned has one less element than the number of notes in the
     scale + octave repetition.  If useScale is a ChromaticScale, `prepareThresholds`
     will return a 12-element list.  If it's a diatonic scale, it'll have 7 elements.
-
 
     >>> pitchThresholds, pitches = audioSearch.prepareThresholds(scale.MajorScale('A3'))
     >>> for i in range(len(pitchThresholds)):
@@ -214,7 +208,6 @@ def prepareThresholds(useScale=None):
 
     return scPitchesThreshold, scPitches
 
-
 def interpolation(correlation, peak):
     # noinspection PyShadowingNames
     '''
@@ -240,7 +233,6 @@ def interpolation(correlation, peak):
         correlation[peak - 1] - 2.0 * correlation[peak] + correlation[peak + 1])
     vertex = vertex * 0.5 + peak
     return vertex
-
 
 def normalizeInputFrequency(inputPitchFrequency, thresholds=None, pitches=None):
     # noinspection PyShadowingNames
@@ -297,7 +289,6 @@ def normalizeInputFrequency(inputPitchFrequency, thresholds=None, pitches=None):
     name_note = pitch.Pitch(str(pitches[-1]))
     return name_note.frequency, returnPitch
 
-
 def pitchFrequenciesToObjects(detectedPitchesFreq, useScale=None):
     # noinspection PyShadowingNames
     '''
@@ -345,7 +336,6 @@ def pitchFrequenciesToObjects(detectedPitchesFreq, useScale=None):
             listPlot.append(detectedPitchObjects[hold + j - 1].frequency)
     return detectedPitchObjects, listPlot
 
-
 def getFrequenciesFromMicrophone(length=10.0, storeWaveFilename=None):
     '''
     records for length (=seconds) a set of frequencies from the microphone.
@@ -375,7 +365,6 @@ def getFrequenciesFromMicrophone(length=10.0, storeWaveFilename=None):
         samples = numpy.frombuffer(data, dtype=numpy.int16)
         freqFromAQList.append(autocorrelationFunction(samples, recordSampleRate))
     return freqFromAQList
-
 
 def getFrequenciesFromAudioFile(waveFilename='xmas.wav'):
     '''
@@ -416,7 +405,6 @@ def getFrequenciesFromAudioFile(waveFilename='xmas.wav'):
     wv.close()
 
     return freqFromAQList
-
 
 def getFrequenciesFromPartialAudioFile(waveFilenameOrHandle='temp', length=10.0, startSample=0):
     '''
@@ -498,7 +486,6 @@ def getFrequenciesFromPartialAudioFile(waveFilenameOrHandle='temp', length=10.0,
     endSample = startSample
     return (freqFromAQList, waveHandle, endSample)
 
-
 def detectPitchFrequencies(freqFromAQList, useScale=None):
     # noinspection PyShadowingNames
     '''
@@ -530,7 +517,6 @@ def detectPitchFrequencies(freqFromAQList, useScale=None):
         unused_freq, pitch_name = normalizeInputFrequency(inputPitchFrequency, thresholds, pitches)
         detectedPitchesFreq.append(pitch_name.frequency)
     return detectedPitchesFreq
-
 
 def smoothFrequencies(
     frequencyList: list[int|float],
@@ -568,7 +554,6 @@ def smoothFrequencies(
 
     >>> audioSearch.smoothFrequencies(inputPitches, smoothLevels=28)[:5]
     [432, 432, 432, 432, 432]
-
 
     If inPlace is True then the list is modified in place and nothing is returned:
 
@@ -649,10 +634,8 @@ def smoothFrequencies(
             frequencyList[i] = out[i]
         return None
 
-
 # ------------------------------------------------------
 # Duration related routines
-
 
 def joinConsecutiveIdenticalPitches(detectedPitchObjects):
     # noinspection PyShadowingNames
@@ -734,7 +717,6 @@ def joinConsecutiveIdenticalPitches(detectedPitchObjects):
         j = j + 1
     return notesList, durationList
 
-
 def quantizeDuration(length):
     '''
     round an approximately transcribed quarterLength to a better one in
@@ -762,7 +744,6 @@ def quantizeDuration(length):
         if length > threshold:
             finalLength = typicalLengths[i + 1]
     return finalLength / 100
-
 
 def quarterLengthEstimation(durationList, mostRepeatedQuarterLength=1.0):
     # noinspection PyShadowingNames
@@ -812,7 +793,6 @@ def quarterLengthEstimation(durationList, mostRepeatedQuarterLength=1.0):
     # environLocal.printDebug(f' quarterLengthEstimate {qle}')
     return qle
 
-
 def notesAndDurationsToStream(
     notesList,
     durationList,
@@ -832,7 +812,6 @@ def notesAndDurationsToStream(
     a metadata object and a single :class:`~music21.stream.Part` object, which in turn
     contains the notes, etc.  Does not run :meth:`~music21.stream.base.Stream.makeNotation`
     on the Score.
-
 
     >>> durationList = [20, 19, 10, 30, 6, 21]
     >>> n = note.Note
@@ -877,7 +856,6 @@ def notesAndDurationsToStream(
         return sc, len(p2)
     else:  # case follower
         return sc, qle
-
 
 def decisionProcess(
     partsList,
@@ -999,23 +977,11 @@ def decisionProcess(
                              'lastNotePos', lastNotePosition])
     return position, countdown
 
-
 class AudioSearchException(exceptions21.Music21Exception):
     pass
 
 # -----------------------------------------
 
-
-class Test(unittest.TestCase):
-    pass
-
-
 # ------------------------------------------------------------------------------
 # define presented order in documentation
 _DOC_ORDER: list[type] = []
-
-
-if __name__ == '__main__':
-    import music21
-    music21.mainTest(Test)
-

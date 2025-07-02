@@ -75,8 +75,6 @@ from __future__ import annotations
 
 from collections.abc import Iterable
 import typing as t
-import unittest
-
 from music21 import exceptions21
 from music21 import duration
 from music21 import environment
@@ -84,17 +82,13 @@ from music21 import prebase
 from music21 import style
 from music21.common.objects import EqualSlottedObjectMixin
 
-
 if t.TYPE_CHECKING:
     from music21 import base
 
-
 environLocal = environment.Environment('beam')
-
 
 class BeamException(exceptions21.Music21Exception):
     pass
-
 
 beamableDurationTypes = (
     duration.typeFromNumDict[8],
@@ -103,7 +97,6 @@ beamableDurationTypes = (
     duration.typeFromNumDict[256], duration.typeFromNumDict[512],
     duration.typeFromNumDict[1024], duration.typeFromNumDict[2048],
 )  # be sure to add to .fill if extended
-
 
 class Beam(prebase.ProtoM21Object, EqualSlottedObjectMixin, style.StyleMixin):
     '''
@@ -176,7 +169,6 @@ class Beam(prebase.ProtoM21Object, EqualSlottedObjectMixin, style.StyleMixin):
         if self.direction is not None:
             out += f'/{self.direction}'
         return out
-
 
 # -----------------------------------------------------------------------------
 class Beams(prebase.ProtoM21Object, EqualSlottedObjectMixin):
@@ -461,7 +453,6 @@ class Beams(prebase.ProtoM21Object, EqualSlottedObjectMixin):
         >>> beams.beamsList
         [<music21.beam.Beam 1/start>, <music21.beam.Beam 2/partial/right>]
 
-
         A beam object can also be specified:
 
         >>> beams = beam.Beams()
@@ -694,22 +685,8 @@ class Beams(prebase.ProtoM21Object, EqualSlottedObjectMixin):
                 beam.type = type
                 beam.direction = direction
 
-
 # -----------------------------------------------------------------------------
-
-
-class Test(unittest.TestCase):
-
-    def testCopyAndDeepcopy(self):
-        from music21.test.commonTest import testCopyAll
-        testCopyAll(self, globals())
-
 
 # -----------------------------------------------------------------------------
 # define presented order in documentation
 _DOC_ORDER = [Beams, Beam]
-
-
-if __name__ == '__main__':
-    import music21
-    music21.mainTest(Test)

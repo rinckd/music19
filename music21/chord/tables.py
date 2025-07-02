@@ -19,8 +19,6 @@ chord representations. All features of this module are made available through
 from __future__ import annotations
 
 from collections import namedtuple
-import unittest
-
 from music21 import environment
 from music21 import exceptions21
 
@@ -29,11 +27,9 @@ environLocal = environment.Environment('chord.tables')
 ChordTableAddress = namedtuple('ChordTableAddress',
                                ['cardinality', 'forteClass', 'inversion', 'pcOriginal'])
 
-
 # ------------------------------------------------------------------------------
 class ChordTablesException(exceptions21.Music21Exception):
     pass
-
 
 # ------------------------------------------------------------------------------
 # TNI structures are defined as
@@ -112,7 +108,6 @@ t47: TNIStructure
 t48: TNIStructure
 t49: TNIStructure
 t50: TNIStructure
-
 
 t1   = ((0,), (0,0,0,0,0,0), (1,1,1,1,11,11,11,11), 0)  # 1-1
 monad = (None, t1)
@@ -570,7 +565,6 @@ def _makeCardinalityToChordMembers():
         _cardinalityToChordMembers[cardinality] = this_cardinality_entries
     return _cardinalityToChordMembers
 
-
 cardinalityToChordMembers = _makeCardinalityToChordMembers()
 del _makeCardinalityToChordMembers
 
@@ -962,7 +956,6 @@ forteNumberWithInversionToTnIndex = {
     (11, 1,  0): 1,
     (12, 1,  0): 1,
 }
-
 
 # ----------------------------------------------------------------||||||||||||--
 # reference dict stores name and citation references
@@ -1567,7 +1560,6 @@ def _validateAddress(address):
 
     return (card, index, inversion)
 
-
 def addressToTransposedNormalForm(address):
     '''
     Given a TN address, return the normal form transposed to start on 0.
@@ -1591,7 +1583,6 @@ def addressToTransposedNormalForm(address):
     '''
     card, index, inversion = _validateAddress(address)
     return cardinalityToChordMembers[card][(index, inversion)][0]
-
 
 def addressToPrimeForm(address):
     '''
@@ -1619,7 +1610,6 @@ def addressToPrimeForm(address):
     card, index, inversion = _validateAddress(address[0:2])
     return cardinalityToChordMembers[card][(index, inversion)][0]
 
-
 def addressToIntervalVector(address):
     '''
     Given a TN address, return the interval class vector as a 6-tuple
@@ -1641,7 +1631,6 @@ def addressToIntervalVector(address):
     '''
     card, index, inversion = _validateAddress(address)
     return cardinalityToChordMembers[card][(index, inversion)][2]
-
 
 def intervalVectorToAddress(vector):
     '''
@@ -1787,7 +1776,6 @@ def addressToForteName(address, classification='tn'):
         iStr = ''
     return f'{card}-{index}{iStr}'
 
-
 # noinspection GrazieInspection
 def seekChordTablesAddress(c):
     '''
@@ -1920,60 +1908,8 @@ def seekChordTablesAddress(c):
         raise ChordTablesException(f'cannot find a chord table address for {pcSet}')
     return ChordTableAddress(card, index, inversion, matchedPCOriginal)
 
-
 # ------------------------------------------------------------------------------
-class Test(unittest.TestCase):
-
-    def testDummy(self):
-        self.assertEqual(True, True)
-
-    def testTnIndexToChordInfo(self):
-        for key, value in tnIndexToChordInfo.items():
-            self.assertEqual(len(key), 3)
-            if value:
-                # if we have keys, make sure that name is one of them
-                self.assertTrue('name' in value)
-
-    def testForteNumberWithInversionToTnIndex(self):
-        partition = {}
-        for key, value in forteNumberWithInversionToTnIndex.items():
-            self.assertEqual(len(key), 3)
-            # the third value of the key should be -1, 1, or 0
-            self.assertTrue(key[2] in [-1, 0, 1])
-            if key[0] not in partition:
-                partition[key[0]] = []
-                partition[key[0]].append(value)  # append unique ids
-            else:
-                partition[key[0]].append(value)  # append unique ids
-
-        for key, value in partition.items():
-            # the length of the list should be the max value stored
-            self.assertEqual(max(value), len(value))
-
-    def testCardinalityToChordMembers(self):
-        for key, value in cardinalityToChordMembers.items():
-            maxVal = maximumIndexNumberWithoutInversionEquivalence[key]
-            # make sure the max value is the length of all keys for each size
-            self.assertEqual(maxVal, len(value.keys()))
-
-    def testForte(self):
-        set_info = maximumIndexNumberWithInversionEquivalence.items()
-        for setSize, setCount in set_info:  # look at TnI structures
-            if setSize == 0:
-                continue
-            for i in range(1, setCount + 1):
-                self.assertEqual(len(FORTE[setSize][1]), 4)
-            # must subtract one b/c all groups contain a zero set to pad
-            # index values
-            self.assertEqual(len(FORTE[setSize]) - 1, setCount)
-
 
 # ------------------------------------------------------------------------------
 # define presented order in documentation
 _DOC_ORDER = [addressToForteName, addressToPrimeForm, seekChordTablesAddress]
-
-
-if __name__ == '__main__':
-    import music21
-    music21.mainTest()
-

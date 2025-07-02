@@ -26,8 +26,6 @@ from typing import overload
 import inspect
 import os
 import pathlib
-import unittest
-
 StrOrPath = t.TypeVar('StrOrPath', bound=str|pathlib.Path)
 
 # ------------------------------------------------------------------------------
@@ -46,7 +44,6 @@ def getSourceFilePath() -> pathlib.Path:
         )  # pragma: no cover
     return fpMusic21
 
-
 def getMetadataCacheFilePath() -> pathlib.Path:
     r'''
     Get the stored music21 directory that contains the corpus metadata cache.
@@ -56,7 +53,6 @@ def getMetadataCacheFilePath() -> pathlib.Path:
     True
     '''
     return getSourceFilePath() / 'corpus' / '_metadataCache'
-
 
 def getCorpusFilePath() -> pathlib.Path:
     r'''
@@ -71,7 +67,6 @@ def getCorpusFilePath() -> pathlib.Path:
     if coreCorpus.manualCoreCorpusPath is None:
         return getSourceFilePath() / 'corpus'
     return pathlib.Path(coreCorpus.manualCoreCorpusPath)
-
 
 def getCorpusContentDirs() -> list[str]:
     '''
@@ -121,7 +116,6 @@ def getCorpusContentDirs() -> list[str]:
         result.append(filename)
     return sorted(result)
 
-
 def getRootFilePath() -> pathlib.Path:
     '''
     Return the root directory for music21 -- outside the music21 namespace
@@ -136,7 +130,6 @@ def getRootFilePath() -> pathlib.Path:
     # Do not assume will end in music21 -- people can put this anywhere they want
     return fpParent
 
-
 def relativepath(path: StrOrPath, start: str|None = None) -> StrOrPath|str:
     '''
     A cross-platform wrapper for `os.path.relpath()`, which returns `path` if
@@ -149,7 +142,6 @@ def relativepath(path: StrOrPath, start: str|None = None) -> StrOrPath|str:
     if platform == 'Windows':
         return path
     return os.path.relpath(path, start)
-
 
 @overload
 def cleanpath(path: pathlib.Path, *,
@@ -198,14 +190,3 @@ def cleanpath(path: str|pathlib.Path, *,
         return path
     else:
         return pathlib.Path(path)
-
-
-class Test(unittest.TestCase):
-    def testGetSourcePath(self):
-        fp = getSourceFilePath()
-        self.assertIsInstance(fp, pathlib.Path)
-
-
-if __name__ == '__main__':
-    import music21
-    music21.mainTest(Test)

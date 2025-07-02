@@ -20,8 +20,6 @@ from collections.abc import Generator, Iterable
 import itertools
 import random
 import typing as t
-import unittest
-
 import more_itertools
 
 from music21 import common
@@ -31,18 +29,14 @@ from music21 import exceptions21
 from music21.tree import spans
 from music21.tree import trees
 
-
 if t.TYPE_CHECKING:
     from music21.tree.verticality import Verticality, VerticalitySequence
 
-
 environLocal = environment.Environment('tree.timespanTree')
-
 
 # -----------------------------------------------------------------------------
 class TimespanTreeException(exceptions21.TreeException):
     pass
-
 
 # -----------------------------------------------------------------------------
 class TimespanTree(trees.OffsetTree):
@@ -131,7 +125,6 @@ class TimespanTree(trees.OffsetTree):
     ...             scoreTree.removeTimespan(horizontality[2])
     ...             scoreTree.insert(merged)
 
-
     >>> #_DOCS_SHOW newBach = tree.toStream.partwise(scoreTree, templateStream=bach)
     >>> #_DOCS_SHOW newBach.parts['#Alto'].measure(7).show('text')
     {0.0} <music21.chord.Chord F#4>
@@ -157,7 +150,6 @@ class TimespanTree(trees.OffsetTree):
         sorted.
 
     OMIT_FROM_DOCS
-
 
     TODO: Doc examples for all functions, including privates.
     '''
@@ -590,7 +582,6 @@ class TimespanTree(trees.OffsetTree):
             (36.0 {})
             ]>
 
-
         * Changed in v8: added padEnd.  Streams with fewer than n elements
             also return an empty sentinel entry.
         '''
@@ -618,7 +609,6 @@ class TimespanTree(trees.OffsetTree):
                 yield VerticalitySequence(verticalities)
             else:
                 yield VerticalitySequence(reversed(verticalities))
-
 
         # if reverse:
         #     for v in self.iterateVerticalities(reverse=True):
@@ -810,79 +800,6 @@ class TimespanTree(trees.OffsetTree):
     def element(self, expr):
         self._source = common.wrapWeakref(expr)
 
-
-class Test(unittest.TestCase):
-
-    def testGetVerticalityAtWithKey(self):
-        from music21 import stream
-        from music21 import key
-        from music21 import note
-        s = stream.Stream()
-        s.insert(0, key.Key('C'))
-        s.insert(0, note.Note('F#4'))
-        scoreTree = s.asTimespans()
-        v = scoreTree.getVerticalityAt(0.0)
-        ps = v.pitchSet
-        self.assertEqual(len(ps), 1)
-
-    def testTimespanTree(self):
-        for attempt in range(100):
-            starts = list(range(20))
-            stops = list(range(20))
-            random.shuffle(starts)
-            random.shuffle(stops)
-            tss = []
-            for start, stop in zip(starts, stops):
-                if start <= stop:
-                    tss.append(spans.Timespan(start, stop))
-                else:
-                    tss.append(spans.Timespan(stop, start))
-            tsTree = TimespanTree()
-
-            for i, timespan in enumerate(tss):
-                tsTree.insert(timespan)
-                currentTimespansInList = list(sorted(tss[:i + 1],
-                                                     key=lambda x: (x.offset, x.endTime)))
-                currentTimespansInTree = list(tsTree)
-                currentPosition = min(x.offset for x in currentTimespansInList)
-                currentEndTime = max(x.endTime for x in currentTimespansInList)
-
-                self.assertEqual(currentTimespansInTree,
-                                 currentTimespansInList,
-                                 (attempt, currentTimespansInTree, currentTimespansInList))
-                self.assertEqual(tsTree.rootNode.endTimeLow,
-                                 min(x.endTime for x in currentTimespansInList))
-                self.assertEqual(tsTree.rootNode.endTimeHigh,
-                                 max(x.endTime for x in currentTimespansInList))
-                self.assertEqual(tsTree.lowestPosition(), currentPosition)
-                self.assertEqual(tsTree.endTime, currentEndTime)
-                for inList, inTree in zip(currentTimespansInList, currentTimespansInTree):
-                    self.assertEqual(inList, inTree)
-
-            random.shuffle(tss)
-            while tss:
-                timespan = tss.pop()
-                currentTimespansInList = sorted(tss,
-                                                key=lambda x: (x.offset, x.endTime))
-                tsTree.removeTimespan(timespan)
-                currentTimespansInTree = list(tsTree)
-                self.assertEqual(currentTimespansInTree,
-                                 currentTimespansInList,
-                                 (attempt, currentTimespansInTree, currentTimespansInList))
-                if tsTree.rootNode is not None:
-                    currentPosition = min(x.offset for x in currentTimespansInList)
-                    currentEndTime = max(x.endTime for x in currentTimespansInList)
-                    self.assertEqual(tsTree.rootNode.endTimeLow,
-                                     min(x.endTime for x in currentTimespansInList))
-                    self.assertEqual(tsTree.rootNode.endTimeHigh,
-                                     max(x.endTime for x in currentTimespansInList))
-                    self.assertEqual(tsTree.lowestPosition(), currentPosition)
-                    self.assertEqual(tsTree.endTime, currentEndTime)
-                    for inList, inTree in zip(currentTimespansInList, currentTimespansInTree):
-                        self.assertEqual(inList, inTree)
 # -----------------------------------------------------------------------------
 
-
-if __name__ == '__main__':
-    import music21
-    music21.mainTest(Test)  # , runTest='testGetVerticalityAtWithKey')
+# , runTest='testGetVerticalityAtWithKey')

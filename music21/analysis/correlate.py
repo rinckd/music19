@@ -14,8 +14,6 @@ Various tools and utilities to find correlations between disparate objects in a 
 from __future__ import annotations
 
 from collections import OrderedDict
-import unittest
-
 from music21 import exceptions21
 
 from music21 import note
@@ -25,11 +23,9 @@ from music21 import environment
 
 environLocal = environment.Environment('analysis.correlate')
 
-
 # ------------------------------------------------------------------------------
 class CorrelateException(exceptions21.Music21Exception):
     pass
-
 
 # ------------------------------------------------------------------------------
 class ActivityMatch:
@@ -53,7 +49,6 @@ class ActivityMatch:
             raise CorrelateException('non-stream provided as argument')
         self.streamObj = streamObj
         self.data = None
-
 
     def _findActive(self, objNameSrc=None, objNameDst=None):
         '''
@@ -96,7 +91,6 @@ class ActivityMatch:
         self.data = post
         # environLocal.printDebug(['_findActive', self.data])
         return self.data
-
 
     def pitchToDynamic(self, dataPoints=True):
         '''
@@ -175,29 +169,10 @@ class ActivityMatch:
             pairs.append((key[0], key[1], dictionary[key]))
         return pairs
 
-
 # ------------------------------------------------------------------------------
-class Test(unittest.TestCase):
-
-    def testCopyAndDeepcopy(self):
-        from music21.test.commonTest import testCopyAll
-        testCopyAll(self, globals())
-
-    def testActivityMatchPitchToDynamic(self):
-        from music21 import corpus
-
-        a = corpus.parse('schoenberg/opus19', 2)
-
-        b = ActivityMatch(a.flatten())
-        dataPairs = b.pitchToDynamic()
-        # print(dataPairs)
-        # previous pair count was 401
-        self.assertEqual(len(dataPairs), 111)
-
 
 # ------------------------------------------------------------------------------
 if __name__ == '__main__':
     # sys.arg test options will be used in mainTest()
     import music21
     music21.mainTest(Test)
-

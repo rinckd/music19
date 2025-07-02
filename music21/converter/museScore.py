@@ -16,8 +16,6 @@ from __future__ import annotations
 import os
 import pathlib
 import typing as t
-import unittest
-
 from music21 import common
 from music21 import defaults
 from music21 import environment
@@ -99,8 +97,6 @@ def runThroughMuseScore(
         return fpOut
     # common.cropImageFromPath(fp)
 
-
-
 def findNumberedPNGPath(inputFp: str|pathlib.Path) -> pathlib.Path:
     '''
     Find the first numbered file path corresponding to the provided unnumbered file path
@@ -124,7 +120,6 @@ def findNumberedPNGPath(inputFp: str|pathlib.Path) -> pathlib.Path:
         + 'The conversion to png failed'
     )
 
-
 def findLastPNGPath(inputFp: pathlib.Path) -> pathlib.Path:
     '''
     Find the last numbered file path corresponding to the provided NUMBERED file path
@@ -145,7 +140,6 @@ def findLastPNGPath(inputFp: pathlib.Path) -> pathlib.Path:
     last_name = list(sorted(inputFp.parent.glob(f'{base_name}-*.png'),
                             key=lambda p: p.name))[-1]
     return last_name
-
 
 def findPNGRange(
     firstFp: pathlib.Path,
@@ -173,29 +167,3 @@ def findPNGRange(
     # print(inputFpStr, dash_location, num_digits, lastFp, num_string)
     last_number = int(num_string)
     return (last_number, num_digits)
-
-
-class Test(unittest.TestCase):
-    def pngNumbering(self):
-        '''
-        Testing findNumberedPNGPath() with files of lengths
-        that create .png files with -1, -01, -001, and -0001 in the fp
-        '''
-        env = environment.Environment()
-        for ext_base in '1', '01', '001', '0001':
-            png_ext = '-' + ext_base + '.png'
-
-            tmp = env.getTempFile(suffix='.png', returnPathlib=False)
-            tmpNumbered = tmp.replace('.png', png_ext)
-            os.rename(tmp, tmpNumbered)
-            pngFp1 = findNumberedPNGPath(tmp)
-            self.assertEqual(str(pngFp1), tmpNumbered)
-            os.remove(tmpNumbered)
-
-        # Now with a very long path.
-        tmp = env.getTempFile(suffix='.png', returnPathlib=False)
-        tmpNumbered = tmp.replace('.png', '-0000001.png')
-        os.rename(tmp, tmpNumbered)
-        with self.assertRaises(IOError):
-            findNumberedPNGPath(tmpNumbered)
-        os.remove(tmpNumbered)

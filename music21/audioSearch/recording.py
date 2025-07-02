@@ -25,7 +25,6 @@ tend to have libraries like `portaudio19` and `python3-pyaudio`.
 from __future__ import annotations
 
 from importlib.util import find_spec
-import unittest
 import wave
 
 from music21.common.types import DocOrder
@@ -37,7 +36,6 @@ environLocal = environment.Environment('audioSearch.recording')
 default_recordChannels = 1
 default_recordSampleRate = 44100
 default_recordChunkLength = 1024
-
 
 def samplesFromRecording(seconds=10.0, storeFile=True,
                          recordFormat=None,
@@ -98,36 +96,11 @@ def samplesFromRecording(seconds=10.0, storeFile=True,
             raise RecordingException(f'Cannot open {waveFilename} for writing.')
     return storedWaveSampleList
 
-
 class RecordingException(exceptions21.Music21Exception):
     pass
 
-
 # -----------------------------------------
-class Test(unittest.TestCase):
-    pass
-
-class TestExternal(unittest.TestCase):  # pragma: no cover
-    loader = find_spec('pyaudio')
-    if loader is not None:  # pragma: no cover
-        pyaudio_installed = True
-    else:
-        pyaudio_installed = False
-
-    @unittest.skipUnless(pyaudio_installed, 'pyaudio must be installed')
-    def testRecording(self):
-        '''
-        record one second of data and print 10 records
-        '''
-        sampleList = samplesFromRecording(seconds=1, storeFile=False)
-        print(sampleList[30:40])
-
 
 # ------------------------------------------------------------------------------
 # define presented order in documentation
 _DOC_ORDER: DocOrder = []
-
-
-if __name__ == '__main__':
-    import music21
-    music21.mainTest(Test)

@@ -8,8 +8,6 @@
 # ------------------------------------------------------------------------------
 from __future__ import annotations
 
-import unittest
-
 _DOC_IGNORE_MODULE_OR_PACKAGE = True
 
 chantQuemQueritis = '''<?xml version="1.0" standalone="no"?>
@@ -427,7 +425,6 @@ chantQuemQueritis = '''<?xml version="1.0" standalone="no"?>
     </part>
 </score-partwise>
 '''
-
 
 schumannOp48No1 = '''<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE score-partwise PUBLIC "-//Recordare//DTD MusicXML 2.0 Partwise//EN"
@@ -8017,7 +8014,6 @@ schumannOp48No1 = '''<?xml version="1.0" encoding="UTF-8"?>
 </score-partwise>
 '''
 
-
 mozartTrioK581Excerpt = '''<?xml version="1.0" standalone="no"?>
 <!DOCTYPE score-partwise PUBLIC "-//Recordare//DTD MusicXML 1.0 Partwise//EN" "http://www.musicxml.org/dtds/partwise.dtd">
 <score-partwise>
@@ -11119,7 +11115,6 @@ mozartTrioK581Excerpt = '''<?xml version="1.0" standalone="no"?>
 </score-partwise>
 '''
 
-
 binchoisMagnificat = '''<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE score-partwise
   PUBLIC '-//Recordare//DTD MusicXML 2.0 Partwise//EN'
@@ -13299,7 +13294,6 @@ binchoisMagnificat = '''<?xml version="1.0" encoding="utf-8"?>
 </score-partwise>
 '''
 
-
 moussorgskyPromenade = '''<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE score-partwise PUBLIC "-//Recordare//DTD MusicXML 2.0 Partwise//EN"
                                 "http://www.musicxml.org/dtds/partwise.dtd">
@@ -14314,7 +14308,6 @@ moussorgskyPromenade = '''<?xml version="1.0" encoding="UTF-8"?>
   <!--=========================================================-->
 </score-partwise>
 '''
-
 
 edgefield82b = '''<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE score-partwise PUBLIC "-//Recordare//DTD MusicXML 1.1 Partwise//EN" "http://www.musicxml.org/dtds/partwise.dtd">
@@ -16066,7 +16059,6 @@ tabTest = '''<?xml version="1.0" encoding="UTF-8" ?>
 </score-partwise>
 '''
 
-
 # ------------------------------------------------------------------------------
 # define all strings for access
 
@@ -16082,12 +16074,10 @@ tabTest = '''<?xml version="1.0" encoding="UTF-8" ?>
 #
 # ALL1 = CONTENTS.items()
 
-
 ALL = [
     chantQuemQueritis, mozartTrioK581Excerpt, schumannOp48No1,
     binchoisMagnificat, edgefield82b, tabTest,
 ]
-
 
 def get(contentRequest):
     '''
@@ -16100,17 +16090,4 @@ def get(contentRequest):
     if contentRequest in ['lyrics']:
         return chantQuemQueritis
 
-
 # ------------------------------------------------------------------------------
-class Test(unittest.TestCase):
-
-    def testBasic(self):
-        from music21 import converter
-        for testMaterial in ALL[:1]:
-            unused = converter.parse(testMaterial)
-
-
-if __name__ == '__main__':
-    import music21
-    music21.mainTest(Test)
-

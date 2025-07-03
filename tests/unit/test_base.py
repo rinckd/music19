@@ -933,13 +933,13 @@ class Test(unittest.TestCase):
             siteList.append(repr(yTup))
         self.assertEqual(
             siteList,
-            ['(<music21.stream.Measure 3 offset=9.0>, 0.5, <RecursionType.ELEMENTS_FIRST>)',
-             '(<music21.stream.Part Alto>, 9.5, <RecursionType.FLATTEN>)',
-             '(<music21.stream.Score bach>, 9.5, <RecursionType.ELEMENTS_ONLY>)']
+            ['(<music21.stream.measure.Measure 3 offset=9.0>, 0.5, <RecursionType.ELEMENTS_FIRST>)',
+             '(<music21.stream.part.Part Alto>, 9.5, <RecursionType.FLATTEN>)',
+             '(<music21.stream.score.Score bach>, 9.5, <RecursionType.ELEMENTS_ONLY>)']
         )
 
         m = c[2][4]
-        self.assertEqual(repr(m), '<music21.stream.Measure 3 offset=9.0>')
+        self.assertEqual(repr(m), '<music21.stream.measure.Measure 3 offset=9.0>')
 
         siteList = []
         for y in m.contextSites():
@@ -947,9 +947,9 @@ class Test(unittest.TestCase):
             siteList.append(repr(yTup))
         self.assertEqual(
             siteList,
-            ['(<music21.stream.Measure 3 offset=9.0>, 0.0, <RecursionType.ELEMENTS_FIRST>)',
-             '(<music21.stream.Part Alto>, 9.0, <RecursionType.FLATTEN>)',
-             '(<music21.stream.Score bach>, 9.0, <RecursionType.ELEMENTS_ONLY>)']
+            ['(<music21.stream.measure.Measure 3 offset=9.0>, 0.0, <RecursionType.ELEMENTS_FIRST>)',
+             '(<music21.stream.part.Part Alto>, 9.0, <RecursionType.FLATTEN>)',
+             '(<music21.stream.score.Score bach>, 9.0, <RecursionType.ELEMENTS_ONLY>)']
         )
 
         m2 = copy.deepcopy(m)
@@ -960,10 +960,10 @@ class Test(unittest.TestCase):
             siteList.append(repr(yTup))
         self.assertEqual(
             siteList,
-            ['(<music21.stream.Measure 3333 offset=0.0>, 0.0, <RecursionType.ELEMENTS_FIRST>)',
-             '(<music21.stream.Measure 3 offset=9.0>, 0.0, <RecursionType.ELEMENTS_FIRST>)',
-             '(<music21.stream.Part Alto>, 9.0, <RecursionType.FLATTEN>)',
-             '(<music21.stream.Score bach>, 9.0, <RecursionType.ELEMENTS_ONLY>)']
+            ['(<music21.stream.measure.Measure 3333 offset=0.0>, 0.0, <RecursionType.ELEMENTS_FIRST>)',
+             '(<music21.stream.measure.Measure 3 offset=9.0>, 0.0, <RecursionType.ELEMENTS_FIRST>)',
+             '(<music21.stream.part.Part Alto>, 9.0, <RecursionType.FLATTEN>)',
+             '(<music21.stream.score.Score bach>, 9.0, <RecursionType.ELEMENTS_ONLY>)']
         )
         siteList = []
 
@@ -978,10 +978,10 @@ class Test(unittest.TestCase):
 
         self.assertEqual(
             siteList,
-            ['(<music21.stream.Measure 3 offset=9.0>, 0.0, <RecursionType.ELEMENTS_FIRST>)',
-             '(<music21.stream.Part Alto>, 9.0, <RecursionType.FLATTEN>)',
-             '(<music21.stream.Score partStream>, 9.0, <RecursionType.ELEMENTS_ONLY>)',
-             '(<music21.stream.Score bach>, 9.0, <RecursionType.ELEMENTS_ONLY>)']
+            ['(<music21.stream.measure.Measure 3 offset=9.0>, 0.0, <RecursionType.ELEMENTS_FIRST>)',
+             '(<music21.stream.part.Part Alto>, 9.0, <RecursionType.FLATTEN>)',
+             '(<music21.stream.score.Score partStream>, 9.0, <RecursionType.ELEMENTS_ONLY>)',
+             '(<music21.stream.score.Score bach>, 9.0, <RecursionType.ELEMENTS_ONLY>)']
         )
 
     def testContextSitesB(self):
@@ -995,8 +995,8 @@ class Test(unittest.TestCase):
         siteList = []
         for y in n.contextSites():
             siteList.append(repr(y.site))
-        self.assertEqual(siteList, ['<music21.stream.Measure 1 offset=0.0>',
-                                    '<music21.stream.Part p1>'])
+        self.assertEqual(siteList, ['<music21.stream.measure.Measure 1 offset=0.0>',
+                                    '<music21.stream.part.Part p1>'])
         p2 = stream.Part()
         p2.id = 'p2'
         m2 = stream.Measure()
@@ -1007,26 +1007,26 @@ class Test(unittest.TestCase):
         siteList = []
         for y in n.contextSites():
             siteList.append(repr(y.site))
-        self.assertEqual(siteList, ['<music21.stream.Measure 2 offset=0.0>',
-                                    '<music21.stream.Part p2>',
-                                    '<music21.stream.Measure 1 offset=0.0>',
-                                    '<music21.stream.Part p1>'])
+        self.assertEqual(siteList, ['<music21.stream.measure.Measure 2 offset=0.0>',
+                                    '<music21.stream.part.Part p2>',
+                                    '<music21.stream.measure.Measure 1 offset=0.0>',
+                                    '<music21.stream.part.Part p1>'])
 
         siteList = []
         for y in n.contextSites(sortByCreationTime=True):
             siteList.append(repr(y.site))
-        self.assertEqual(siteList, ['<music21.stream.Measure 2 offset=0.0>',
-                                    '<music21.stream.Part p2>',
-                                    '<music21.stream.Measure 1 offset=0.0>',
-                                    '<music21.stream.Part p1>'])
+        self.assertEqual(siteList, ['<music21.stream.measure.Measure 2 offset=0.0>',
+                                    '<music21.stream.part.Part p2>',
+                                    '<music21.stream.measure.Measure 1 offset=0.0>',
+                                    '<music21.stream.part.Part p1>'])
 
         siteList = []
         for y in n.contextSites(sortByCreationTime='reverse'):
             siteList.append(repr(y.site))
-        self.assertEqual(siteList, ['<music21.stream.Measure 1 offset=0.0>',
-                                    '<music21.stream.Part p1>',
-                                    '<music21.stream.Measure 2 offset=0.0>',
-                                    '<music21.stream.Part p2>'])
+        self.assertEqual(siteList, ['<music21.stream.measure.Measure 1 offset=0.0>',
+                                    '<music21.stream.part.Part p1>',
+                                    '<music21.stream.measure.Measure 2 offset=0.0>',
+                                    '<music21.stream.part.Part p2>'])
 
     def testContextSitesVoices(self):
         v1_n1 = note.Note('D')

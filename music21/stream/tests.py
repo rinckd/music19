@@ -19,11 +19,10 @@ from music21.note import GeneralNote
 
 from music21.stream.base import StreamException
 from music21.stream.base import Stream
-from music21.stream.base import Voice
-from music21.stream.base import Measure
-from music21.stream.base import Score
-from music21.stream.base import Part
-from music21.stream.base import Opus
+from music21.stream.voice import Voice
+from music21.stream.measure import Measure
+from music21.stream.score import Score, Opus
+from music21.stream.part import Part
 
 from music21 import bar
 from music21 import beam
@@ -59,6 +58,16 @@ from music21.musicxml import m21ToXml
 from music21.midi import translate as midiTranslate
 
 environLocal = environment.Environment('stream.tests')
+
+# Classes and modules exported for wildcard imports in test modules
+__all__ = [
+    'StreamException', 'Stream', 'Voice', 'Measure', 'Score', 'Part', 'Opus',
+    'music21', 'note', 'bar', 'beam', 'chord', 'clef', 'common', 'converter', 
+    'corpus', 'defaults', 'duration', 'dynamics', 'environment', 'expressions',
+    'instrument', 'interval', 'key', 'layout', 'metadata', 'meter', 'pitch',
+    'sites', 'spanner', 'tempo', 'text', 'tie', 'variant', '_SplitTuple', 'midiTranslate',
+    'GeneralNote', 'random', 'copy', 'm21ToXml', 'environLocal', 'os', 'Music21Exception'
+]
 
 # ------------------------------------------------------------------------------
 

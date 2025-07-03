@@ -21,11 +21,10 @@ from music21.note import GeneralNote
 
 from music21.stream.base import StreamException
 from music21.stream.base import Stream
-from music21.stream.base import Voice
-from music21.stream.base import Measure
-from music21.stream.base import Score
-from music21.stream.base import Part
-from music21.stream.base import Opus
+from music21.stream.voice import Voice
+from music21.stream.measure import Measure
+from music21.stream.score import Score, Opus
+from music21.stream.part import Part
 
 from music21 import bar
 from music21 import beam
@@ -1733,9 +1732,9 @@ class Test(unittest.TestCase):
         self.assertEqual(sorted(list(mOffsetMap.keys())),
                          [0.0, 4.0, 8.0, 12.0, 16.0, 20.0, 24.0, 34.0, 38.0])
 
-        self.assertEqual(str(mOffsetMap[0.0]), '[<music21.stream.Measure 1 offset=0.0>]')
+        self.assertEqual(str(mOffsetMap[0.0]), '[<music21.stream.measure.Measure 1 offset=0.0>]')
 
-        self.assertEqual(str(mOffsetMap[4.0]), '[<music21.stream.Measure 2 offset=4.0>]')
+        self.assertEqual(str(mOffsetMap[4.0]), '[<music21.stream.measure.Measure 2 offset=4.0>]')
 
         # TODO: getting inconsistent results with these
         # instead of storing a time value for locations, use an index
@@ -6433,9 +6432,9 @@ class Test(unittest.TestCase):
         s = corpus.parse('bach/bwv66.6')
         # the part is not derived from anything yet
         self.assertEqual([str(e.__class__) for e in s[1][2][3].containerHierarchy()],
-                         ["<class 'music21.stream.base.Measure'>",
-                          "<class 'music21.stream.base.Part'>",
-                          "<class 'music21.stream.base.Score'>"])
+                         ["<class 'music21.stream.measure.Measure'>",
+                          "<class 'music21.stream.part.Part'>",
+                          "<class 'music21.stream.score.Score'>"])
 
         # after extraction and changing activeSite, cannot find
         n = s.flatten().notesAndRests[0]

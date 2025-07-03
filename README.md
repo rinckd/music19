@@ -14,28 +14,28 @@ A no-corpus version of `music21` is available also on GitHub for those needing s
 BSD-license of all parts of the system.
 
 
-## Community Code of Conduct<a name="community-code-of-conduct"></a> ##
+### Testing 
+  For everyday development testing:
+  * Run specific test files in parallel (fastest for development)
+  python -m pytest tests/unit/test_base.py tests/unit/test_stream.py -n auto -x
 
-`Music19` encourages contributions, discussions, and usage from all people interested in
-music and computers. This encouragement extends to all people regardless of (among other aspects)
-gender, race, sexual orientation, disability, religion, appearance, veteran status,
-gender identity, socioeconomic status, or nationality.
+  * Run all unit tests in parallel with short traceback
+  python -m pytest tests/unit/ -n auto --tb=short -x
 
-Members of the community will strive to be friendly, patient, and welcoming, especially of
-viewpoints and experiences different from our own. We reject harassment and contributions
-(in mail, comments, or code) that belittle individuals or groups of people.
+  For comprehensive testing:
+  * Run all tests with full output
+  python -m pytest tests/unit/ -n auto -v
 
-We ask all members of the community to be mindful particularly about assumptions of the
-gender of users (including using correct pronouns in comments and code). We recognize that members
-sometimes make mistakes and will, in general, accept sincere regrets for such cases.
-Blatant or repeated violations of the code will result in the removal of the
-contributor’s participation in the community.
+  * Run with coverage if needed
+  python -m pytest tests/unit/ -n auto --cov=music21
 
-The maintainers of `music19` and associated sites will commit themselves to enforcing
-this code of conduct. Users who notice violations, including instances of abuse,
-harassment, or otherwise unacceptable behavior are requested to contact 
-michael.asato.cuthbert@gmail.com.
-Maintainers will respect confidentiality with regard to reports.
+  Key options:
+  - -n auto: Auto-detect CPU cores
+  - -n 8: Use 8 workers specifically
+  - -x: Stop on first failure
+  - --tb=short: Shorter tracebacks
+  - -v: Verbose output
+  - -q: Quiet output
 
 ## Acknowledgements ##
 

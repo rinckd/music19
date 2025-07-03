@@ -73,6 +73,7 @@ from music21.stream import iterator
 from music21.stream import filters
 from music21.stream.enums import GivenElementsBehavior, RecursionType, ShowNumber
 from music21.stream.factory import get_stream_factory
+from music21.stream.mixins.voice_operations import VoiceOperationsMixin
 
 # ARCHITECTURE NOTE: Circular dependency resolution
 # All stream class circular dependencies have been resolved through the StreamFactory
@@ -109,7 +110,7 @@ class StreamDeprecationWarning(UserWarning):
 OffsetMap = namedtuple('OffsetMap', ['element', 'offset', 'endTime', 'voiceIndex'])
 
 # -----------------------------------------------------------------------------
-class Stream(core.StreamCore, t.Generic[M21ObjType]):
+class Stream(core.StreamCore, VoiceOperationsMixin, t.Generic[M21ObjType]):
     '''
     This is the fundamental container for Music21Objects;
     objects may be ordered and/or placed in time based on
@@ -5158,19 +5159,7 @@ class Stream(core.StreamCore, t.Generic[M21ObjType]):
           Previously raised a StreamException
         ''')
 
-    @property
-    def voices(self):
-        '''
-        Return all :class:`~music21.stream.Voices` objects
-        in an iterator
-
-        >>> s = stream.Stream()
-        >>> s.insert(0, stream.Voice())
-        >>> s.insert(0, stream.Voice())
-        >>> len(s.voices)
-        2
-        '''
-        return self.getElementsByClass('Voice')
+    # voices property moved to VoiceOperationsMixin
 
     @property
     def spanners(self) -> iterator.StreamIterator[spanner.Spanner]:
@@ -9856,20 +9845,7 @@ class Stream(core.StreamCore, t.Generic[M21ObjType]):
             self._cache['hasMeasures'] = post
         return self._cache['hasMeasures']
 
-    def hasVoices(self):
-        '''
-        Return a boolean value showing if this Stream contains Voices
-        '''
-        if 'hasVoices' not in self._cache or self._cache['hasVoices'] is None:
-            post = False
-            # do not need to look in endElements
-            for obj in self._elements:
-                # if obj is a Part, we have multi-parts
-                if 'Voice' in obj.classes:
-                    post = True
-                    break  # only need one
-            self._cache['hasVoices'] = post
-        return self._cache['hasVoices']
+    # hasVoices method moved to VoiceOperationsMixin
 
     def hasPartLikeStreams(self):
         '''
@@ -11120,81 +11096,7 @@ class Stream(core.StreamCore, t.Generic[M21ObjType]):
     # --------------------------------------------------------------------------
     # voice processing routines
 
-    def makeVoices(self, *, inPlace=False, fillGaps=True):
-        '''
-        If this Stream has overlapping Notes or Chords, this method will isolate
-        all overlaps in unique Voices, and place those Voices in the Stream.
-
-        >>> s = stream.Stream()
-        >>> s.insert(0, note.Note('C4', quarterLength=4))
-        >>> s.repeatInsert(note.Note('b-4', quarterLength=0.5), [x * 0.5 for x in list(range(8))])
-        >>> s.makeVoices(inPlace=True)
-        >>> len(s.voices)
-        2
-        >>> [n.pitch for n in s.voices[0].notes]
-        [<music21.pitch.Pitch C4>]
-        >>> [str(n.pitch) for n in s.voices[1].notes]
-        ['B-4', 'B-4', 'B-4', 'B-4', 'B-4', 'B-4', 'B-4', 'B-4']
-
-        * Changed in v7: if `fillGaps=True` and called on an incomplete measure,
-          makes trailing rests in voices. This scenario occurs when parsing MIDI.
-        '''
-        # this method may not always
-        # produce the optimal voice assignment based on context (register
-        # chord formation, etc
-        if not inPlace:  # make a copy
-            returnObj = self.coreCopyAsDerivation('makeVoices')
-        else:
-            returnObj = self
-        # must be sorted
-        if not returnObj.isSorted:
-            returnObj.sort()
-        olDict = returnObj.notes.stream().getOverlaps()
-        # environLocal.printDebug(['makeVoices(): olDict', olDict])
-        # find the max necessary voices by finding the max number
-        # of elements in each group; these may not all be necessary
-        maxVoiceCount = max([len(group) for group in olDict.values()] + [1])
-        if maxVoiceCount == 1:  # nothing to do here
-            if not inPlace:
-                return returnObj
-            return None
-
-        # store all voices in a list
-        voices = []
-        for dummy in range(maxVoiceCount):
-            voices.append(self._stream_factory.create_voice())  # add voice classes
-
-        # iterate through all elements; if not in an overlap, place in
-        # voice 1, otherwise, distribute
-        for e in returnObj.notes:
-            o = e.getOffsetBySite(returnObj)
-            # cannot match here by offset, as olDict keys are representative
-            # of the first overlapped offset, not all contained offsets
-            # if o not in olDict:  # place in a first voices
-            #    voices[0].insert(o, e)
-            # find a voice to place in
-            # as elements are sorted, can use the highest time
-            # else:
-            for v in voices:
-                if v.highestTime <= o:
-                    v.insert(o, e)
-                    break
-            # remove from source
-            returnObj.remove(e)
-        # remove any unused voices (possible if overlap group has sus)
-        for v in voices:
-            if v:  # skip empty voices
-                returnObj.insert(0, v)
-        if fillGaps:
-            returnObj.makeRests(fillGaps=True,
-                                inPlace=True,
-                                timeRangeFromBarDuration=True,
-                                )
-        # remove rests in returnObj
-        returnObj.removeByClass('Rest')
-        # elements changed will already have been called
-        if not inPlace:
-            return returnObj
+    # makeVoices method moved to VoiceOperationsMixin
 
     def _maxVoiceCount(self, *, countById=False) -> int|tuple[int, list[str]]:
         '''

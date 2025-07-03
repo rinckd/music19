@@ -52,8 +52,8 @@ class ChangeOps(enum.IntEnum):
 
     @property
     def color(self):
-        colorDict = {0: 'green', 1: 'red', 2: 'purple', 3: None}
-        return colorDict[self.value]
+        color_dict = {0: 'green', 1: 'red', 2: 'purple', 3: None}
+        return color_dict[self.value]
 
 class StreamAligner:
     '''
@@ -306,28 +306,28 @@ class StreamAligner:
         '''
 
         # calculate insert and delete costs based on the first tuple in the Source S
-        insertCost = self.insertCost(self.hashedSourceStream[0])
-        deleteCost = self.deleteCost(self.hashedSourceStream[0])
+        insert_cost = self.insertCost(self.hashedSourceStream[0])
+        delete_cost = self.deleteCost(self.hashedSourceStream[0])
 
         # setup all the entries in the first column, the target stream
         for i in range(1, self.n + 1):
-            self.distanceMatrix[i][0] = self.distanceMatrix[i - 1][0] + insertCost
+            self.distanceMatrix[i][0] = self.distanceMatrix[i - 1][0] + insert_cost
 
         # setup all the entries in the first row, the source stream
         for j in range(1, self.m + 1):
-            self.distanceMatrix[0][j] = self.distanceMatrix[0][j - 1] + deleteCost
+            self.distanceMatrix[0][j] = self.distanceMatrix[0][j - 1] + delete_cost
 
         # fill in rest of matrix
         for i in range(1, self.n + 1):
             for j in range(1, self.m + 1):
-                substCost = self.substitutionCost(self.hashedTargetStream[i - 1],
+                subst_cost = self.substitutionCost(self.hashedTargetStream[i - 1],
                                                   self.hashedSourceStream[j - 1])
 
-                previousValues = [self.distanceMatrix[i - 1][j] + insertCost,
-                                  self.distanceMatrix[i][j - 1] + deleteCost,
-                                  self.distanceMatrix[i - 1][j - 1] + substCost]
+                previous_values = [self.distanceMatrix[i - 1][j] + insert_cost,
+                                  self.distanceMatrix[i][j - 1] + delete_cost,
+                                  self.distanceMatrix[i - 1][j - 1] + subst_cost]
 
-                self.distanceMatrix[i][j] = min(previousValues)
+                self.distanceMatrix[i][j] = min(previous_values)
 
     def getPossibleMovesFromLocation(self, i, j):
         # noinspection PyShadowingNames
@@ -443,21 +443,21 @@ class StreamAligner:
         Traceback (most recent call last):
         ValueError: No movement possible from the origin
         '''
-        possibleMoves = self.getPossibleMovesFromLocation(i, j)
+        possible_moves = self.getPossibleMovesFromLocation(i, j)
 
-        if possibleMoves[0] is None:
-            if possibleMoves[1] is None:
+        if possible_moves[0] is None:
+            if possible_moves[1] is None:
                 raise ValueError('No movement possible from the origin')
             return ChangeOps.Deletion
-        elif possibleMoves[1] is None:
+        elif possible_moves[1] is None:
             return ChangeOps.Insertion
 
-        currentCost = self.distanceMatrix[i][j]
-        minIndex, minNewCost = min(enumerate(possibleMoves), key=operator.itemgetter(1))
-        if currentCost == minNewCost:
+        current_cost = self.distanceMatrix[i][j]
+        min_index, min_new_cost = min(enumerate(possible_moves), key=operator.itemgetter(1))
+        if current_cost == min_new_cost:
             return ChangeOps.NoChange
         else:
-            return ChangeOps(minIndex)
+            return ChangeOps(min_index)
 
     def insertCost(self, tup):
         '''
@@ -503,8 +503,8 @@ class StreamAligner:
         >>> sa2.insertCost(tup2)
         5
         '''
-        keyDictSize = len(tup.hashItemsKeys)
-        return keyDictSize
+        key_dict_size = len(tup.hashItemsKeys)
+        return key_dict_size
 
     def deleteCost(self, tup):
         '''
@@ -550,8 +550,8 @@ class StreamAligner:
         >>> sa2.deleteCost(tup2)
         5
         '''
-        keyDictSize = len(tup.hashItemsKeys)
-        return keyDictSize
+        key_dict_size = len(tup.hashItemsKeys)
+        return key_dict_size
 
     def substitutionCost(self, targetTup, sourceTup):
         '''
@@ -633,10 +633,10 @@ class StreamAligner:
         if self.tupleEqualityWithoutReference(targetTup, sourceTup):
             return 0
 
-        totalPossibleDifferences = len(targetTup.hashItemsKeys)
-        numSimilaritiesInTuple = self.calculateNumSimilarities(targetTup, sourceTup)
-        totalPossibleDifferences -= numSimilaritiesInTuple
-        return totalPossibleDifferences
+        total_possible_differences = len(targetTup.hashItemsKeys)
+        num_similarities_in_tuple = self.calculateNumSimilarities(targetTup, sourceTup)
+        total_possible_differences -= num_similarities_in_tuple
+        return total_possible_differences
 
     def calculateNumSimilarities(self, targetTup, sourceTup):
         '''
@@ -742,7 +742,7 @@ class StreamAligner:
     def calculateChangesList(self):
         '''
         Traverses through self.distanceMatrix from the bottom right corner to top left looking at
-        bestOp at every move to determine which change was most likely at any point. Compiles
+        best_op at every move to determine which change was most likely at any point. Compiles
         the list of changes in self.changes. Also calculates some metrics like self.similarityScore
         and self.changesCount.
 
@@ -753,6 +753,7 @@ class StreamAligner:
         source stream, so source stream needs an insertion to match target stream.
         should be 0.5 similarity between the two
 
+        >>> from music21 import stream, alpha
         >>> targetA = stream.Stream()
         >>> sourceA = stream.Stream()
         >>> targetA.append([note1, note2])
@@ -807,6 +808,7 @@ class StreamAligner:
 
         test 4: 1 no change, 1 substitution
 
+        >>> from music21 import note
         >>> targetD = stream.Stream()
         >>> sourceD = stream.Stream()
         >>> note3 = note.Note('C4')
@@ -831,22 +833,22 @@ class StreamAligner:
         while i != 0 or j != 0:
 
             # check if possible moves are indexable
-            bestOp = self.getOpFromLocation(i, j)
-            targetStreamReference = self.hashedTargetStream[i - 1].reference
-            sourceStreamReference = self.hashedSourceStream[j - 1].reference
-            opTuple = (targetStreamReference, sourceStreamReference, bestOp)
-            self.changes.insert(0, opTuple)
+            best_op = self.getOpFromLocation(i, j)
+            target_stream_reference = self.hashedTargetStream[i - 1].reference
+            source_stream_reference = self.hashedSourceStream[j - 1].reference
+            op_tuple = (target_stream_reference, source_stream_reference, best_op)
+            self.changes.insert(0, op_tuple)
 
             # changes are done for this cell -- where to move next?
 
-            # bestOp : 0: insertion, 1: deletion, 2: substitution; 3: nothing
-            if bestOp == ChangeOps.Insertion:
+            # best_op : 0: insertion, 1: deletion, 2: substitution; 3: nothing
+            if best_op == ChangeOps.Insertion:
                 i -= 1
 
-            elif bestOp == ChangeOps.Deletion:
+            elif best_op == ChangeOps.Deletion:
                 j -= 1
 
-            elif bestOp == ChangeOps.Substitution:
+            elif best_op == ChangeOps.Substitution:
                 i -= 1
                 j -= 1
 

@@ -74,6 +74,7 @@ from music21.stream import filters
 from music21.stream.enums import GivenElementsBehavior, RecursionType, ShowNumber
 from music21.stream.factory import get_stream_factory
 from music21.stream.mixins.voice_operations import VoiceOperationsMixin
+from music21.stream.mixins.notation_operations import NotationOperationsMixin
 
 # ARCHITECTURE NOTE: Circular dependency resolution
 # All stream class circular dependencies have been resolved through the StreamFactory
@@ -110,7 +111,7 @@ class StreamDeprecationWarning(UserWarning):
 OffsetMap = namedtuple('OffsetMap', ['element', 'offset', 'endTime', 'voiceIndex'])
 
 # -----------------------------------------------------------------------------
-class Stream(core.StreamCore, VoiceOperationsMixin, t.Generic[M21ObjType]):
+class Stream(core.StreamCore, VoiceOperationsMixin, NotationOperationsMixin, t.Generic[M21ObjType]):
     '''
     This is the fundamental container for Music21Objects;
     objects may be ordered and/or placed in time based on
@@ -6612,65 +6613,11 @@ class Stream(core.StreamCore, VoiceOperationsMixin, t.Generic[M21ObjType]):
             inPlace=inPlace,
         )
 
-    def makeRests(
-        self,
-        refStreamOrTimeRange=None,
-        fillGaps=False,
-        timeRangeFromBarDuration=False,
-        inPlace=False,
-        hideRests=False,
-    ):
-        '''
-        Calls :py:func:`~music21.stream.makeNotation.makeRests`.
+    # makeRests method moved to NotationOperationsMixin
 
-        * Changed in v7, inPlace=False by default.
-        '''
-        return makeNotation.makeRests(
-            self,
-            refStreamOrTimeRange=refStreamOrTimeRange,
-            fillGaps=fillGaps,
-            timeRangeFromBarDuration=timeRangeFromBarDuration,
-            inPlace=inPlace,
-            hideRests=hideRests,
-        )
+    # makeTies method moved to NotationOperationsMixin
 
-    def makeTies(self,
-                 meterStream=None,
-                 inPlace=False,
-                 displayTiedAccidentals=False,
-                 classFilterList=(note.GeneralNote,),
-                 ):
-        '''
-        Calls :py:func:`~music21.stream.makeNotation.makeTies`.
-
-        * Changed in v4: inPlace=False by default.
-        * New in v.7: `classFilterList`.
-        '''
-        return makeNotation.makeTies(
-            self,
-            meterStream=meterStream,
-            inPlace=inPlace,
-            displayTiedAccidentals=displayTiedAccidentals,
-            classFilterList=classFilterList,
-        )
-
-    def makeBeams(self, *, inPlace=False, setStemDirections=True, failOnNoTimeSignature=False):
-        '''
-        Return a new Stream, or modify the Stream in place, with beams applied to all
-        notes.
-
-        See :py:func:`~music21.stream.makeNotation.makeBeams`.
-
-        * New in v6.7: setStemDirections.
-        * New in v7: failOnNoTimeSignature raises StreamException if no TimeSignature
-          exists in the stream context from which to make measures.
-        '''
-        return makeNotation.makeBeams(
-            self,
-            inPlace=inPlace,
-            setStemDirections=setStemDirections,
-            failOnNoTimeSignature=failOnNoTimeSignature,
-        )
+    # makeBeams method moved to NotationOperationsMixin
 
     def makeAccidentals(
         self,
@@ -6908,129 +6855,7 @@ class Stream(core.StreamCore, VoiceOperationsMixin, t.Generic[M21ObjType]):
         '''
         return self.streamStatus.accidentals
 
-    def makeNotation(self: StreamType,
-                     *,
-                     meterStream=None,
-                     refStreamOrTimeRange=None,
-                     inPlace=False,
-                     bestClef=False,
-                     pitchPast: list[pitch.Pitch]|None = None,
-                     pitchPastMeasure: list[pitch.Pitch]|None = None,
-                     useKeySignature: bool|key.KeySignature = True,
-                     alteredPitches: list[pitch.Pitch]|None = None,
-                     cautionaryPitchClass: bool = True,
-                     cautionaryAll: bool = False,
-                     overrideStatus: bool = False,
-                     cautionaryNotImmediateRepeat: bool = True,
-                     tiePitchSet: set[str]|None = None
-                     ):
-        '''
-        This method calls a sequence of Stream methods on this Stream to prepare
-        notation, including creating voices for overlapped regions, Measures
-        if necessary, creating ties, beams, accidentals, and tuplet brackets.
-
-        If `inPlace` is True, this is done in-place.
-        if `inPlace` is False, this returns a modified deep copy.
-
-        The following additional parameters are documented on
-        :meth:`~music21.stream.base.makeAccidentals`::
-
-            pitchPast
-            pitchPastMeasure
-            useKeySignature
-            alteredPitches
-            cautionaryPitchClass
-            cautionaryAll
-            overrideStatus
-            cautionaryNotImmediateRepeat
-            tiePitchSet
-
-        >>> s = stream.Stream()
-        >>> n = note.Note('g')
-        >>> n.quarterLength = 1.5
-        >>> s.repeatAppend(n, 10)
-        >>> sMeasures = s.makeNotation()
-        >>> len(sMeasures.getElementsByClass(stream.Measure))
-        4
-        >>> sMeasures.getElementsByClass(stream.Measure).last().rightBarline.type
-        'final'
-
-        * Changed in v7: `inPlace=True` returns `None`.
-        '''
-        # determine what is the object to work on first
-        returnStream: StreamType|Stream[t.Any]
-        if inPlace:
-            returnStream = self
-        else:
-            returnStream = self.coreCopyAsDerivation('makeNotation')
-
-        # if 'finalBarline' in subroutineKeywords:
-        #     lastBarlineType = subroutineKeywords['finalBarline']
-        # else:
-        #     lastBarlineType = 'final'
-
-        # retrieve necessary spanners; insert only if making a copy
-        returnStream.coreGatherMissingSpanners(
-            insert=not inPlace,
-            # definitely do NOT put a constrainingSpannerBundle constraint
-        )
-        # only use inPlace arg on first usage
-        if not returnStream.hasMeasures():
-            # only try to make voices if no Measures are defined
-            returnStream.makeVoices(inPlace=True, fillGaps=True)
-            # if this is not inPlace, it will return a newStream; if
-            # inPlace, this returns None
-            # use inPlace=True, as already established above
-            returnStream.makeMeasures(
-                meterStream=meterStream,
-                refStreamOrTimeRange=refStreamOrTimeRange,
-                inPlace=True,
-                bestClef=bestClef)
-
-            if not returnStream.hasMeasures():
-                raise StreamException(
-                    f'no measures found in stream with {len(self)} elements')
-
-        # for now, calling makeAccidentals once per measures
-        # pitches from last measure are passed
-        # this needs to be called before makeTies
-        # note that this functionality is also placed in Part
-        if not returnStream.streamStatus.accidentals:
-            makeNotation.makeAccidentalsInMeasureStream(
-                returnStream,
-                pitchPast=pitchPast,
-                pitchPastMeasure=pitchPastMeasure,
-                useKeySignature=useKeySignature,
-                alteredPitches=alteredPitches,
-                cautionaryPitchClass=cautionaryPitchClass,
-                cautionaryAll=cautionaryAll,
-                overrideStatus=overrideStatus,
-                cautionaryNotImmediateRepeat=cautionaryNotImmediateRepeat,
-                tiePitchSet=tiePitchSet)
-
-        makeNotation.makeTies(returnStream, meterStream=meterStream, inPlace=True)
-
-        for m in returnStream._stream_factory.get_elements_by_class(returnStream, 'Measure'):
-            makeNotation.splitElementsToCompleteTuplets(m, recurse=True, addTies=True)
-            makeNotation.consolidateCompletedTuplets(m, recurse=True, onlyIfTied=True)
-
-        if not returnStream.streamStatus.beams:
-            try:
-                makeNotation.makeBeams(returnStream, inPlace=True)
-            except meter.MeterException as me:
-                import warnings  # lazy import - used only for meter exception warnings
-                warnings.warn(str(me))
-
-        # note: this needs to be after makeBeams, as placing this before
-        # makeBeams was causing the duration's tuplet to lose its type setting
-        # check for tuplet brackets one measure at a time
-        # this means that they will never extend beyond one measure
-        for m in returnStream._stream_factory.get_elements_by_class(returnStream, 'Measure'):
-            if not m.streamStatus.tuplets:
-                makeNotation.makeTupletBrackets(m, inPlace=True)
-
-        if not inPlace:
-            return returnStream
+    # makeNotation method moved to NotationOperationsMixin
 
     def extendDuration(self, objClass, *, inPlace=False):
         '''

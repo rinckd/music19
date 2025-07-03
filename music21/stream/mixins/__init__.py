@@ -18,7 +18,9 @@ improve code organization and maintainability.
 """
 
 from music21.stream.mixins.voice_operations import VoiceOperationsMixin
+from music21.stream.mixins.notation_operations import NotationOperationsMixin
 
 __all__ = [
     'VoiceOperationsMixin',
+    'NotationOperationsMixin',
 ]

@@ -29,11 +29,9 @@ import itertools
 import math
 from math import isclose
 import os
-import pathlib
 import types
 import typing as t
 from typing import overload  # pycharm bug disallows alias
-import warnings
 
 from music21 import base
 from music21 import bar
@@ -58,10 +56,15 @@ from music21 import meter
 from music21 import note
 from music21 import pitch
 from music21 import tie
-from music21 import repeat
 from music21 import sites
-from music21 import style
 from music21 import tempo
+
+from music21 import style
+
+# Lazy imports for rarely used modules  
+# repeat: 3 uses - lazy loaded (converted)
+# warnings: 2 uses - lazy loaded (converted)
+# pathlib: 0 uses - removed entirely
 
 from music21.stream import core
 from music21.stream import makeNotation
@@ -71,8 +74,10 @@ from music21.stream import filters
 from music21.stream.enums import GivenElementsBehavior, RecursionType, ShowNumber
 from music21.stream.factory import get_stream_factory
 
-# PHASE 3 NOTE: Late imports have been replaced with factory pattern
-# All circular dependencies now resolved through StreamFactory in stream.factory module
+# ARCHITECTURE NOTE: Circular dependency resolution
+# All stream class circular dependencies have been resolved through the StreamFactory
+# pattern (see music21.stream.factory). This eliminates the need for late imports
+# and provides better performance through caching and optimized access patterns.
 
 if t.TYPE_CHECKING:
     from music21 import spanner
@@ -387,7 +392,19 @@ class Stream(core.StreamCore, t.Generic[M21ObjType]):
 
     @property
     def _stream_factory(self):
-        """Get the stream factory, creating it if needed for legacy objects."""
+        """
+        Get the stream factory for accessing stream classes without circular imports.
+        
+        The StreamFactory provides optimized access to stream classes (Measure, Part, 
+        Voice, Score, Opus) while avoiding circular import dependencies. It uses 
+        lazy loading and caching for better performance.
+        
+        This property creates the factory instance on first access to support
+        legacy Stream objects created before the factory pattern was introduced.
+        
+        Returns:
+            StreamFactory: The factory instance for this stream
+        """
         if not hasattr(self, '_factory'):
             self._factory = get_stream_factory()
         return self._factory
@@ -466,6 +483,7 @@ class Stream(core.StreamCore, t.Generic[M21ObjType]):
         '''
         # temporary for v9 -- remove in v10
         if self._created_via_deprecated_flat:
+            import warnings  # lazy import - used only for deprecation warnings
             warnings.warn('.flat is deprecated.  Call .flatten() instead',
                           exceptions21.Music21DeprecationWarning,
                           stacklevel=3)
@@ -7011,6 +7029,7 @@ class Stream(core.StreamCore, t.Generic[M21ObjType]):
             try:
                 makeNotation.makeBeams(returnStream, inPlace=True)
             except meter.MeterException as me:
+                import warnings  # lazy import - used only for meter exception warnings
                 warnings.warn(str(me))
 
         # note: this needs to be after makeBeams, as placing this before
@@ -9508,6 +9527,7 @@ class Stream(core.StreamCore, t.Generic[M21ObjType]):
                 'cannot process repeats on Stream that does not contain measures'
             )
 
+        from music21 import repeat  # lazy import - used only in expandRepeats
         ex = repeat.Expander(self)
         post = ex.process()
 

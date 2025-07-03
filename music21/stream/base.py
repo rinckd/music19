@@ -69,6 +69,7 @@ from music21.stream import streamStatus
 from music21.stream import iterator
 from music21.stream import filters
 from music21.stream.enums import GivenElementsBehavior, RecursionType, ShowNumber
+from music21.stream.factory import get_stream_factory
 
 # PHASE 2 NOTE: Late imports to avoid circular dependencies
 # These will be resolved in Phase 3 through dependency injection patterns
@@ -355,7 +356,10 @@ class Stream(core.StreamCore, t.Generic[M21ObjType]):
 
         # experimental
         self._mutable = True
-
+        
+        # Phase 3: Stream factory for dependency injection
+        self._factory = get_stream_factory()
+        
         if givenElements is None:
             return
 
@@ -390,6 +394,13 @@ class Stream(core.StreamCore, t.Generic[M21ObjType]):
                 self.coreInsert(e.offset, e)
 
         self.coreElementsChanged()
+
+    @property
+    def _stream_factory(self):
+        """Get the stream factory, creating it if needed for legacy objects."""
+        if not hasattr(self, '_factory'):
+            self._factory = get_stream_factory()
+        return self._factory
 
     def __eq__(self, other):
         '''
@@ -5011,9 +5022,9 @@ class Stream(core.StreamCore, t.Generic[M21ObjType]):
         offsetMap: dict[float|Fraction, list['Measure']] = {}
         # first, try to get measures
         # this works best of this is a Part or Score
-        classes = _get_stream_classes()
-        if classes['Measure'] in classFilterList or 'Measure' in classFilterList:
-            for m in self.getElementsByClass(classes['Measure']):
+        measure_class = self._stream_factory.get_class('Measure')
+        if measure_class in classFilterList or 'Measure' in classFilterList:
+            for m in self._stream_factory.get_elements_by_class(self, 'Measure'):
                 offset = self.elementOffset(m)
                 if offset not in offsetMap:
                     offsetMap[offset] = []
@@ -5022,7 +5033,7 @@ class Stream(core.StreamCore, t.Generic[M21ObjType]):
 
         # try other classes
         for className in classFilterList:
-            if className in (classes['Measure'], 'Measure'):  # do not redo
+            if className in (measure_class, 'Measure'):  # do not redo
                 continue
             for e in self.getElementsByClass(className):
                 # environLocal.printDebug(['calling measure offsetMap(); e:', e])
@@ -5030,7 +5041,7 @@ class Stream(core.StreamCore, t.Generic[M21ObjType]):
                 # long time to process
                 # 'reverse' here is a reverse sort, where the oldest objects
                 # are returned first
-                maybe_m = e.getContextByClass(classes['Measure'])  # , sortByCreationTime='reverse')
+                maybe_m = e.getContextByClass(measure_class)  # , sortByCreationTime='reverse')
                 if maybe_m is None:  # pragma: no cover
                     # hard to think of a time this would happen, but better safe.
                     continue
@@ -9565,17 +9576,16 @@ class Stream(core.StreamCore, t.Generic[M21ObjType]):
         else:
             returnObj = self
 
-        classes = _get_stream_classes()
         if returnObj.hasMeasures():
             # call on component measures
-            for m in returnObj.getElementsByClass(classes['Measure']):
+            for m in returnObj._stream_factory.get_elements_by_class(returnObj, 'Measure'):
                 m.sliceByQuarterLengths(quarterLengthList,
                                         target=target, addTies=addTies, inPlace=True)
             returnObj.coreElementsChanged()
             return returnObj  # exit
 
         if returnObj.hasPartLikeStreams():
-            for p in returnObj.getElementsByClass(classes['Part']):
+            for p in returnObj._stream_factory.get_elements_by_class(returnObj, 'Part'):
                 p.sliceByQuarterLengths(quarterLengthList,
                                         target=target, addTies=addTies, inPlace=True)
             returnObj.coreElementsChanged()
@@ -11154,10 +11164,9 @@ class Stream(core.StreamCore, t.Generic[M21ObjType]):
             return None
 
         # store all voices in a list
-        classes = _get_stream_classes()
         voices = []
         for dummy in range(maxVoiceCount):
-            voices.append(classes['Voice']())  # add voice classes
+            voices.append(self._stream_factory.create_voice())  # add voice classes
 
         # iterate through all elements; if not in an overlap, place in
         # voice 1, otherwise, distribute
@@ -11256,8 +11265,7 @@ class Stream(core.StreamCore, t.Generic[M21ObjType]):
         voiceIds = []
 
         if self.hasMeasures():
-            classes = _get_stream_classes()
-            for m in self.getElementsByClass(classes['Measure']):
+            for m in self._stream_factory.get_elements_by_class(self, 'Measure'):
                 mVoices = m.voices
                 mVCount = len(mVoices)
                 if not countById:
@@ -11395,8 +11403,7 @@ class Stream(core.StreamCore, t.Generic[M21ObjType]):
         not the first, because separateById aligns the voices according to
         order first encountered, not by sorting the Ids.
         '''
-        classes = _get_stream_classes()
-        s = classes['Score']()
+        s = self._stream_factory.create_score()
         # s.metadata = self.metadata
 
         # if this is a Score, call this recursively on each Part, then
@@ -11423,7 +11430,7 @@ class Stream(core.StreamCore, t.Generic[M21ObjType]):
         partDict = {}
 
         for i in range(partCount):
-            p = classes['Part']()
+            p = self._stream_factory.create_part()
             s.insert(0, p)
             if not separateById:
                 p.id = str(self.id) + '-v' + str(i)
@@ -11438,7 +11445,7 @@ class Stream(core.StreamCore, t.Generic[M21ObjType]):
             This is the main routine for dealing with the most common
             and most difficult voice set.
             '''
-            mActive = classes['Measure']()
+            mActive = self._stream_factory.create_measure()
             mActive.mergeAttributes(mInner)  # get groups, optional id
             # merge everything except Voices; this will get
             # clefs
@@ -11487,20 +11494,20 @@ class Stream(core.StreamCore, t.Generic[M21ObjType]):
             p.mergeElements(self, classFilterList=('Instrument',))
 
         if self.hasMeasures():
-            for m in self.getElementsByClass(classes['Measure']):
+            for m in self._stream_factory.get_elements_by_class(self, 'Measure'):
                 if m.hasVoices():
                     doOneMeasureWithVoices(m)
                 # if a measure does not have voices, simply populate
                 # with elements and append
                 else:
-                    mNew = classes['Measure']()
+                    mNew = self._stream_factory.create_measure()
                     mNew.mergeAttributes(m)  # get groups, optional id
                     # get all elements
                     mNew.mergeElements(m)
                     # always place in top-part
                     s.parts[0].insert(self.elementOffset(m), mNew)
                     for i in range(1, partCount):
-                        mEmpty = classes['Measure']()
+                        mEmpty = self._stream_factory.create_measure()
                         mEmpty.mergeAttributes(m)
                         # Propagate bar, meter, key elements to lower parts
                         mEmpty.mergeElements(m, classFilterList=('Barline',
@@ -11521,7 +11528,7 @@ class Stream(core.StreamCore, t.Generic[M21ObjType]):
             # the best clef will be assigned later
             if p.hasMeasures():
                 # place in first measure
-                p.getElementsByClass(classes['Measure']).first().clef = clef.bestClef(p, recurse=True)
+                p._stream_factory.get_elements_by_class(p, 'Measure').first().clef = clef.bestClef(p, recurse=True)
         return s
 
     def explode(self):

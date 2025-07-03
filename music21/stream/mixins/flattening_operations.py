@@ -18,12 +18,19 @@ extracted from stream/base.py to improve code organization.
 """
 from __future__ import annotations
 
+import copy
 import typing as t
+from typing import overload
 
+from music21 import common
+from music21 import defaults
+from music21 import derivation
 from music21.stream import iterator
+from music21.stream import filters
 
 if t.TYPE_CHECKING:
-    from music21.common.types import StreamType
+    from music21.common.types import StreamType, M21ObjType
+    from music21.stream.base import Stream
 
 
 class FlatteningOperationsMixin:
@@ -44,61 +51,71 @@ class FlatteningOperationsMixin:
     """
     
     def recurseRepr(self,
-                    prefixIndent: str = '',
-                    addBreaks: bool = True,
-                    addIndent: bool = True,
-                    addEndTimes: bool = False,
-                    useMixedNumerals: bool = False
-                    ) -> str:
+                    *,
+                    prefixSpaces=0,
+                    addBreaks=True,
+                    addIndent=True,
+                    addEndTimes=False,
+                    useMixedNumerals=False) -> str:
         '''
-        Used internally by Stream.__repr__
-        Returns a string representation of the Stream.
-        
-        Recursively visits all embedded Streams, showing the elements in each.
+        Used by .show('text') to display a stream's contents with offsets.
 
-        * Added in v6.7: indent on repr.
+        >>> s1 = stream.Stream()
+        >>> s2 = stream.Stream()
+        >>> s3 = stream.Stream()
+        >>> n1 = note.Note()
+        >>> s3.append(n1)
+        >>> s2.append(s3)
+        >>> s1.append(s2)
+        >>> post = s1.recurseRepr(addBreaks=False, addIndent=False)
+        >>> post
+        '{0.0} <music21.stream.Stream ...> / {0.0} <...> / {0.0} <music21.note.Note C>'
+
+        Made public in v7.  Always calls on self.
         '''
-        msg: list[str] = []
-        if addBreaks:
-            msg.append('\n')
-        
-        indent = prefixIndent
-        if addIndent:
-            indent += '    '
-        
-        # Use depth-first search to walk through all nested streams
-        for el in self:
-            if hasattr(el, 'recurseRepr'):  # nested stream
-                msg.append(f'{indent}{el.__class__.__name__}:')
-                msg.append(el.recurseRepr(
-                    prefixIndent=indent,
-                    addBreaks=addBreaks,
-                    addIndent=addIndent,
-                    addEndTimes=addEndTimes,
-                    useMixedNumerals=useMixedNumerals
-                ))
-            else:  # normal element
-                elStr = repr(el).strip()
-                offset = el.getOffsetBySite(self)
-                if addEndTimes and hasattr(el, 'duration') and el.duration is not None:
-                    endTime = offset + el.duration.quarterLength
-                    if useMixedNumerals:
-                        offsetStr = common.mixedNumeral(offset)
-                        endTimeStr = common.mixedNumeral(endTime)
-                    else:
-                        offsetStr = f'{offset:g}'
-                        endTimeStr = f'{endTime:g}'
-                    msg.append(f'{indent}{offsetStr}-{endTimeStr}: {elStr}')
+        def singleElement(in_element,
+                          in_indent,
+                          ) -> str:
+            offGet = in_element.getOffsetBySite(self)
+            if useMixedNumerals:
+                off = common.mixedNumeral(offGet)
+            else:
+                off = common.strTrimFloat(offGet)
+            if addEndTimes is False:
+                return in_indent + '{' + off + '} ' + repr(in_element)
+            else:
+                ql = offGet + in_element.duration.quarterLength
+                if useMixedNumerals:
+                    qlStr = common.mixedNumeral(ql)
                 else:
-                    if useMixedNumerals:
-                        offsetStr = common.mixedNumeral(offset)
-                    else:
-                        offsetStr = f'{offset:g}'
-                    msg.append(f'{indent}{offsetStr}: {elStr}')
-        
+                    qlStr = common.strTrimFloat(ql)
+                return in_indent + '{' + off + ' - ' + qlStr + '} ' + repr(in_element)
+
+        msg = []
+        insertSpaces = 4
+        for element in self:
+            if addIndent:
+                indent = ' ' * prefixSpaces
+            else:
+                indent = ''
+
+            if hasattr(element, 'isStream') and element.isStream:
+                msg.append(singleElement(element, indent))
+                msg.append(
+                    element.recurseRepr(prefixSpaces=prefixSpaces + insertSpaces,
+                                        addBreaks=addBreaks,
+                                        addIndent=addIndent,
+                                        addEndTimes=addEndTimes,
+                                        useMixedNumerals=useMixedNumerals)
+                )
+            else:
+                msg.append(singleElement(element, indent))
+
         if addBreaks:
-            msg.append('')
-        return '\n'.join(msg)
+            msgStr = '\n'.join(msg)
+        else:  # use slashes with spaces
+            msgStr = ' / '.join(msg)
+        return msgStr
 
     def flatten(self: 'StreamType', retainContainers=False) -> 'StreamType':
         '''
@@ -125,45 +142,79 @@ class FlatteningOperationsMixin:
         >>> len(flatWithContainers.getElementsByClass(stream.Measure))
         9
         '''
-        # Use the iterator system for flattening
-        outObj = self.coreCopyAsDerivation('flatten')
-        
-        # Clear all elements
-        outObj.coreElementsChanged()
-        
-        # Use recursive iterator to get all elements
-        ri = iterator.RecursiveIterator(
-            srcStream=self,
-            restoreActiveSites=False,
-            ignoreSorting=self.isSorted is not False,
-        )
-        
+        # Use caching mechanism like original implementation
         if retainContainers:
-            ri.includeSelf = True
-            ri.includeStreamLayers = True
+            method = 'semiFlat'
         else:
-            ri.includeSelf = False
-            ri.includeStreamLayers = False
-            
+            method = 'flat'
+
+        cached_version = self._cache.get(method)
+        if cached_version is not None:
+            return cached_version
+
+        # this copy will have a shared sites object
+        # note that copy.copy() in some cases seems to not cause secondary
+        # problems that self.__class__() does
+        sNew = copy.copy(self)
+
+        if sNew.id != id(sNew):
+            sOldId = sNew.id
+            if isinstance(sOldId, int) and sOldId > defaults.minIdNumberToConsiderMemoryLocation:
+                sOldId = hex(sOldId)
+
+            newId = str(sOldId) + '_' + method
+            sNew.id = newId
+
+        sNew_derivation = derivation.Derivation(sNew)
+        sNew_derivation.origin = self
+        sNew_derivation.method = method
+
+        sNew.derivation = sNew_derivation
+
+        # storing .elements in here necessitates
+        # create a new, independent cache instance in the flat representation
+        sNew._cache = {}
+        sNew._offsetDict = {}
+        sNew._elements = []
+        sNew._endElements = []
+        sNew.coreElementsChanged()
+
+        ri: iterator.RecursiveIterator = iterator.RecursiveIterator(
+            self,
+            restoreActiveSites=False,
+            includeSelf=False,
+            ignoreSorting=True,
+        )
+
         for e in ri:
-            if retainContainers or not hasattr(e, 'isStream') or not e.isStream:
-                # Calculate offset in flattened structure
-                flatOffset = ri.currentHierarchyOffset()
-                outObj.coreInsert(flatOffset, e)
-        
-        outObj.coreElementsChanged()
-        return outObj
+            if e.isStream and not retainContainers:
+                continue
+            sNew.coreInsert(ri.currentHierarchyOffset(),
+                             e,
+                             setActiveSite=False)
+        if not retainContainers:
+            sNew.isFlat = True
+
+        if self.autoSort is True:
+            sNew.sort()  # sort it immediately so that cache is not invalidated
+        else:
+            sNew.coreElementsChanged()
+        # here, we store the source stream from which this stream was derived
+        self._cache[method] = sNew
+
+        return sNew
 
     @property
     def flat(self):
         '''
-        A property that returns a flattened version of the Stream.
-        
-        .. deprecated:: v7
-            Use :meth:`~music21.stream.Stream.flatten` instead.
+        Deprecated: use `.flatten()` instead
+
+        A property that returns the same flattened representation as `.flatten()`
+        as of music21 v7.
+
+        See :meth:`~music21.stream.base.Stream.flatten()` for documentation.
         '''
-        # Mark this as created via deprecated flat for warning in __iter__
-        flatStream = self.flatten()
+        flatStream = self.flatten(retainContainers=False)
         flatStream._created_via_deprecated_flat = True
         return flatStream
 
@@ -205,23 +256,35 @@ class FlatteningOperationsMixin:
         >>> len(notes)
         37
         '''
-        # Handle includeSelf/skipSelf logic
+        # Handle includeSelf/skipSelf logic  
         if includeSelf is None:
-            includeSelf = not skipSelf
+            # Default: historical behavior is includeSelf=False (don't include the source stream)
+            # But honor skipSelf if explicitly provided  
+            includeSelf = False
+        
+        # Convert classFilter to proper filter objects
+        filterList = []
+        if classFilter:
+            filterList.append(filters.ClassFilter(classFilter))
         
         if streamsOnly:
             # Special case: return only streams
-            return iterator.StreamIterator(
+            if not filterList:
+                filterList = [filters.ClassFilter('Stream')]
+            
+            # Create the RecursiveIterator and apply stream filtering
+            ri = iterator.RecursiveIterator(
                 srcStream=self,
-                filterList=classFilter or ['Stream'],
+                filterList=filterList,
                 restoreActiveSites=restoreActiveSites,
-                activeInformation={},
-            ).recurse()
+                includeSelf=includeSelf,
+            )
+            return ri
         else:
             # Return recursive iterator for all elements
             return iterator.RecursiveIterator(
                 srcStream=self,
-                filterList=classFilter,
+                filterList=filterList,
                 restoreActiveSites=restoreActiveSites,
                 includeSelf=includeSelf,
             )

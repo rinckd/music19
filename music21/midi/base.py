@@ -187,6 +187,7 @@ def getVariableLengthNumber(midiBytes: bytes) -> tuple[int, bytes]:
     This is necessary as DeltaTime times are given with variable size,
     and thus may be of different numbers if characters are used.
 
+    >>> from music21 import midi
     >>> midi.getVariableLengthNumber(b'A-u')
     (65, b'-u')
     >>> midi.getVariableLengthNumber(b'-u')
@@ -304,6 +305,7 @@ def putVariableLengthNumber(x: int) -> bytes:
 
     Numbers < 128 are encoded as single bytes and are the same as bytes([x])
 
+    >>> from music21 import midi
     >>> midi.putVariableLengthNumber(4)
     b'\x04'
     >>> midi.putVariableLengthNumber(127)

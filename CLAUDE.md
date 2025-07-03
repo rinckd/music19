@@ -233,3 +233,8 @@ def method_requiring_stream(self):
 # Avoid: Direct import that creates circular dependency
 # from music21 import stream  # This would create circular import
 ```
+
+Go ahead, use the Google Style Guide: 
+* Names should be: module_name, package_name, ClassName, method_name, ExceptionName, function_name, GLOBAL_CONSTANT_NAME, global_var_name, instance_var_name, function_parameter_name, local_var_name, query_proper_noun_for_thing, send_acronym_via_https.
+
+See: https://google.github.io/styleguide/pyguide.html

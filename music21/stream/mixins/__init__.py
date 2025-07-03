@@ -19,8 +19,12 @@ improve code organization and maintainability.
 
 from music21.stream.mixins.voice_operations import VoiceOperationsMixin
 from music21.stream.mixins.notation_operations import NotationOperationsMixin
+from music21.stream.mixins.flattening_operations import FlatteningOperationsMixin
+from music21.stream.mixins.measure_operations import MeasureOperationsMixin
 
 __all__ = [
     'VoiceOperationsMixin',
     'NotationOperationsMixin',
+    'FlatteningOperationsMixin',
+    'MeasureOperationsMixin',
 ]

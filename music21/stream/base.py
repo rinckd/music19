@@ -71,17 +71,8 @@ from music21.stream import filters
 from music21.stream.enums import GivenElementsBehavior, RecursionType, ShowNumber
 from music21.stream.factory import get_stream_factory
 
-# PHASE 2 NOTE: Late imports to avoid circular dependencies
-# These will be resolved in Phase 3 through dependency injection patterns
-def _get_stream_classes():
-    """Get stream classes with late import to avoid circular dependencies."""
-    if not hasattr(_get_stream_classes, '_classes'):
-        from music21.stream.measure import Measure
-        from music21.stream.part import Part
-        from music21.stream.voice import Voice
-        from music21.stream.score import Score, Opus
-        _get_stream_classes._classes = {'Measure': Measure, 'Part': Part, 'Voice': Voice, 'Score': Score, 'Opus': Opus}
-    return _get_stream_classes._classes
+# PHASE 3 NOTE: Late imports have been replaced with factory pattern
+# All circular dependencies now resolved through StreamFactory in stream.factory module
 
 if t.TYPE_CHECKING:
     from music21 import spanner
@@ -376,9 +367,8 @@ class Stream(core.StreamCore, t.Generic[M21ObjType]):
                 appendBool = all(e.offset == 0.0 for e in givenElements)
             except AttributeError:
                 pass  # appropriate failure will be raised by coreGuardBeforeAddElement()
-            classes = _get_stream_classes()
             if appendBool and all(
-                    (e.isStream and e.classSet.isdisjoint((classes['Measure'], classes['Score'])))
+                    (e.isStream and e.classSet.isdisjoint((self._stream_factory.get_class('Measure'), self._stream_factory.get_class('Score'))))
                     for e in givenElements):
                 appendBool = False
         elif givenElementsBehavior == GivenElementsBehavior.INSERT:
@@ -3187,8 +3177,7 @@ class Stream(core.StreamCore, t.Generic[M21ObjType]):
                 if isinstance(complexObj, note.Rest) and complexObj.fullMeasure in (True, 'always'):
                     continue
                 if isinstance(complexObj, note.Rest) and complexObj.fullMeasure == 'auto':
-                    classes = _get_stream_classes()
-                    if (isinstance(container, classes['Measure'])
+                    if (isinstance(container, self._stream_factory.get_class('Measure'))
                             and (complexObj.duration == container.barDuration)):
                         continue
                     elif ('Voice' in container.classes
@@ -4343,8 +4332,7 @@ class Stream(core.StreamCore, t.Generic[M21ObjType]):
                     return True
             return False
 
-        classes = _get_stream_classes()
-        mStreamIter: iterator.StreamIterator['Measure'] = self.getElementsByClass(classes['Measure'])
+        mStreamIter: iterator.StreamIterator['Measure'] = self._stream_factory.get_elements_by_class(self, 'Measure')
 
         # FIND THE CORRECT ORIGINAL MEASURE OBJECTS
         # for indicesNotNumbers, this is simple
@@ -4918,10 +4906,9 @@ class Stream(core.StreamCore, t.Generic[M21ObjType]):
 
         # Replace old measures in spanners with new measures
         # Example: out is a Part, out.spannerBundle has RepeatBrackets spanning measures
-        classes = _get_stream_classes()
         for oldM, newM in zip(
-            self.getElementsByClass(classes['Measure']),
-            out.getElementsByClass(classes['Measure']),
+            self._stream_factory.get_elements_by_class(self, 'Measure'),
+            out._stream_factory.get_elements_by_class(out, 'Measure'),
             strict=True
         ):
             out.spannerBundle.replaceSpannedElement(oldM, newM)
@@ -5068,8 +5055,7 @@ class Stream(core.StreamCore, t.Generic[M21ObjType]):
         # core routines for a single Stream
         else:
             if self.hasMeasures():
-                classes = _get_stream_classes()
-                return self.getElementsByClass(classes['Measure']).last().rightBarline
+                return self._stream_factory.get_elements_by_class(self, 'Measure').last().rightBarline
             elif hasattr(self, 'rightBarline'):
                 return self.rightBarline
             else:
@@ -5089,8 +5075,7 @@ class Stream(core.StreamCore, t.Generic[M21ObjType]):
 
         # core routines for a single Stream
         if self.hasMeasures():
-            classes = _get_stream_classes()
-            self.getElementsByClass(classes['Measure']).last().rightBarline = value
+            self._stream_factory.get_elements_by_class(self, 'Measure').last().rightBarline = value
         elif hasattr(self, 'rightBarline'):
             self.rightBarline = value  # pylint: disable=attribute-defined-outside-init
         # do nothing for other streams
@@ -6435,8 +6420,7 @@ class Stream(core.StreamCore, t.Generic[M21ObjType]):
                                            retainVoices=False)
 
         if template.hasMeasures():
-            classes = _get_stream_classes()
-            measureIterator = template.getElementsByClass(classes['Measure'])
+            measureIterator = template._stream_factory.get_elements_by_class(template, 'Measure')
             for i, templateMeasure in enumerate(measureIterator):
                 # measurePart is likely a Score (MeasureSlice), not a measure
                 measurePart = workObj.measure(i, collect=(), indicesNotNumbers=True)
@@ -7019,8 +7003,7 @@ class Stream(core.StreamCore, t.Generic[M21ObjType]):
 
         makeNotation.makeTies(returnStream, meterStream=meterStream, inPlace=True)
 
-        classes = _get_stream_classes()
-        for m in returnStream.getElementsByClass(classes['Measure']):
+        for m in returnStream._stream_factory.get_elements_by_class(returnStream, 'Measure'):
             makeNotation.splitElementsToCompleteTuplets(m, recurse=True, addTies=True)
             makeNotation.consolidateCompletedTuplets(m, recurse=True, onlyIfTied=True)
 
@@ -7034,7 +7017,7 @@ class Stream(core.StreamCore, t.Generic[M21ObjType]):
         # makeBeams was causing the duration's tuplet to lose its type setting
         # check for tuplet brackets one measure at a time
         # this means that they will never extend beyond one measure
-        for m in returnStream.getElementsByClass(classes['Measure']):
+        for m in returnStream._stream_factory.get_elements_by_class(returnStream, 'Measure'):
             if not m.streamStatus.tuplets:
                 makeNotation.makeTupletBrackets(m, inPlace=True)
 
@@ -9528,10 +9511,9 @@ class Stream(core.StreamCore, t.Generic[M21ObjType]):
         ex = repeat.Expander(self)
         post = ex.process()
 
-        classes = _get_stream_classes()
         # copy all non-repeats
         # do not copy repeat brackets
-        for e in self.getElementsNotOfClass(classes['Measure']):
+        for e in self.getElementsNotOfClass(self._stream_factory.get_class('Measure')):
             if 'RepeatBracket' not in e.classes:
                 eNew = copy.deepcopy(e)  # assume that this is needed
                 post.insert(self.elementOffset(e), eNew)
@@ -9655,8 +9637,7 @@ class Stream(core.StreamCore, t.Generic[M21ObjType]):
 
         if returnObj.hasMeasures():
             # call on component measures
-            classes = _get_stream_classes()
-            for m in returnObj.getElementsByClass(classes['Measure']):
+            for m in returnObj._stream_factory.get_elements_by_class(returnObj, 'Measure'):
                 m.sliceByGreatestDivisor(addTies=addTies, inPlace=True)
             return returnObj  # exit
 
@@ -9705,8 +9686,7 @@ class Stream(core.StreamCore, t.Generic[M21ObjType]):
 
         if returnObj.hasMeasures():
             # call on component measures
-            classes = _get_stream_classes()
-            for m in returnObj.getElementsByClass(classes['Measure']):
+            for m in returnObj._stream_factory.get_elements_by_class(returnObj, 'Measure'):
                 # offset values are not relative to measure; need to
                 # shift by each measure's offset
                 offsetListLocal = [o - m.getOffsetBySite(returnObj) for o in offsetList]
@@ -9786,8 +9766,7 @@ class Stream(core.StreamCore, t.Generic[M21ObjType]):
 
         if returnObj.hasMeasures():
             # call on component measures
-            classes = _get_stream_classes()
-            for m in returnObj.getElementsByClass(classes['Measure']):
+            for m in returnObj._stream_factory.get_elements_by_class(returnObj, 'Measure'):
                 m.sliceByBeat(target=target,
                               addTies=addTies,
                               inPlace=True,
@@ -9795,7 +9774,7 @@ class Stream(core.StreamCore, t.Generic[M21ObjType]):
             return returnObj  # exit
 
         if returnObj.hasPartLikeStreams():
-            for p in returnObj.getElementsByClass(classes['Part']):
+            for p in returnObj._stream_factory.get_elements_by_class(returnObj, 'Part'):
                 p.sliceByBeat(target=target,
                               addTies=addTies,
                               inPlace=True,
@@ -9851,8 +9830,7 @@ class Stream(core.StreamCore, t.Generic[M21ObjType]):
             # do not need to look in endElements
             for obj in self._elements:
                 # if obj is a Part, we have multi-parts
-                classes = _get_stream_classes()
-                if isinstance(obj, classes['Measure']):
+                if self._stream_factory.isinstance_check(obj, ['Measure']):
                     post = True
                     break  # only need one
             self._cache['hasMeasures'] = post
@@ -9928,12 +9906,11 @@ class Stream(core.StreamCore, t.Generic[M21ObjType]):
                 # do not need to look in endElements
                 for obj in self.getElementsByClass(Stream):
                     # if obj is a Part, we have multi-parts
-                    classes = _get_stream_classes()
-                    if isinstance(obj, classes['Part']):
+                    if self._stream_factory.isinstance_check(obj, ['Part']):
                         multiPart = True
                         break
 
-                    elif isinstance(obj, (classes['Measure'], classes['Voice'])):
+                    elif self._stream_factory.isinstance_check(obj, ['Measure', 'Voice']):
                         multiPart = False
                         break
 
@@ -9943,7 +9920,7 @@ class Stream(core.StreamCore, t.Generic[M21ObjType]):
 
                     # if components are streams of Notes or Measures,
                     # then assume this is like a Part
-                    elif (obj.getElementsByClass(classes['Measure'])
+                    elif (obj._stream_factory.get_elements_by_class(obj, 'Measure')
                           or obj.notesAndRests):
                         multiPart = True
             self._cache['hasPartLikeStreams'] = multiPart
@@ -10006,16 +9983,15 @@ class Stream(core.StreamCore, t.Generic[M21ObjType]):
             return all(s.hasMeasures() for s in testStream.getElementsByClass(Stream))
 
         # if a measure or voice, we assume we are well-formed
-        classes = _get_stream_classes()
-        if isinstance(self, (classes['Measure'], classes['Voice'])):
+        if self._stream_factory.isinstance_check(self, ['Measure', 'Voice']):
             return True
         # all other Stream classes are not well-formed if they have "loose" notes
         elif self.notesAndRests:
             return False
-        elif isinstance(self, classes['Part']):
+        elif self._stream_factory.isinstance_check(self, ['Part']):
             if self.hasMeasures():
                 return True
-        elif isinstance(self, classes['Opus']):
+        elif self._stream_factory.isinstance_check(self, ['Opus']):
             return all(allSubstreamsHaveMeasures(s) for s in self.scores)
         elif self.hasPartLikeStreams():
             return allSubstreamsHaveMeasures(self)
@@ -11709,8 +11685,7 @@ class Stream(core.StreamCore, t.Generic[M21ObjType]):
         # -----------------------
         # TODO: use new recurse
         for e in self:
-            classes = _get_stream_classes()
-            if ignoreBarlines is True and isinstance(e, classes['Measure']):
+            if ignoreBarlines is True and self._stream_factory.isinstance_check(e, ['Measure']):
                 m = e
                 for n in m.notes:
                     if skipTies is True:
@@ -12156,15 +12131,14 @@ class Stream(core.StreamCore, t.Generic[M21ObjType]):
                 # environLocal.printDebug(
                 #     ['matchBySpan', matchBySpan, 'activateVariants', 'removing', e])
                 self.remove(e)
-                classes = _get_stream_classes()
-                if isinstance(e, classes['Measure']):
+                if self._stream_factory.isinstance_check(e, ['Measure']):
                     # Save deleted measure numbers.
                     deletedMeasures.append(e.number)
 
             for e in v.elements:
                 oInStream = vStart + e.getOffsetBySite(v.containedSite)
                 self.insert(oInStream, e)
-                if isinstance(e, classes['Measure']):
+                if self._stream_factory.isinstance_check(e, ['Measure']):
                     if deletedMeasures:  # If there measure numbers left to use, use them.
                         # Assign the next highest deleted measure number
                         e.number = deletedMeasures.popleft()
@@ -12280,8 +12254,7 @@ class Stream(core.StreamCore, t.Generic[M21ObjType]):
 
         # this will always remove elements before inserting
         for e in targets:
-            classes = _get_stream_classes()
-            if isinstance(e, classes['Measure']):  # if a measure is deleted, save its number
+            if self._stream_factory.isinstance_check(e, ['Measure']):  # if a measure is deleted, save its number
                 deletedMeasures.append(e.number)
             oInVariant = self.elementOffset(e) - vStart
             removed.insert(oInVariant, e)
@@ -12291,7 +12264,7 @@ class Stream(core.StreamCore, t.Generic[M21ObjType]):
         highestNumber = None
         insertedMeasures = []
         for e in v.elements:
-            if isinstance(e, classes['Measure']):
+            if self._stream_factory.isinstance_check(e, ['Measure']):
                 # If there are deleted numbers still saved, assign this measure the
                 # next highest and remove it from the list.
                 if deletedMeasures:
@@ -12413,8 +12386,7 @@ class Stream(core.StreamCore, t.Generic[M21ObjType]):
 
         # this will always remove elements before inserting
         for e in targets:
-            classes = _get_stream_classes()
-            if isinstance(e, classes['Measure']):  # Save deleted measure numbers.
+            if self._stream_factory.isinstance_check(e, ['Measure']):  # Save deleted measure numbers.
                 deletedMeasures.append(e.number)
             oInVariant = self.elementOffset(e) - vStart
             removed.insert(oInVariant, e)
@@ -12424,7 +12396,7 @@ class Stream(core.StreamCore, t.Generic[M21ObjType]):
         highestMeasure = None
         insertedMeasures = []
         for e in v.elements:
-            if isinstance(e, classes['Measure']):
+            if self._stream_factory.isinstance_check(e, ['Measure']):
                 # If there are deleted measure numbers left, assign the next
                 # inserted measure the next highest number and remove it.
                 if deletedMeasures:
@@ -12449,7 +12421,7 @@ class Stream(core.StreamCore, t.Generic[M21ObjType]):
                                                        includeEndBoundary=True,
                                                        mustFinishInSpan=False,
                                                        mustBeginInSpan=True,
-                                                       ).getElementsByClass(classes['Measure'])
+                                                       )._stream_factory.get_elements_by_class(extendableTargets, 'Measure')
             highestMeasure = 0
             for m in measuresToCheck:
                 if highestMeasure is None or m.number > highestMeasure:
@@ -12699,7 +12671,7 @@ class Stream(core.StreamCore, t.Generic[M21ObjType]):
 
         allMeasures.sort(key=measureNumberSortRoutine)
 
-        oldMeasures = self.getElementsByClass(classes['Measure']).stream()
+        oldMeasures = self._stream_factory.get_elements_by_class(self, 'Measure').stream()
         newMeasures = []
 
         cumulativeNumberShift = 0

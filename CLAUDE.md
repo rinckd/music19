@@ -83,16 +83,26 @@ pip install -e .
 
 ### Key Modules
 - **Music Objects**: `note.py`, `pitch.py`, `chord.py`, `interval.py`, `stream/`
+- **Stream Architecture**: `stream/` - Modular mixin-based architecture
+  - **Core**: `stream/core.py` - High-performance base functionality
+  - **Mixins**: `stream/mixins/` - Focused functionality components
+  - **Factory**: `stream/factory.py` - Centralized stream class access
 - **Analysis**: `analysis/`, `roman.py`, `key.py`, `harmony.py`
 - **File I/O**: `converter/`, `musicxml/`, `midi/`, `abc/`, `lily/`
 - **Visualization**: `graph/`, plotting utilities
 - **Corpus Management**: `corpus/` - Access to musical works
 
 ### Important Design Patterns
-1. **Stream Architecture**: Musical objects are organized in Stream containers (Score, Part, Measure, Voice)
-2. **Music21Object Base Class**: Most objects inherit from `base.Music21Object`
-3. **Converter Pattern**: Unified interface for importing/exporting various music formats
-4. **Corpus Access**: Built-in corpus provides standardized access to musical works
+1. **Stream Mixin Architecture**: Stream functionality is organized into focused mixins (see `/docs/STREAMS_MIXIN_ARCHITECTURE.md`)
+   - `MeasureOperationsMixin` - Measure-related operations
+   - `FlatteningOperationsMixin` - Flattening and recursive traversal
+   - `VoiceOperationsMixin` - Voice management and operations
+   - `NotationOperationsMixin` - Notation formatting and creation
+   - `VariantOperationsMixin` - Musical variant handling
+2. **StreamFactory Pattern**: Centralized, lazy-loaded access to stream classes eliminates circular dependencies
+3. **Music21Object Base Class**: Most objects inherit from `base.Music21Object`
+4. **Converter Pattern**: Unified interface for importing/exporting various music formats
+5. **Corpus Access**: Built-in corpus provides standardized access to musical works
 
 ## Development Guidelines
 
@@ -160,19 +170,23 @@ All checks must pass before merging PRs.
 
 ## Dependency Analysis & Refactor Plan
 
-### Current Dependency Issues
+### Status: COMPLETED ✅
 
-The music21 codebase has several architectural challenges that are being addressed through a planned refactor:
+The music21 codebase has successfully addressed the architectural challenges through the **Streams Mixin Architecture** implementation. See `/docs/STREAMS_MIXIN_ARCHITECTURE.md` for comprehensive details.
 
-#### Circular Dependencies
-- **base.py ↔ higher-level modules**: `base.py` needs to import `note`, `chord`, `stream` for specific operations
-- **stream ↔ core modules**: `stream` imports most core modules while they need stream for context
-- **TYPE_CHECKING pattern**: Extensive use of `if t.TYPE_CHECKING:` blocks (58+ files)
+### Resolved Dependency Issues
 
-#### Late Import Workarounds
-- **Function-level imports**: 99+ instances of imports inside functions to avoid circular dependencies
-- **Performance impact**: Late imports affect import performance and code clarity
-- **Maintenance burden**: Makes dependency relationships unclear
+The music21 codebase previously had several architectural challenges that have been successfully addressed through the mixin architecture refactor:
+
+#### Circular Dependencies (RESOLVED ✅)
+- **base.py ↔ higher-level modules**: Resolved through StreamFactory pattern
+- **stream ↔ core modules**: Resolved through mixin architecture separation
+- **TYPE_CHECKING pattern**: Still used appropriately for type safety (expected behavior)
+
+#### Late Import Workarounds (LARGELY RESOLVED ✅)
+- **Function-level imports**: Most instances eliminated through StreamFactory pattern
+- **Performance impact**: Significantly improved through lazy loading
+- **Maintenance burden**: Reduced through clear mixin architecture boundaries
 
 #### Import Pattern Examples
 ```python
@@ -183,29 +197,29 @@ def some_method(self):
     # ... function logic
 ```
 
-### Planned Refactor Phases
+### Completed Refactor Phases
 
-#### Phase 1: Dependency Inversion & Interface Extraction
-1. Extract protocol/interface classes from `base.py`
-2. Create factory patterns for object creation
-3. Move utility functions requiring high-level imports
+#### Phase 1: Dependency Inversion & Interface Extraction ✅
+1. ✅ Extract protocol/interface classes from `base.py` - Implemented via mixins
+2. ✅ Create factory patterns for object creation - StreamFactory implemented
+3. ✅ Move utility functions requiring high-level imports - Moved to appropriate mixins
 
-#### Phase 2: Stream Module Restructuring
-1. Split `stream/base.py` into focused modules:
-   - `stream/core.py` (container logic)
-   - `stream/operations.py` (operations requiring other modules)
-   - `stream/context.py` (context-aware operations)
-2. Reduce stream's import footprint
+#### Phase 2: Stream Module Restructuring ✅
+1. ✅ Split `stream/base.py` into focused modules:
+   - `stream/core.py` (container logic) - Implemented
+   - `stream/mixins/` (specialized operations) - Implemented with 5 focused mixins
+   - `stream/factory.py` (centralized access) - Implemented
+2. ✅ Reduce stream's import footprint - Achieved through mixin architecture
 
-#### Phase 3: Late Import Consolidation
-1. Replace function-level imports with dependency injection
-2. Consolidate TYPE_CHECKING imports where runtime imports needed
-3. Create import utilities for commonly late-imported modules
+#### Phase 3: Late Import Consolidation ✅
+1. ✅ Replace function-level imports with dependency injection - StreamFactory pattern
+2. ✅ Consolidate TYPE_CHECKING imports where runtime imports needed - Cleaned up
+3. ✅ Create import utilities for commonly late-imported modules - StreamFactory
 
-#### Phase 4: Module Responsibility Clarification
-1. Define clear module boundaries with explicit APIs
-2. Move cross-cutting concerns to dedicated utilities
-3. Document and enforce dependency hierarchy
+#### Phase 4: Module Responsibility Clarification ⚠️ (Partially Complete)
+1. ✅ Define clear module boundaries with explicit APIs - Mixin interfaces defined
+2. ✅ Move cross-cutting concerns to dedicated utilities - Organized into mixins
+3. ⚠️ Document and enforce dependency hierarchy - Ongoing maintenance
 
 ### Development Guidelines for Refactor
 
